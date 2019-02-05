@@ -1,0 +1,157 @@
+/* Height hack for float wrappers */
+.services {
+	overflow: auto;
+}
+
+.auth-icon {
+	display: block;
+	width: 32px;
+	height: 32px;
+	background: url("../images/auth.png") no-repeat;
+}
+
+.auth-icon.google,
+.auth-icon.google_oauth {
+	background-position: 0 -34px;
+}
+
+.auth-icon.twitter {
+	background-position: 0 -68px;
+}
+
+.auth-icon.yandex,
+.auth-icon.yandex_oauth {
+	background-position: 0 -102px;
+}
+
+.auth-icon.vkontakte {
+	background-position: 0 -136px;
+}
+
+.auth-icon.facebook {
+	background-position: 0 -170px;
+}
+
+.auth-icon.mailru {
+	background-position: 0 -204px;
+}
+
+.auth-icon.moikrug {
+	background-position: 0 -238px;
+}
+
+.auth-icon.odnoklassniki {
+	background-position: 0 -272px;
+}
+
+.auth-icon.linkedin {
+	background-position: 0 -306px;
+}
+
+.auth-icon.github {
+	background-position: 0 -340px;
+}
+
+.auth-icon.live {
+	background-position: 0 -372px;
+}
+
+.auth-icon.yahoo {
+	background-position: 0 -406px;
+}
+
+.auth-icon.steam {
+	background-position: 0 -440px;
+}
+
+.auth-icon.dropbox {
+    background-position: 0 -472px;
+}
+
+.auth-icon.wargaming {
+    background-position: 0 -503px;
+}
+
+.auth-icon.eve {
+    background-position: 0 -538px;
+}
+
+
+.auth-link:hover .auth-icon i,
+.auth-link:focus .auth-icon i {
+	display: block;
+	width: 32px;
+	height: 32px;
+	background: url("../images/auth.png") 0 0 no-repeat;
+}
+
+.auth-services {
+	margin: 0 0 1em;
+	list-style: none;
+	/* Height hack for float wrappers */
+	overflow: auto;
+}
+
+.auth-service {
+	float: left;
+	margin: 0 1em 0 0;
+}
+
+.auth-services .auth-service .auth-link {
+	display: block;
+	/*padding: 0 0.4em;*/
+}
+
+.auth-service .auth-link .auth-icon {
+	margin: 0 auto;
+}
+
+.auth-service .auth-link .auth-title {
+	display: block;
+	margin-top: 0.4em;
+	text-align: center;
+}
+
+.google-icon {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background: url("../images/google-logo-mini.png") 16px 16px;
+}
+
+.btn-primary {
+    display: inline-block;
+    min-width: 110px;
+    margin: 15px 5px;
+    padding: 10px 25px 10px 15px;
+    font: 700 14px/1 'Open Sans', sans-serif;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 1px rgba(0, 0, 0, 0.1), inset 0 -10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    background:#59d;
+}
+
+.btn-primary:hover {
+    background: #48c;
+}
+
+.btn-default {
+    display: inline-block;
+    min-width: 110px;
+    margin: 15px 5px;
+    padding: 10px 25px 10px 15px;
+    font: 700 14px/1 'Open Sans', sans-serif;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 1px rgba(0, 0, 0, 0.1), inset 0 -10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: #777;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    background: #fff;
+    text-decoration: none;
+}
+
+.btn-default:hover {
+    background: #f5f5f5;
+}

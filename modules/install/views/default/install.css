@@ -1,0 +1,144 @@
+body, #content {
+    background: linear-gradient(216deg, #0d47a1, #0277bd);
+    background-size: 400% 400%;
+    -webkit-animation: AnimationName 23s ease infinite;
+    -moz-animation: AnimationName 23s ease infinite;
+    animation: AnimationName 23s ease infinite;
+    margin-top: -50px;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:87% 0%}
+    50%{background-position:14% 100%}
+    100%{background-position:87% 0%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:87% 0%}
+    50%{background-position:14% 100%}
+    100%{background-position:87% 0%}
+}
+@keyframes AnimationName {
+    0%{background-position:87% 0%}
+    50%{background-position:14% 100%}
+    100%{background-position:87% 0%}
+}
+
+.install-pane {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto; 
+    width: 100%;
+}
+.install-pane-head {
+    color:#23297a;
+    font-size:12px;
+    text-align:center;
+}
+
+.install-check {
+    width:300px !important;
+    margin:20px auto;
+    text-align:left;
+}
+.install-check.error {
+    width:500px !important;
+}
+.install-check td a {
+    font-size:14px;
+}
+.install-check .danger td {
+    color:red;
+    border-color:#fafafa;
+}
+.install-check .danger td a {
+    color:red !important;
+    text-decoration:none;
+    display:block;
+}
+
+.install-check .success td{
+    color:#5cb85c;
+    border-color:#fafafa;
+}
+.install-check .success td a {
+    color:#5cb85c !important;
+    text-decoration:none;
+    display:block;
+}
+
+td, tr {
+    background: transparent !important;
+}
+.install-status {
+    width:30px;
+    text-align:center;
+}
+
+.install-passed {
+    font-weight:bold;
+    color:#5cb85c;
+    margin-bottom:10px;
+    text-align: center;
+}
+.install-failed {
+    font-weight:bold;
+    font-style: italic;
+    color:red;
+    margin-bottom:10px;
+}
+
+.install-check .sub {
+    margin-right:-35px;
+    display:none;
+    margin-left:-5px;
+    background: #fafafa;
+    margin-top:5px;
+    margin-bottom:-5px;
+    padding:0px;
+    padding-left:20px;
+    border-top:1px solid #fff;
+}
+.install-check .sub td {
+    word-break: break-all;
+}
+
+.install-check .sub.error ,
+.install-check a:focus .sub {
+    display:block;
+}
+.install-check .table {
+    margin:-1px 0px 0px 0px;
+    font-size:12px;
+    background:transparent !important;
+}
+
+.install-error {
+    font-weight:bold;
+    text-align:center;
+    box-shadow:0px 0px 10px 0px #eee;
+}
+
+.install-error-head {
+    background:rgba(255,255,255,.7);
+    margin:-15px -15px 10px -15px;
+    border-radius:5px 5px 0px 0px;
+    padding:5px;
+    font-size:12px;
+}
+
+.btn-success {
+    background-color:#5cb85c;
+    color: white;
+    text-decoration: none;
+    border-radius: 0px;
+}
