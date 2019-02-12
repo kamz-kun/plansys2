@@ -17,26 +17,18 @@ class TplCrudController extends Controller {
         $this->renderForm('TemplateIndex');
     }
 
-    public function actionNew() {
-        $model = new TemplateForm;
+    public function actionEdit($id = null) {
+        if(is_null($id)){
+            $model = new TemplateForm;    
+        } else {
+            $model = $this->loadModel($id, "TemplateForm");       
+        }
+        
         if (isset($_POST["TemplateForm"])) {
             $model->attributes = $_POST["TemplateForm"];
             if ($model->save()) {
                 $this->flash('Data Berhasil Disimpan');
                 $this->redirect(['index']);
-            }
-        }
-
-        $this->renderForm("TemplateForm", $model);
-    }
-
-    public function actionUpdate($id) {
-        $model = $this->loadModel($id, "TemplateForm");
-        if (isset($_POST["TemplateForm"])) {
-            $model->attributes = $_POST["TemplateForm"];
-            if ($model->save()) {
-                $this->flash('Data Berhasil Disimpan');
-                $this->redirect(['update', 'id' => $id]);
             }
         }
         $this->renderForm("TemplateForm", $model);

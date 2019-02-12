@@ -78,7 +78,7 @@ class ActiveRecordTemplate extends CComponent {
                 'buttonType' => 'success',
                 'icon' => 'plus',
                 'options' => [
-                    'href' => "url:/{$prefixUrl}/new",
+                    'href' => "url:/{$prefixUrl}/edit",
                 ],
                 'type' => 'LinkButton',
             ],
@@ -134,7 +134,7 @@ class ActiveRecordTemplate extends CComponent {
             $gv->columns[]   = $column;
         }
         
-        $editUrl       = "{$prefixUrl}/update";
+        $editUrl       = "{$prefixUrl}/edit";
         $editButtonCol = [
             'name' => '',
             'label' => '',
