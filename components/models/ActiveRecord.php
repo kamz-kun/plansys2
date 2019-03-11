@@ -1760,7 +1760,7 @@ class ActiveRecord extends CActiveRecord
                 $evalDirArr[$i] = preg_replace('/[\/\?\:\*\"\<\>\|\\\]*/', "", $j);
             }
             $evalDir = implode("/", $evalDirArr);
-            $dir = $repopath . "/" . $evalDir . "/";
+            $dir = $evalDir . "/";
             $dir = str_replace(["\n", "\r"], "", $dir);
             if (!is_dir($dir)) {
                 @mkdir($dir, 0755, true);

@@ -192,8 +192,14 @@ class DevRoleForm extends Role {
                 'type' => 'DataSource',
             ),
             array (
+                'type' => 'GridView',
                 'name' => 'dataGrid1',
                 'datasource' => 'dataSource1',
+                'gridOptions' => array (
+                    'enablePaging' => 'true',
+                    'enableExternalSorting' => 'true',
+                    'afterSelectionChange' => 'url:/dev/user/update?id={id}',
+                ),
                 'columns' => array (
                     array (
                         'name' => 'id',
@@ -262,12 +268,6 @@ class DevRoleForm extends Role {
                         'cellMode' => 'default',
                     ),
                 ),
-                'gridOptions' => array (
-                    'enablePaging' => 'true',
-                    'enableExternalSorting' => 'true',
-                    'afterSelectionChange' => 'url:/dev/user/update?id={id}',
-                ),
-                'type' => 'GridView',
             ),
             array (
                 'type' => 'Text',

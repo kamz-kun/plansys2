@@ -241,8 +241,7 @@ class FormField extends CComponent {
     }
 
     public function evaluateExpression($_expression_, $_data_ = array()) {
-        $_expression_ = html_entity_decode($_expression_);
-
+        $_expression_ = html_entity_decode($_expression_);        
         if (is_string($_expression_)) {
             extract($_data_);
             $return = '';
@@ -251,11 +250,12 @@ class FormField extends CComponent {
 
             try {
                 @eval('$return =  ' . $_expression_ . ';');
+                
             } catch (Exception $e) {
                 vdump($e->getMessage());
                 die();
                 // $return = $_expression_;
-            }
+            }            
             return $return;
         } else {
             $_data_[] = $this;

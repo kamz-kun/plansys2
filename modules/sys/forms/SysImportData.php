@@ -66,6 +66,7 @@ text-align:center;\">
                 'mode' => 'Upload',
                 'labelWidth' => '0',
                 'fieldWidth' => '12',
+                'uploadPath' => 'assets',
                 'allowDelete' => 'No',
                 'type' => 'UploadFile',
             ),

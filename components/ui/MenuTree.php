@@ -131,7 +131,8 @@ class MenuTree extends CComponent {
                 $list['----'] = '---';
             }
         }
-
+        
+        
         foreach ($raw as $r) {
             if ($withClass) {
                 $list[$r['class']] = $r['label'];
@@ -139,7 +140,9 @@ class MenuTree extends CComponent {
                 $list[$r['label']] = $r['label'];
             }
         }
-
+        // vdump($raw);
+        // vdump($list);        
+        // die();
         return $list;
     }
 

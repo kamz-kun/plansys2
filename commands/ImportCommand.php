@@ -123,7 +123,10 @@ EOF;
         $this->msg('Opening Excel File...');
 
         $reader = ReaderFactory::create(Type::XLSX);
-
+        $webroot = Yii::getPathOfAlias('application');
+        $webroot = rtrim($webroot, 'plansys');
+        $file = $webroot.$file;
+        
         $a = $reader->open($file);
         $transaction = Yii::app()->db->beginTransaction();
         

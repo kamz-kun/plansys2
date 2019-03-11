@@ -342,8 +342,7 @@ class DropDownList extends FormField {
                 foreach($temp as $k => $v){
                     $res[$v] = $v;
                 }
-            }
-            
+            }            
             echo json_encode($res);
         }
     }

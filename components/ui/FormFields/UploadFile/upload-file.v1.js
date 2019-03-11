@@ -148,70 +148,83 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                         $scope.uploadObj.abort();
                     }
                 });
-                $scope.upload = function (file) {
-                    $scope.errors = [];
-                    $scope.loading = true;
-                    $scope.progress = 0;
-                    $scope.$parent.uploading.push($scope.name);
-                    $scope.thumb = '';
-                    if (file.name) {
-                        $scope.uploadingFile = file.name;
-                    }
-                    
-                    $scope.uploadObj = $upload.upload({
-                            url: Yii.app.createUrl('/formfield/UploadFile.upload', {
-                                class: $scope.classAlias,
-                                name: $scope.name
-                            }),
-                            file: file
-                        }).progress(function (evt) {
-                            $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-                        }).success(function (data, html) {
-                            $scope.uploadingFile = undefined;
-                            $scope.progress = 101;
-                            var ext = $scope.ext(data);
-    
-                            if (data.success == 'Yes') {
-                                $scope.value = data.path;
-                                $scope.file = {
-                                    'name': data.name,
-                                    'downloadPath': data.downloadPath
-                                };
-    
-                                $scope.icon($scope.file);
-    
-                                if (['jpg', 'gif', 'png', 'jpeg'].indexOf(ext) >= 0) {
-                                    $scope.getThumb();
-                                }
-                                ctrl.$setViewValue(data.path);
-                            } else {
-                                alert("Error Uploading File. File size too big!. \n");
+                $scope.upload = function (file) {                    
+                    if (!($scope.fileType === "" || $scope.fileType === null)) {
+                        console.log($scope.fileType);
+                        var ext = $scope.ext(file);
+                        type = $scope.fileType.split(',');
+                        for (var i = 0; i < type.length; i++)
+                            type[i] = type[i].trim();
+
+                        if ($.inArray(ext, type) > -1) {
+                            $scope.errors = [];
+                            $scope.loading = true;
+                            $scope.progress = 0;
+                            $scope.$parent.uploading.push($scope.name);
+                            $scope.thumb = '';
+
+                            if (file.name) {
+                                $scope.uploadingFile = file.name;
                             }
-    
-                            $scope.loading = false;
-                            $scope.progress = -1;
                             
-                            var index = $scope.$parent.uploading.indexOf($scope.name);
-                            if (index > -1) {
-                                $scope.$parent.uploading.splice(index, 1);
-                            }
-                        }).error(function (data) {
-                            $scope.uploadingFile = undefined;
-                            $scope.progress = -1;
-                            $scope.loading = false;
-                            var index = $scope.$parent.uploading.indexOf($scope.name);
-                            if (index > -1) {
-                                $scope.$parent.uploading.splice(index, 1);
-                            }
-                            if (!$scope.isAborting) {
-                                var reason = "";
-                                if (data.indexOf("413") >= 0) {
-                                    reason = ": File too large"; 
-                                } 
-                                
-                                alert("Upload Failed" + reason);
-                            }
-                        });
+                            $scope.uploadObj = $upload.upload({
+                                    url: Yii.app.createUrl('/formfield/UploadFile.upload', {
+                                        class: $scope.classAlias,
+                                        name: $scope.name
+                                    }),
+                                    file: file
+                                }).progress(function (evt) {
+                                    $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+                                }).success(function (data, html) {
+                                    $scope.uploadingFile = undefined;
+                                    $scope.progress = 101;
+                                    var ext = $scope.ext(data);
+            
+                                    if (data.success == 'Yes') {
+                                        $scope.value = data.path;
+                                        $scope.file = {
+                                            'name': data.name,
+                                            'downloadPath': data.downloadPath
+                                        };
+            
+                                        $scope.icon($scope.file);
+            
+                                        if (['jpg', 'gif', 'png', 'jpeg'].indexOf(ext) >= 0) {
+                                            $scope.getThumb();
+                                        }
+                                        ctrl.$setViewValue(data.path);
+                                    } else {
+                                        alert("Error Uploading File. File size too big!. \n");
+                                    }
+            
+                                    $scope.loading = false;
+                                    $scope.progress = -1;
+                                    
+                                    var index = $scope.$parent.uploading.indexOf($scope.name);
+                                    if (index > -1) {
+                                        $scope.$parent.uploading.splice(index, 1);
+                                    }
+                                }).error(function (data) {
+                                    $scope.uploadingFile = undefined;
+                                    $scope.progress = -1;
+                                    $scope.loading = false;
+                                    var index = $scope.$parent.uploading.indexOf($scope.name);
+                                    if (index > -1) {
+                                        $scope.$parent.uploading.splice(index, 1);
+                                    }
+                                    if (!$scope.isAborting) {
+                                        var reason = "";
+                                        if (data.indexOf("413") >= 0) {
+                                            reason = ": File too large"; 
+                                        } 
+                                        
+                                        alert("Upload Failed" + reason);
+                                    }
+                                });
+                        } else {
+                            $scope.errors[$scope.name] = ["Tipe file tidak diijinkan, File yang diijinkan adalah " + $scope.fileType];                            
+                        }    
+                    }                    
                 };
 
                 $scope.remove = function (file) {
