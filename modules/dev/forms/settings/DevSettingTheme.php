@@ -113,6 +113,15 @@ class DevSettingTheme extends Form {
 </div>
 <div class=\"clearfix\"></div>',
             ),
+            array (
+                'type' => 'Text',
+                'value' => '<hr>
+<h4>Custom Global Css <small>{{status}}</small></h4>
+<div id=\"css_content\" class=\"text-editor\" ui-ace=\"aceConfig({onLoad:onAceLoad})\" 
+style=\"position:absolute;top:290px;font-size:14px;left:0px;right:0px;bottom:0px\"
+ng-model=\"model.css_content\">
+</div>',
+            ),
         );
     }
 
@@ -139,6 +148,7 @@ class DevSettingTheme extends Form {
                     ),
                 ),
             ),
+            'inlineJS' => 'DevSettingTheme.js',
         );
     }
 

@@ -5,6 +5,12 @@
      <?php Asset::registerCSS('application.themes.default.views.css.default'); ?>
      <?php Asset::registerCSS('application.themes.default.views.css.component'); ?>
      <?php
+        if(file_exists(Setting::getRootPath() . '/app/static/custom.css')){
+          Asset::registerCSS('app.static.custom');
+        }
+     ?>
+
+     <?php
           // include(Yii::getPathOfAlias('application.themes.default.views') . '/vendor/autoload.php');
           // $dir = Yii::getPathOfAlias('application.themes.default.views.css');
           // $stylus = new NodejsPhpFallback\Stylus($dir . "/style.styl");

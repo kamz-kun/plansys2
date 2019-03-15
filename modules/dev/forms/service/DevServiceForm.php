@@ -39,11 +39,6 @@ class DevServiceForm extends DevService {
 
     public function getFields() {
         return array (
-            // array (
-            //     'name' => 'ws',
-            //     'type' => 'WebSocketClient',
-            //     'ctrl' => 'dev/service',
-            // ),
             array (
                 'type' => 'Text',
                 'value' => '<style>

@@ -247,11 +247,11 @@ class GenMenuController extends Controller {
 
         $class_path = explode(".", $class);
         $class = $class_path[count($class_path) - 1];
+        
         $properties = FormBuilder::load('DevMenuEditor');
-
         $properties->registerScript();
+        
         Asset::registerJS('application.static.js.lib.ace');
-
         $this->render('form', array(
             'class' => $class,
             'path'  => $path

@@ -14,6 +14,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.2.00 :
+- New Features Custom Global CSS
+- Fixing Bug on Upload File Native
+
 ### Build 1.1.02 :
 - Fixing Bug on Upload File wrong path
 - Fixing Bug on Upload File Native always allowing all file types

@@ -40,8 +40,10 @@ class PsDefaultController extends Controller {
                 echo $error['message'];
             else {
                 $shouldRender = false;
+                $code = '';
                 switch ($error['code']) {
                     case 400:
+                            $code = $error['code'];
                             if (strpos($error['message'], 'CSRF') >= 0) {
                                 $error        = array(
                                     'code' => 'Peringatan: Mohon refresh halaman ini',
@@ -52,6 +54,7 @@ class PsDefaultController extends Controller {
                             }
                         break;
                     case 403:
+                        $code = $error['code'];
                         if (stripos('forbidden', $error['message']) !== false || $error['message'] === '') { 
                             if (Yii::app()->user->isGuest) {
                                 if (!isset($_GET['redir'])) {
@@ -75,6 +78,7 @@ class PsDefaultController extends Controller {
                         } 
                         break;
                     case 404:
+                        $code = $error['code'];
                         $error        = array(
                             'code' => 'Peringatan: Data / halaman tidak ditemukan',
                             'message' => 'Data yang ingin Anda lihat tidak dapat ditemukan. <br/>'
@@ -86,7 +90,11 @@ class PsDefaultController extends Controller {
                     default:
                         $error        = array(
                             'code' => $error['code'] ,
-                            'message' => 'Halo mil'
+                            'message' => $error['message'],
+                            'file' => @$error['file'],
+                            'line' => @$error['line'],
+                            'trace' => @$error['trace'],
+                            'traces' => @$error['traces'],
                         );
                         $shouldRender = true;
                         break;
@@ -94,7 +102,7 @@ class PsDefaultController extends Controller {
                 if ($shouldRender) {
                     $this->pageTitle  = $error['code'];
                     $_GET['rendered'] = true;                    
-                    $this->render('error', $error);
+                    $this->render('error'.$code, $error);
                 }
             }
             

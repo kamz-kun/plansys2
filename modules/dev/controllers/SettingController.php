@@ -26,7 +26,35 @@ class SettingController extends Controller {
             $this->redirect(['/dev/setting/theme']);
         }
         
+        $cssPath = Setting::getRootPath() . '/app/static/custom.css';
+        $staticPath = Setting::getRootPath() . '/app/static';
+        if(file_exists($cssPath)){
+            $content = file_get_contents($cssPath);
+        } else {
+            $cssContent = fopen($cssPath, "w");
+            if (!is_dir($staticPath)) {
+                mkdir($staticPath);
+            }
+            $defaultContent = "";
+            fwrite($cssContent, $defaultContent);
+            
+        }
+        $content = file_get_contents($cssPath);
+        Asset::registerJS('application.static.js.lib.ace');
+        $model->css_content = $content;
         $this->renderForm('DevSettingTheme', $model);
+    }
+    
+    public function actionSaveCustomCss(){
+        
+        $postdata = file_get_contents("php://input");
+        $post     = CJSON::decode($postdata);
+        $cssPath = Setting::getRootPath() . '/app/static/custom.css';    
+
+        if (is_file($cssPath)) {
+            file_put_contents($cssPath, $post['content']);
+        }
+        
     }
     
     public function actionDatabase() {

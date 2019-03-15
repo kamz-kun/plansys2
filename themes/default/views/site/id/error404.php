@@ -1,33 +1,38 @@
-<!DOCTYPE html PUBLIC
-	"-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Halaman Tidak Ditemukan</title>
-<style type="text/css">
-/*<![CDATA[*/
-body {font-family:"Verdana";font-weight:normal;color:black;background-color:white;}
-h1 { font-family:"Verdana";font-weight:normal;font-size:18pt;color:red }
-h2 { font-family:"Verdana";font-weight:normal;font-size:14pt;color:maroon }
-h3 {font-family:"Verdana";font-weight:bold;font-size:11pt}
-p {font-family:"Verdana";font-weight:normal;color:black;font-size:9pt;margin-top: -5px}
-.version {color: gray;font-size:8pt;border-top:1px solid #aaaaaa;}
-/*]]>*/
-</style>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>Plansys 2.0 | Error <?php echo $code; ?></title>	
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="plansys/themes/default/views/site/id/style.css" />
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
 </head>
+
 <body>
-<h1>Halaman Tidak Ditemukan</h1>
-<h2><?php echo nl2br(CHtml::encode($data['message'])); ?></h2>
-<p>
-URL halaman yang diminta tidak ditemukan pada server.
-Jika Anda memasukkan URL secara manual, silahkan periksa ejaan Anda dan coba lagi.
-</p>
-<p>
-Jika Anda merasa ini adalah kesalahan server, silahkan hubungi <?php echo $data['admin']; ?>.
-</p>
-<div class="version">
-<?php echo date('Y-m-d H:i:s',$data['time']) .' '. $data['version']; ?>
-</div>
-</body>
+
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<h1>:(</h1>
+			</div>
+            <h2 style="color: red;"><?php echo $code; ?></h2>
+            <h2><?php echo $message; ?></h2>
+            <i>Plansys 2.0</i>
+		</div>
+	</div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
 </html>
