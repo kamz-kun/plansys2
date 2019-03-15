@@ -16,6 +16,7 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ### Build 1.2.00 :
 - New Features Custom Global CSS
+- New Error Handling
 - Fixing Bug on Upload File Native
 
 ### Build 1.1.02 :
