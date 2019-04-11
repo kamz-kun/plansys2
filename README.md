@@ -14,6 +14,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.2.01 :
+- Fixing Bug Custom Global CSS
+
 ### Build 1.2.00 :
 - New Features Custom Global CSS
 - New Error Handling

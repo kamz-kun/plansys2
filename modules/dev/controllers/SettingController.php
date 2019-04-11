@@ -31,12 +31,11 @@ class SettingController extends Controller {
         if(file_exists($cssPath)){
             $content = file_get_contents($cssPath);
         } else {
-            $cssContent = fopen($cssPath, "w");
             if (!is_dir($staticPath)) {
                 mkdir($staticPath);
             }
             $defaultContent = "";
-            fwrite($cssContent, $defaultContent);
+            file_put_contents($cssPath, $defaultContent);
             
         }
         $content = file_get_contents($cssPath);

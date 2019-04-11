@@ -156,15 +156,15 @@ class DevUserIndex extends User {
                     'select' => '|u|.*, |r.role_description|',
                     'distinct' => 'false',
                     'alias' => 'u',
-                    'condition' => '(|is_deleted| is null) {AND [where]}',
+                    'condition' => '{[where]}',
                     'order' => '{[order]}',
                     'paging' => '{[paging]}',
                     'group' => '',
                     'having' => '',
                     'join' => 'inner join 
-   |p_user_role| |p| on |u.id| = |p.user_id| and |p.is_default_role| = \'Yes\' 
+   p_user_role p on u.id = p.user_id and p.is_default_role = \'Yes\' 
  left outer join 
-   |p_role| |r| on |r.id| = |p.role_id|',
+   p_role r on r.id = p.role_id',
                 ),
                 'type' => 'DataSource',
             ),
