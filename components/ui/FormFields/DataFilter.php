@@ -322,7 +322,9 @@ class DataFilter extends FormField {
                                 $sql = "DATE({$column}) = DATE(:{$paramName}_{$pcolumn})";
                             } else if ($driver == "oci") {
                                 $sql = "TO_CHAR({$column},'YY-MM-DD') = TO_CHAR(" . self::toSQLDateTime(":{$paramName}_{$pcolumn}", $driver) . ", 'YY-MM-DD')";
-                            }
+                            } else if($driver == "pgsql") {
+								$sql = "DATE({$column}) = DATE(" . self::toSQLDateTime(":{$paramName}_{$pcolumn}", $driver). ")";
+							}
                             $param = @$filter['value'];
                         }
                         break;

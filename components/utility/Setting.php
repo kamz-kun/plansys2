@@ -63,16 +63,19 @@ class Setting {
     public static function init($configfile, $mode = "running", $entryScript = "") {
         require_once("Installer.php");
         
+        
         date_default_timezone_set("Asia/Jakarta");
         $bp = Setting::setupBasePath($configfile);
         $ap = Setting::$rootPath . DIRECTORY_SEPARATOR . "app";
         $defaultConfigDir = $ap . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR;
+        
         
         if (!is_dir(Setting::getRuntimePath())) {
             mkdir(Setting::getRuntimePath(), 0755, true);
             chmod(Setting::getRuntimePath(), 0755);
         }
     
+        
         if (is_file($defaultConfigDir . "configdir.php")) {
             Setting::$path = include($defaultConfigDir . "configdir.php");
             
@@ -120,7 +123,8 @@ class Setting {
             }
         }
         
-        $path = Setting::getRootPath() . DIRECTORY_SEPARATOR . "index.php";
+        
+        $path = Setting::getRootPath() . DIRECTORY_SEPARATOR . "index.php";    
         
         if (!is_file($path)) {
             require_once("Installer.php");
@@ -133,7 +137,7 @@ class Setting {
             
             Setting::$mode = "install";
         }
-        
+                
         $file = @file_get_contents(Setting::$path);
 
         ## set entry script
@@ -161,6 +165,7 @@ class Setting {
 
 
         ## set host
+        
         if (!Setting::get('app.host')) {
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
             $port     = $_SERVER['SERVER_PORT'] == 443 || $_SERVER['SERVER_PORT'] == 80 ? "" : ":" . $_SERVER['SERVER_PORT'];

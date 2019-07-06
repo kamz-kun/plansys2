@@ -8,6 +8,9 @@ class SettingController extends Controller {
     
     public function actionApp() {
         $model = new DevSettingApp;
+        $config_dir = Setting::$path;
+        $model->config_dir = rtrim($config_dir, 'settings.json' );
+        
         if (isset($_POST['DevSettingApp'])) {
             $model->attributes = $_POST['DevSettingApp'];
             $model->save();

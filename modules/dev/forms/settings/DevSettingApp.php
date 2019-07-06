@@ -227,6 +227,29 @@ class DevSettingApp extends Form {
             array (
                 'column1' => array (
                     array (
+                        'label' => 'Config Dir',
+                        'js' => 'model.config_dir',
+                        'type' => 'LabelField',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<div class=\"col-md-4\"></div>
+<div class=\"col-md-8\">
+    <small>
+        <i class=\"fa fa-info-circle \"></i>
+        You can change this for security purpose
+    </small>
+</div>
+',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'column2' => array (
+                    '<column-placeholder></column-placeholder>',
+                    array (
                         'label' => 'PHP CLI Path',
                         'name' => 'phpPath',
                         'fieldOptions' => array (
@@ -243,10 +266,6 @@ class DevSettingApp extends Form {
         if not filled, plansys will search php binary in the environment variable
     </small>
 </div>',
-                    ),
-                    array (
-                        'type' => 'Text',
-                        'value' => '<column-placeholder></column-placeholder>',
                     ),
                 ),
                 'w1' => '50%',

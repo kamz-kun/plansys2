@@ -20,7 +20,8 @@ class User extends ActiveRecord {
         $ur = $this->userRoles;
         foreach ($ur as $k => $u) {
             $ur[$k]['user_id'] = $this->id;
-        }
+            unset($ur[$k]['id']);
+        }        
         $olduser = ActiveRecord::toArray($this->getRelated('userRoles'));
         ActiveRecord::batch('UserRole', $ur, $olduser);
 
@@ -28,14 +29,14 @@ class User extends ActiveRecord {
     }
     
     public function rules() {
-        $passwordReq = ', password, email, name';
+        $passwordReq = ', password, email';
         if ($this->useLdap) {
             $passwordReq = '';
         }
 
         return array(
             array('username' . $passwordReq, 'required'),
-            array('username, name', 'unique'),
+            array('username', 'unique'),
             array('email', 'email'),
             array('last_login', 'safe')
         );

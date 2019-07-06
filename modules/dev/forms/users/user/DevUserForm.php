@@ -9,8 +9,9 @@ class DevUserForm extends User {
             array (
                 'linkBar' => array (
                     array (
-                        'label' => 'Kembali',
+                        'label' => 'Back',
                         'url' => '/dev/user/index',
+                        'icon' => 'chevron-left',
                         'options' => array (
                             'ng-show' => 'module == \'dev\'',
                             'href' => 'url:/dev/user/{backUrl}',
@@ -18,8 +19,9 @@ class DevUserForm extends User {
                         'type' => 'LinkButton',
                     ),
                     array (
-                        'label' => 'Simpan',
+                        'label' => 'Save',
                         'buttonType' => 'success',
+                        'icon' => 'save',
                         'options' => array (
                             'ng-click' => 'form.submit(this)',
                         ),
@@ -31,8 +33,9 @@ class DevUserForm extends User {
                         'value' => '<div ng-if=\\"!isNewRecord && module == \'dev\'\\" class=\\"separator\\"></div>',
                     ),
                     array (
-                        'label' => 'Hapus',
+                        'label' => 'Delete',
                         'buttonType' => 'danger',
+                        'icon' => 'trash',
                         'options' => array (
                             'href' => 'url:/dev/user/del?id={model.id}',
                             'ng-if' => '!isNewRecord && module == \'dev\'',
@@ -194,7 +197,7 @@ class DevUserForm extends User {
 ',
             ),
             array (
-                'title' => '{{ isNewRecord ? \\"\\" : \\"Ubah \\"}} Password',
+                'title' => '{{ isNewRecord ? \\"\\" : \\"Update \\"}} Password',
                 'type' => 'SectionHeader',
             ),
             array (
@@ -230,9 +233,7 @@ class DevUserForm extends User {
                     ),
                     array (
                         'type' => 'Text',
-                        'value' => '<div class=\"info\" ng-if=\"!isNewRecord\"><i class=\"fa fa-info-circle fa-nm fa-fw\"></i>&nbsp; 
-Isi field disamping untuk mengubah password. 
-<br/>Jika tidak ingin dirubah, kosongkan saja.
+                        'value' => '<div class=\"info\" ng-if=\"!isNewRecord\"><i class=\"fa fa-info-circle fa-nm fa-fw\"></i>&nbsp;Leave this field for keep old password
 </div>',
                     ),
                 ),

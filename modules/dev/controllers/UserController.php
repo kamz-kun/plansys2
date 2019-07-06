@@ -80,22 +80,14 @@ class UserController extends Controller {
     public function actionNew() {
         $model = new DevUserForm;
 
-        if (isset($_GET['d'], $_GET['u'])) {
-            $model->email = @$_GET['u'] . "@" . trim(@$_GET['d'], '.');
-            $model->nip = "-";
-            $model->phone = "-";
-        }
-
         if (isset($_POST["DevUserForm"])) {
             $model->attributes = $_POST["DevUserForm"];
 
             if (isset($_GET['u']) && isset($_GET['f'])) {
                 $model->username = $_GET['u'];
-                $model->fullname = $_GET['f'];
-                $model->useLdap = true;
             }
 
-            $model->resetRel('userRoles', $model->userRoles);
+            // $model->resetRel('userRoles', $model->userRoles);
             $model->last_login = null;
 
             if ($model->save()) {

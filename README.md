@@ -14,6 +14,13 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.3.02 :
+- Fixing Bug User Management
+- Fixing Bug Daily Filter
+- Now Service Log is Auto Refresh
+- Some Language Fix
+- Show Config Dir on Application Setting
+
 ### Build 1.2.01 :
 - Fixing Bug Custom Global CSS
 

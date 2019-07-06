@@ -23,16 +23,18 @@ class DevRoleForm extends Role {
             array (
                 'linkBar' => array (
                     array (
-                        'label' => 'Kembali',
+                        'label' => 'Back',
                         'url' => '/dev/user/roles',
+                        'icon' => 'chevron-left',
                         'options' => array (
                             'href' => 'url:/dev/user/roles',
                         ),
                         'type' => 'LinkButton',
                     ),
                     array (
-                        'label' => 'Simpan',
+                        'label' => 'Save',
                         'buttonType' => 'success',
+                        'icon' => 'save',
                         'options' => array (
                             'ng-click' => 'form.submit(this)',
                         ),
@@ -44,8 +46,9 @@ class DevRoleForm extends Role {
                         'value' => '<div class=\\"separator\\"></div>',
                     ),
                     array (
-                        'label' => 'Hapus',
+                        'label' => 'Delete',
                         'buttonType' => 'danger',
+                        'icon' => 'trash',
                         'options' => array (
                             'href' => 'url:/dev/user/roledel?id={model.id}',
                             'ng-if' => '!isNewRecord && module == \'dev\'',

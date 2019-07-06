@@ -2,8 +2,9 @@ $scope.selectedInstance = false;
 $scope.selectedInstancePid = false;
 $scope.currentTab = "code";
 $scope.params.isRunning = $scope.model.runningInstances.length > 0;
+$scope.justrunning = false;
 $scope.status = navigator.platform.indexOf('Mac') > -1 ? 'Save: Cmd + S' : 'Save: Ctrl + S';
-
+console.log($scope.model);
 // $scope.ws.connected(function(client) {
 //     $scope.ws.setTag($scope.model.name + ':0');
 // });
@@ -62,6 +63,7 @@ $scope.reloadModel = function(fn) {
         for (var i in res) {
             $scope.model[i] = res[i];
         }
+        //console.log($scope.model);
         $scope.updateLogWindow();
         $timeout(function() {
             $scope.params.isRunning = $scope.model.runningInstances.length > 0;
@@ -146,7 +148,6 @@ $scope.changeTab = function(tab) {
             log: 1
         };
         var tabchanged = $scope.currentTab != tab;
-        
         $scope.currentTab = tab;
 
         if (tab == 'code') {
@@ -158,7 +159,8 @@ $scope.changeTab = function(tab) {
 
 
         if (tab == 'log') {
-            if (!$scope.selectedInstance) {
+            if (!$scope.selectedInstance&&!$scope.justrunning) {
+				console.log('test', $scope.model.runningInstances);
                 if ($scope.model.runningInstances.length > 0) {
                     $scope.selectedInstance = $scope.model.runningInstances[0];
                     $scope.selectedInstancePid = $scope.selectedInstance.pid;
@@ -166,8 +168,20 @@ $scope.changeTab = function(tab) {
                     $scope.selectedInstance = $scope.model.stoppedInstances[0];
                     $scope.selectedInstancePid = $scope.selectedInstance.pid; 
                 }
-            }
-            
+            } else if($scope.justrunning){
+				$http.get(Yii.app.createUrl('/dev/service/detail', {
+					id: $scope.model.name
+				}))
+				.success(function(res) {
+					for (var i in res) {
+						$scope.model[i] = res[i];
+					}
+					$scope.selectedInstance = $scope.model.runningInstances[0];
+					$scope.selectedInstancePid = $scope.selectedInstance.pid;
+					$scope.justrunning = false;
+				})
+			}
+			
             if (tabchanged) {
                 $timeout(function() {
                     $("#logwindow").html("Rendering output...");
@@ -179,6 +193,29 @@ $scope.changeTab = function(tab) {
         }
     });
 }
+
+setInterval(function(){
+	if($scope.currentTab != 'code'){
+		if($scope.params.isRunning){
+			$scope.reloadModel(function() {
+				$scope.model.runningInstances.forEach(function(item) {
+					if (!!$scope.selectedInstance && item.pid == $scope.selectedInstance.pid) {
+						$scope.selectedInstance = item;
+					}
+				});
+			});
+		}
+		else {
+			$scope.reloadModel(function() {
+				$scope.model.stoppedInstances.forEach(function(item) {
+					if (!!$scope.selectedInstance && item.pid == $scope.selectedInstance.pid) {
+						$scope.selectedInstance = item;
+					}
+				});
+			});
+		}
+	}
+}, 500)
 
 $scope.stop = function() {
     $http.get(Yii.app.createUrl('/dev/service/stop&n=' + $scope.model.name))
@@ -195,6 +232,7 @@ $scope.start = function() {
                 return;
             }
             $scope.params.isRunning = true;
+			$scope.justrunning = true;
             $scope.changeTab('log');
 
             if (!$scope.isMonitoring) {
