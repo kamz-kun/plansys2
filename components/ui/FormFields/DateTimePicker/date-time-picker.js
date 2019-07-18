@@ -18,7 +18,7 @@ app.directive('dateTimePicker', function ($timeout, dateFilter) {
                             break;
                         case 'datepicker':
                             $scope.value = $scope.date;
-                            updateVM = false;
+                            updateVM = true;
                             break;
                         case 'time':
                             var time = dateFilter($scope.time, 'HH:mm:00');

@@ -14,6 +14,11 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.4.00 :
+- Fixing Bug Date Picker Model Value
+- GridView Header now has rowspan option
+- New Field!! Number Field 
+
 ### Build 1.3.02 :
 - Fixing Bug User Management
 - Fixing Bug Daily Filter

@@ -46,6 +46,7 @@ border-bottom:1px solid #ddd\'>
                 ng-click=\"select(r, $index, $event)\"
                 ng-if=\"r == 1 || (r > 1 && c.headers[\'r\' + r].colSpan >= 1)\"
                 colspan=\"{{ c.headers[\'r\' + r].colSpan }} \"
+                rowspan=\"{{ c.headers[\'r\' + r].rowSpan }} \"
                 ng-repeat=\"c in active.columns\">
                 <div style=\"width:{{ r == 1 ? \'20px\' : \'auto\' }};overflow-x:hidden\">
                     {{ r == 1 ? c.label : c.headers[\'r\' + r].label }}
@@ -91,6 +92,22 @@ border-bottom:1px solid #ddd\'>
                             'ng-if' => 'activeRow > 1',
                             'ng-model' => 'selected.colSpan',
                             'ng-change' => 'scanColSpan(activeRow)',
+                        ),
+                        'fieldOptions' => array (
+                            'min' => '1',
+                        ),
+                        'type' => 'TextField',
+                    ),
+                    array (
+                        'label' => 'Row Span',
+                        'name' => 'rowspan',
+                        'fieldType' => 'number',
+                        'labelWidth' => '5',
+                        'fieldWidth' => '4',
+                        'options' => array (
+                            'ng-if' => 'activeRow > 1',
+                            'ng-model' => 'selected.rowSpan',
+                            'ng-change' => 'scanRowSpan(activeRow)',
                         ),
                         'fieldOptions' => array (
                             'min' => '1',
