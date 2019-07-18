@@ -26,7 +26,7 @@
                           $html .= '<a href="#">'.$v['label'].'</a>';	
                      }
                      if(isset($v['items'])){
-                          $html .=  extractChild($v['items']);
+                          $html .=  extractChildMobile($v['items']);
                      }
                      $html .= '</li>';
                 }

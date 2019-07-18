@@ -315,11 +315,6 @@ body .main .info-container {
   transition:.3s;
 }
 
-.ds-me > li > a:hover{
-  font-weight: bold;
-}
-
-
 @media only screen and (max-width: 1359px) {
   #user {
        display: none;

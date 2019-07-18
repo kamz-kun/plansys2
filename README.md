@@ -17,7 +17,10 @@ Fast, Compact, Mindblowing Web-app Builder
 ### Build 1.4.00 :
 - Fixing Bug Date Picker Model Value
 - GridView Header now has rowspan option
+- Edit Profile is moved, redirected to change password instead
 - New Field!! Number Field 
+- Possibility for switching role
+- Some Code Cleaning
 
 ### Build 1.3.02 :
 - Fixing Bug User Management

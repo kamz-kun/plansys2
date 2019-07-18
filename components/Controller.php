@@ -376,8 +376,8 @@ class Controller extends CController {
 
         $userItems = [
             [
-                'label' => 'Edit Profile',
-                'url'   => ['/sys/profile/index'],
+                'label' => 'Change Password',
+                'url'   => ['/sys/changePass'],
             ],
             [
                 'label' => '---',

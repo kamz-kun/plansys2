@@ -12,12 +12,6 @@
           <ul class="ds-nav site-nav" style="float:left;">
          <?php
             $html = '';
-            // if (@Yii::app()->user->info['role'] != 'dev') {
-            //     $html .= '<li><a href="index.php?r=site/news"><i class="fa fa-home"></i> Beranda</a></li>';
-            //     if (Yii::app()->user->role != 'admin') {
-            //         $html .= '<li><a href="index.php?r=announcement"><i class="fa fa-bullhorn"></i> Pengumuman</a></li>';
-            //     }
-            // }
             if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
                 foreach($menu as $k => $v){
                     
@@ -49,31 +43,6 @@
                     }
                 } 
             }            
-            if (Yii::app()->user->role == 'user') {
-                // if(Yii::app()->user->info['is_secretary'] == 'Y') {
-                //     $html .= '<li class="flyout"><a href="index.php?r=#"><i class="fa fa-home"></i> Stand By <i class="fa fa-chevron-down"></i></a>
-                //              <ul class="flyout-content ds-nav stacked">
-                //              <li><a href="index.php?r=standby/standBy">Pengajuan</a></li>
-                //              <li><a href="index.php?r=standby/standBy/approval">Persetujuan</a></li>
-                //              </ul>
-                //              </li>';
-                // } else {
-                //     $html .= '<li><a href="index.php?r=standby/standBy/approval"><i class="fa fa-home"></i> Stand By</a></li>';
-                // }
-                if (sizeof(Yii::app()->user->info['roles']) > 1) {
-                    $html .= '<li>';  
-                    $html .= '<a ng-url="sys/profile/changeRole&id=2"><i class="fa fa-refresh"></i> Ubah Ke Admin</a>';     
-                    $html .= '</li>';
-                }
-            }
-            if (Yii::app()->user->role == 'admin') {  
-                if (sizeof(Yii::app()->user->info['roles']) > 1) {
-                    $html .= '<li>';  
-                    $html .= '<a ng-url="sys/profile/changeRole&id=3"><i class="fa fa-refresh"></i> Ubah Ke Pegawai</a>';     
-                    $html .= '</li>';
-                }
-            }  
-
             echo $html;
         // }
          ?>
@@ -95,7 +64,6 @@
                                 'menu' => $menu
                            ]);    
                        } else {
-                            // echo  '<li><a href="index.php?r=site/news">Home</a></li>';
                             echo  '<li><a href="index.php?r=site/login">Login</a></li>';
                        }
      		          
@@ -106,7 +74,7 @@
 	<div class="dl-menuleft" style="margin-left: 10px;">
 	     <ul class="ds-nav">
 	          <li  style="margin-top: 0px">
-	               <!--<img src="app/static/img/logo-unair.png" width="35px" style="margin-top: 5px; margin-right:10px;">     -->
+	               <!--<img src="#" width="35px" style="margin-top: 5px; margin-right:10px;">     -->
 	          </li>
 	     </ul>
 	</div>
@@ -134,7 +102,6 @@
      }
      function loopMenuMobile($menu){
           $html = '';
-        //   $html .=  '<li><a href="index.php?r=site/news">Home</a></li>';
           foreach($menu as $k => $v){
                if($k > 1){
                     if($v['label'] == '---'){

@@ -116,6 +116,7 @@ class WebUser extends CWebUser {
             $attr['role']                   = $this->role;
             $attr['roles']                  = $this->model->getRoles();
             $attr['full_role']              = $this->fullRole;
+            $attr['role_desc']              = $this->roleDesc;
             $attr['db_name']                = Setting::get('db.dbname');
             $attr['session']                = $baseSession;
             Yii::app()->session['userinfo'] = $attr;
