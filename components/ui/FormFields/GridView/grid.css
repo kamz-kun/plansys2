@@ -3,9 +3,10 @@
 }
 
 [grid-view] table {
-    opacity: 0;
-    width: 100%;
+    border-collapse: collapse;
     background: white;
+    table-layout: fixed;
+    width: 100%;
 }
 
 [grid-view] table.loaded {
@@ -14,25 +15,44 @@
 
 [grid-view] td,
 [grid-view] th {
-    font-size: 13px;
+    padding: 8px 0px;
     border: 1px solid #ddd;
-    height: 20px;
+    width: 40px;
+    overflow: visible;
+    white-space: wrap;
 }
 
+[grid-view] .pane {
+    background: transparent;
+  }
+[grid-view] .pane-hScroll {
+    overflow: auto;
+    background: transparent;
+  }
+[grid-view] .pane-vScroll {
+    overflow-y: hidden;
+    overflow-x: hidden;    
+    display: inline-block;
+    background: transparent;
+  }
+
+  [grid-view] .pane-vScroll:hover {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+[grid-view] .tr {
+    overflow: auto;
+}
 [grid-view] th,
 [grid-view] .tr .th {
-    background-color: #f2f2f2;
+
     vertical-align: middle;
-    background-image: -moz-linear-gradient(top, #f5f5f5, #eeeeee);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f5f5f5), to(#eeeeee));
-    background-image: -webkit-linear-gradient(top, #f5f5f5, #eeeeee);
-    background-image: -o-linear-gradient(top, #f5f5f5, #eeeeee);
-    background-image: linear-gradient(to bottom, #f5f5f5, #eeeeee);
+    background-color: #0d47a1;
     background-repeat: repeat-x;
     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ddd5f5f5', endColorstr='#ffeeeeee', GradientType=0);
-    white-space: nowrap;
+    white-space: normal;
     text-transform: uppercase;
-    color: #5E5E5E;
+    color: #fafafa;
     font-size: 11px;
     text-align: left;
     line-height: 24px;
@@ -56,7 +76,7 @@
 
 [grid-view] .thead .tr .th {
     box-sizing: border-box;
-    display: inline-block;
+    
     border: 0px;
     box-shadow: 0px 0px 0px 1px #ddd;
 }
@@ -75,7 +95,7 @@
 
 [grid-view] .thead.show {
     position: fixed;
-    display: block;
+    
     z-index: 100;
     white-space: nowrap;
 }
@@ -205,7 +225,7 @@
 [grid-view] .row-g,
 [grid-view] .row-r,
 [grid-view] .row-a {
-    padding: 3px 5px 2px 5px;
+    padding: 6px 5px 6px 5px;
     line-height: 17px;
 }
 
@@ -308,16 +328,16 @@
 [grid-view] td [contenteditable] {
     border: 0px;
     height: 100%;
-    width: 100%;
-    background-color: #abc;
+    width: 85%;
+    background-color: transparent;
     position: relative;
     padding: 5px 4px 4px 4px;
     min-height: 16px;
     display: inline-block;
-    white-space: pre-wrap;
-    box-shadow: inset 0px 0px 0px 1px #fff;
+    white-space: wrap;
+    box-shadow: none;
     resize: none;
-    margin: -2px 0px -1px -4px;
+    margin: -2px 0px -1px 1px;
     box-sizing: content-box;
     background: transparent;
 }

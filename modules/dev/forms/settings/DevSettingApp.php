@@ -106,8 +106,6 @@ class DevSettingApp extends Form {
                         'list' => array (
                             'dev' => 'Development',
                             'prod' => 'Production',
-                            '---' => '---',
-                            'plansys' => 'Plansys Development',
                         ),
                         'type' => 'DropDownList',
                     ),
@@ -248,7 +246,10 @@ class DevSettingApp extends Form {
                     ),
                 ),
                 'column2' => array (
-                    '<column-placeholder></column-placeholder>',
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
                     array (
                         'label' => 'PHP CLI Path',
                         'name' => 'phpPath',

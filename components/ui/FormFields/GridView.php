@@ -12,6 +12,8 @@ class GridView extends FormField {
     public        $mode         = 'normal';
     public        $label        = '';
     public        $layout       = 'Vertical';
+    public        $vScroll       = 0;
+    public        $hScroll       = 0;
     public        $labelWidth   = 4;
     public        $fieldWidth   = 8;
     public        $options      = [];
@@ -625,6 +627,28 @@ EOL;
                 'label' => 'Table Element Options',
                 'name' => 'tableOptions',
                 'type' => 'KeyValueGrid',
+            ),
+            array (
+                'label' => 'Max Height',
+                'name' => 'vScroll',
+                'postfix' => 'px',
+                'options' => array (
+                    'ng-model' => 'active.vScroll',
+                    'ng-change' => 'save()',
+                    'ng-delay' => '500',
+                ),
+                'type' => 'NumberField',
+            ),
+            array (
+                'label' => 'Max Width',
+                'name' => 'hScroll',
+                'postfix' => 'px',
+                'options' => array (
+                    'ng-model' => 'active.hScroll',
+                    'ng-change' => 'save()',
+                    'ng-delay' => '500',
+                ),
+                'type' => 'NumberField',
             ),
             array (
                 'label' => 'Columns Function',

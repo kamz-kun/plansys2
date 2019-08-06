@@ -62,7 +62,7 @@ class DocsWelcome extends Form {
                 'type' => 'Text',
                 'value' => '<div class=\"welcome-page\">
     <img src=\"plansys/static/img/welcome.png\" width=\"450px\">
-    <h4 style=\"margin-top: -40px;\">Build 1.4.00</h4>
+    <h4 style=\"margin-top: -40px;\">Build 1.5.00</h4>
     <hr>
     <div class=\"row\" style=\"margin-top: 10px;\">
         <div class=\"col-sm-12 col-md-3\">
@@ -78,6 +78,21 @@ class DocsWelcome extends Form {
             PHP : {{php}}
         </div>
     </div>
+    <br>
+    <div class=\"row\" style=\"margin-top: 10px;\">
+        <h3><small>leader</small> <br>
+            <a href=\"mailto:halo@kamz-kun.id\">Kamz</a>
+        </h3>
+        <h3><small>main dev.</small> <br>
+            <a href=\"mailto:jessica@andromedia.co.id\">Jesz</a>, <a href=\"mailto:arbi@andromedia.co.id\">Arbz</a>
+        </h3>
+        <h3><small>initiator</small> <br>
+            Riz
+        </h3>
+    </div>
+    
+    
+    
 </div>
 ',
             ),

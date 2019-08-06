@@ -14,6 +14,12 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.5.00 :
+- All New GridView
+- Fixing Bugs Restart Service Daemon on Windows
+- Add Credit on About Screen
+- Some Code Cleaning
+
 ### Build 1.4.00 :
 - Fixing Bug Date Picker Model Value
 - GridView Header now has rowspan option

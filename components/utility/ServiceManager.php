@@ -237,45 +237,56 @@ class ServiceManager extends CComponent {
                     $isnew = true; 
                } 
 
-               if (!is_executable($file)) {
-                    chmod(trim(substr($file, 0, strlen($file) - strlen($params))), 755);
+               if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+
+               } else {                    
+                    if (!is_executable($file)) {                    
+                         chmod(trim(substr($file, 0, strlen($file) - strlen($params))), 755);
+                    }
                }
+               
                
                $output = exec($file);
                
-               # wait until we can connect to thrift server
-               $connecting = true;
-               $i = 0;
-               while ($connecting) {
-                    $connecting = false;
-                    try {
-                         self::_open();
-                         self::_close();
-                    } 
-                    catch(Exception $e) {
-                         $connecting = true;
-                         usleep(300 * 1000); # 300ms sleep
-                         $i++;
+
+               if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    return;
+               } else {
+                    # wait until we can connect to thrift server
+                    $connecting = true;
+                    $i = 0;
+                    while ($connecting) {
+                         $connecting = false;
+                         try {
+                              self::_open();
+                              self::_close();
+                         } 
+                         catch(Exception $e) {
+                              $connecting = true;
+                              usleep(300 * 1000); # 300ms sleep
+                              $i++;
+                         }
+                         
+                         if ($i >= 1) { # giveup after 300ms sleep
+                              break;
+                         }
                     }
                     
-                    if ($i >= 1) { # giveup after 300ms sleep
-                         break;
+                    if (is_file($svjpath)) {
+                         try {
+                              self::_open();
+                              $svcs = self::$sm->client->getAllServices();
+                              self::_close();
+                              
+                              if ($isnew || count($svcs) <= 2) {
+                                   self::importJson();
+                              }
+                         } catch (Exception $e) {
+                              
+                         }
                     }
                }
                
-               if (is_file($svjpath)) {
-                    try {
-                         self::_open();
-                         $svcs = self::$sm->client->getAllServices();
-                         self::_close();
-                         
-                         if ($isnew || count($svcs) <= 2) {
-                              self::importJson();
-                         }
-                    } catch (Exception $e) {
-                         
-                    }
-               }
           }
      }
 }
