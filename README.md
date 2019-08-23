@@ -14,6 +14,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.6.00 :
+- BETA!! Rest API
+- Fixing GridView Bugs
+
 ### Build 1.5.00 :
 - All New GridView
 - Fixing Bugs Restart Service Daemon on Windows

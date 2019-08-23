@@ -254,15 +254,19 @@ class CController extends CBaseController
 	 * @see createAction
 	 * @see runAction
 	 */
-	public function run($actionID)
-	{
+	public function run($actionID, $api_params=null)
+	{//HANSEL
 		if(($action=$this->createAction($actionID))!==null)
 		{
 			if(($parent=$this->getModule())===null)
 				$parent=Yii::app();
 			if($parent->beforeControllerAction($this,$action))
 			{
-				$this->runActionWithFilters($action,$this->filters());
+				if(isset($api_params)):
+					$this->runActionAPI($action,$api_params);
+				else:
+					$this->runActionWithFilters($action,$this->filters());
+				endif;
 				$parent->afterControllerAction($this,$action);
 			}
 		}
@@ -291,6 +295,20 @@ class CController extends CBaseController
 			CFilterChain::create($this,$action,$filters)->run();
 			$this->_action=$priorAction;
 		}
+	}
+	
+	//HANSEL
+	public function runActionAPI($action,$params)
+	{
+		if(isset($params)):
+			$priorAction=$this->_action;
+			$this->_action=$action;
+			if($this->beforeAction($action))
+			{
+				$action->runWithParams($params);
+			}
+			$this->_action=$priorAction;
+		endif;
 	}
 
 	/**
@@ -407,7 +425,7 @@ class CController extends CBaseController
 	 * @see actions
 	 */
 	public function createAction($actionID)
-	{
+	{ //HANSEL
 		if($actionID==='')
 			$actionID=$this->defaultAction;
 		if(method_exists($this,'action'.$actionID) && strcasecmp($actionID,'s')) // we have actions method

@@ -7,6 +7,7 @@ class DevSettingApp extends Form {
     public $host = 'http://localhost';
     public $mode = 'dev';
     public $debug = 'ON';
+    public $restApi = 'OFF';
     public $dateFormat = 'd M Y';
     public $timeFormat = 'H:i';
     public $dateTimeFormat = 'd M Y - H:i';
@@ -150,6 +151,32 @@ class DevSettingApp extends Form {
                         'name' => 'dateTimeFormat',
                         'postfix' => '{{ timestamp | dateFormat:model.dateTimeFormat }}',
                         'type' => 'TextField',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'column2' => array (
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'w1' => '50%',
+                'w2' => '50%',
+                'type' => 'ColumnField',
+            ),
+            array (
+                'title' => 'Rest API',
+                'type' => 'SectionHeader',
+            ),
+            array (
+                'column1' => array (
+                    array (
+                        'label' => 'Enable',
+                        'name' => 'restApi',
+                        'type' => 'ToggleSwitch',
                     ),
                     array (
                         'type' => 'Text',

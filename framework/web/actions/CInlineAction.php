@@ -39,7 +39,7 @@ class CInlineAction extends CAction
 	 * @since 1.1.7
 	 */
 	public function runWithParams($params)
-	{
+	{//HANSEL
 		$methodName='action'.$this->getId();
 		$controller=$this->getController();
 		$method=new ReflectionMethod($controller, $methodName);

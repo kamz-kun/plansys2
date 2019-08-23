@@ -20,8 +20,12 @@ class WebRequest extends CHttpRequest {
             $ctrl = Yii::app()->createController($this->getParam('r'));
             if (count($ctrl) > 0) {
                 $ctrl = $ctrl[0];
-                if (!$ctrl->enableCsrf) {
-                    return true;
+                if(isset($ctrl->enableCsrf)){ //HANSEL (Sepertinya untuk controller default Plansys ga ada enableCsrf nya deh)
+                    if (!$ctrl->enableCsrf) {
+                        return true;
+                    }
+                }else{
+                    return true; //post tanpa yii csrf token, which is good for mobile APIs
                 }
             }
 

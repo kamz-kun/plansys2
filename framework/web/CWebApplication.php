@@ -272,20 +272,27 @@ class CWebApplication extends CApplication
 	 * @throws CHttpException if the controller could not be created.
 	 */
 	public function runController($route)
-	{
+	{//HANSEL
+		$req_path =  explode('/', $route);
 		if(($ca=$this->createController($route))!==null)
 		{
 			list($controller,$actionID)=$ca;
 			$oldController=$this->_controller;
 			$this->_controller=$controller;
 			$controller->init();
-			
-			$controller->run($actionID);
+			if($req_path[0]=='api' && isset($req_path[1]) && $req_path[1]!='index'):
+				$actionID = 'index';
+				$params['params'] = $req_path[1];
+				$controller->run($actionID, $params);
+			else:
+				$controller->run($actionID);
+			endif;
 			$this->_controller=$oldController;
 		}
 		else
 			throw new CHttpException(404,Yii::t('yii','Unable to resolve the request "{route}".',
 				array('{route}'=>$route===''?$this->defaultController:$route)));
+		
 	}
 
 	/**

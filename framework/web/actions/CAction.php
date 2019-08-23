@@ -87,7 +87,7 @@ abstract class CAction extends CComponent implements IAction
 	 * @since 1.1.7
 	 */
 	protected function runWithParamsInternal($object, $method, $params)
-	{
+	{//HANSEL
 		$ps=array();
 		foreach($method->getParameters() as $i=>$param)
 		{

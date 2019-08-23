@@ -358,7 +358,7 @@ class CUrlManager extends CApplicationComponent
 	 * @return string the route (controllerID/actionID) and perhaps GET parameters in path format.
 	 */
 	public function parseUrl($request)
-	{
+	{	
 		if($this->getUrlFormat()===self::PATH_FORMAT)
 		{
 			$rawPathInfo=$request->getPathInfo();
@@ -722,7 +722,7 @@ class CUrlRule extends CBaseUrlRule
 	 * @return mixed the constructed URL or false on error
 	 */
 	public function createUrl($manager,$route,$params,$ampersand)
-	{
+	{	
 		if($this->parsingOnly)
 			return false;
 
