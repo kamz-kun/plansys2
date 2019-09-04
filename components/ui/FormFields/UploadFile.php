@@ -115,6 +115,19 @@ class UploadFile extends FormField {
                 'value' => '<hr/>',
             ),
             array (
+                'label' => 'Max (in KB)',
+                'name' => 'restrict',
+                'options' => array (
+                    'ng-model' => 'active.restrict',
+                    'ng-change' => 'save()'
+                ),
+                'type' => 'TextField',
+            ),
+            array (
+                'type' => 'Text',
+                'value' => '<hr/>',
+            ),
+            array (
                 'column1' => array (
                     array (
                         'type' => 'Text',
@@ -192,6 +205,7 @@ class UploadFile extends FormField {
     public $showFileName = 'No';
     public $labelOptions = [];
     public $fieldOptions = [];
+	public $restrict = '';
 
     /** @var string $toolbarName */
     public static $toolbarName = "Upload File";
@@ -247,8 +261,6 @@ class UploadFile extends FormField {
         $file = $_FILES["file"];
         $name = $file['name'];
         
-        
-
         $fb = FormBuilder::load($_GET['class']);
         $ff = $fb->findField(['name' => $_GET['name']]);
         $up = Yii::getPathOfAlias('webroot') . '/'. $ff['uploadPath'];
@@ -266,7 +278,7 @@ class UploadFile extends FormField {
         $actualName = pathinfo($name, PATHINFO_FILENAME);
         $originName = $actualName;
         $extension = pathinfo($name, PATHINFO_EXTENSION);
-        while (file_exists($tmpdir . DIRECTORY_SEPARATOR . $actualName . '.' . $extension)) {
+        while (file_exists($path . DIRECTORY_SEPARATOR . $actualName . '.' . $extension)) {
             $actualName = (string) $originName . '_' . $i;
             $name = $actualName . '.' . $extension;
             $i++;
@@ -277,17 +289,28 @@ class UploadFile extends FormField {
         $up = $up . DIRECTORY_SEPARATOR . $name;
         $path = $path . DIRECTORY_SEPARATOR . $name;
 
-        
-                
-        if(move_uploaded_file($file["tmp_name"], $up)){
-            echo json_encode([
-                'success' => 'Yes',
-                'path' => $path,
-                'downloadPath' => base64_encode($path),
-                'name' => $name
-            ]);
-        }
-        
+		$tmpsuccess = false;
+		if($ff['restrict']!=''){
+			if(filesize($file["tmp_name"])>(int)$ff['restrict']*1024){
+				echo json_encode([
+					'success' => 'too-large',
+				]);
+			} else {
+				$tmpsuccess = true;
+			}
+		} else {
+			$tmpsuccess = true;
+		}
+		if($tmpsuccess){
+			if(move_uploaded_file($file["tmp_name"], $up)){
+				echo json_encode([
+					'success' => 'Yes',
+					'path' => $path,
+					'downloadPath' => base64_encode($path),
+					'name' => $name
+				]);
+			}
+		}
         
     }
 
@@ -340,14 +363,13 @@ class UploadFile extends FormField {
         $postdata = file_get_contents("php://input");
         $post = json_decode($postdata, true);
         $file = RepoManager::resolve($post['file']);
-
         if (file_exists($file)) {
-            $downloadPath = base64_encode($file);
-            echo json_encode([
-                'status' => 'exist',
-                'desc' => '',
-                'downloadPath' => $downloadPath
-            ]);
+			$downloadPath = base64_encode($file);
+			echo json_encode([
+				'status' => 'exist',
+				'desc' => '',
+				'downloadPath' => $downloadPath
+			]);
         } else {
             echo json_encode([
                 'status' => 'not exist',

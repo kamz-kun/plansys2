@@ -552,7 +552,7 @@ app.directive('gridView', function($timeout, $http) {
                 $scope.recalcTBodyWidth = function(){
                     $scope.paneV = $el.find('.pane-vScroll');
                     $scope.paneVt = $el.find('.pane-vScroll > table');        
-                    $scope.paneVt.width($scope.paneV.outerWidth() - 1);
+                    $scope.paneVt.width($scope.paneV.outerWidth());
                 }
                 $scope.recalcHeaderWidth = function() {
                     $scope.firstColWidth = $header.find("table.tdata th:eq(0)").outerWidth();

@@ -14,6 +14,11 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.7.00 :
+- NEW!! Upload File now has maximum size
+- Other Upload File Bugs Fixing
+- Fixing GridView Bugs
+
 ### Build 1.6.00 :
 - BETA!! Rest API
 - Fixing GridView Bugs

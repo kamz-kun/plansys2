@@ -23,8 +23,8 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                 $scope.allowDelete = $el.find("data[name=allow_delete]").html().trim();
                 $scope.allowOverwrite = $el.find("data[name=allow_overwrite]").html().trim();
                 $scope.fileType = $el.find("data[name=file_type]").html().trim();
+                $scope.restrict = $el.find("data[name=restrict]").html().trim();
                 $scope.options = JSON.parse($el.find("data[name=options]").text());
-
                 $scope.getUrl = function() {
                     if (!$scope.file) return '';
                     
@@ -182,6 +182,7 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                             }).progress(function (evt) {
                                 $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
                             }).success(function (data, html) {
+								console.log(data)
                                 $scope.uploadingFile = undefined;
                                 $scope.progress = 101;
                                 var ext = $scope.ext(data);
@@ -199,7 +200,13 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                                         $scope.getThumb();
                                     }
                                     ctrl.$setViewValue(data.path);
-                                } else {
+                                } else if(data.success=='too-large'){
+                                    $scope.file = null;
+                                    $scope.value = '';
+                                    $scope.choose('');
+                                    ctrl.$setViewValue('');
+                                    alert("Error Uploading File. Max File size: "+$scope.restrict+" KB. \n");
+								} else {
                                     alert("Error Uploading File. File size too big!. \n");
                                 }
         
@@ -341,7 +348,7 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                             }
                         });
                         request.success(function (result) {
-                            if (result.status === 'exist') {
+                            if (result.status == 'exist') {
                                 $scope.file.downloadPath = result.downloadPath;
                                 $scope.icon($scope.file);
                                 var ext = $scope.ext($scope.file);
