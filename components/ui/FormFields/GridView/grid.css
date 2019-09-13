@@ -17,7 +17,6 @@
 [grid-view] th {
     padding: 8px 0px;
     border: 1px solid #ddd;
-    width: 40px;
     overflow: visible;
     white-space: wrap;
 }
@@ -32,6 +31,7 @@
 [grid-view] .pane-vScroll {
     overflow-y: hidden;
     overflow-x: hidden;    
+    width: 100%;
     display: inline-block;
     background: transparent;
   }

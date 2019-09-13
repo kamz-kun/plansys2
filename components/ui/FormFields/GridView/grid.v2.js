@@ -550,91 +550,28 @@ app.directive('gridView', function($timeout, $http) {
                 $scope.freezedTh = [];
                 $scope.freezedCols = [];
                 $scope.recalcTBodyWidth = function(){
-                    $scope.paneV = $el.find('.pane-vScroll');
-                    $scope.paneVt = $el.find('.pane-vScroll > table');        
-                    $scope.paneVt.width($scope.paneV.outerWidth());
+                    
                 }
                 $scope.recalcHeaderWidth = function() {
                     $scope.firstColWidth = $header.find("table.tdata th:eq(0)").outerWidth();
                     if ($scope.firstColWidth == 0) return;
 
-                    $timeout(function(){
-                        $scope.recalcTBodyWidth();
-                    })
+                    $scope.paneV = $el.find('.pane-vScroll');                                                
+                    $scope.paneVt = $el.find('.pane-vScroll > table');        
+                    $scope.paneVt.width($scope.paneV.width() - 1);
+                    
 
-                    var tds = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td');                        
-                    for(var c = 1;c <= tds.length; c++){
-                        var td = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td:nth-child('+c+')');
-                        var th = $el.find('.pane-hScroll > table > tbody > tr:last-child > th:nth-child('+c+')');                                            
-                        th.outerWidth(td.outerWidth());
-                    }                        
+                    $timeout(function(){
+                        var tds = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td');                        
+                        for(var c = 1;c <= tds.length; c++){
+                            var td = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td:nth-child('+c+')');
+                            var th = $el.find('.pane-hScroll > table > tbody > tr:last-child > th:nth-child('+c+')');                                            
+                            th.outerWidth(td.outerWidth());
+                        }                          
+                    })                    
                                     
                     
-                    // var hoff = $header.offset();
-                    // $scope.freezedTh = [];
-                    // $scope.freezedCols = [];
-                    // $el.find('.thead .tr').each(function(tr) {
-                    //     $el.find('.thead .tr:eq(' + tr + ') .th:not(.rowspan)').each(function(th) {
-                    //         var c = $header.find("tr:eq(" + tr + ") th:eq(" + th + ")");
-                    //         var w = c.outerWidth();
-                    //         var h = c.outerHeight();
-                    //         $(this).css({
-                    //             width: w,
-                    //             minWidth: w,
-                    //             maxWidth: w,
-                    //             height: h + 1,
-                    //         });
-                            
-                    //         // recalc freezed header
-                    //         if (c.attr('freeze') == 'true') {
-                    //             if (tr == 0) {
-                    //                 $scope.columns[th].idx = th;
-                    //                 $scope.freezedCols.push($scope.columns[th]);
-                    //             }
-
-                    //             var f = $el.find(".tcols tr:eq(" + tr + ") th[cidx=" + c.attr('cidx') + "]");
-                    //             var coff = c.offset();
-                    //             $scope.freezedTh.push(f);
-                                
-                    //             f.css({
-                    //                 width: w + 1,
-                    //                 minWidth: w + 1,
-                    //                 maxWidth: w + 1,
-                    //                 height: h + 1,
-                    //                 overflow: 'hidden',
-                    //                 lineHeight: h + 'px',
-                    //                 left: coff.left - hoff.left - (th > 1 ? 1 :0),
-                    //                 top: coff.top - hoff.top - (tr > 1 ? 1 :0)
-                    //             });
-                    //         }
-
-                    //         if (c.attr('rowspan') > 0) {
-                    //             if (!c.hasClass('rowspanned')) {
-                    //                 var d = $el.find(".thead .tr:eq(" + (tr + 1) + ")");
-                    //                 var e = $el.find(".thead .tr:eq(" + (tr + 1) + ") .th:eq(" + (th - 1) + ")");
-                    //                 $('<div class="th rowspan" style="height:0px;width:' + w + 'px;opacity:0;"></div>').insertAfter(e);
-                    //                 d.css({
-                    //                     marginTop: -1 * (h / 2)
-                    //                 })
-                    //                 c.addClass('rowspanned');
-
-                    //                 $(this).css({
-                    //                     lineHeight: h + 'px'
-                    //                 });
-                    //             }
-                    //             else {
-                    //                 var d = $el.find(".thead .tr:eq(" + (tr + 1) + ") .th:eq(" + th + ")");
-                    //                 if (d) {
-                    //                     d.css({
-                    //                         width: w
-                    //                     });
-                    //                 }
-                    //             }
-                    //         }
-                    //     });
-                    // });
-
-                    //$el.parents('.container-fluid').width(Math.max($el.parents('.container-fluid').width(), $el.width() + 15));
+                
                 }
                 
                 $scope.isCbFreezed = false;
@@ -651,11 +588,11 @@ app.directive('gridView', function($timeout, $http) {
                 };
 
                 $(window).resize(function() {                    
-                    $timeout(function() {                                  
+                    
                         $scope.recalcHeaderWidth();
                         $scope.checkMode();
                         $scope.freezeControlBar();                        
-                    }, 1000);                    
+                    
                 });
 
                 function getScrollbarWidth() {

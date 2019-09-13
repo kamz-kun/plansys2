@@ -14,6 +14,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.7.01 :
+- Fixing GridView Bugs
+
 ### Build 1.7.00 :
 - NEW!! Upload File now has maximum size
 - Other Upload File Bugs Fixing
