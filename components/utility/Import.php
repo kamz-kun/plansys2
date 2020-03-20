@@ -331,7 +331,7 @@ penambahan gagal dikarenakan data " . $k . " tidak dapat ditemukan ($i)");
                     }
                     
                     Yii::app()->db->createCommand()->insert($from, $insert);
-                    $insert[$pk] = Yii::app()->db->getLastInsertID(); 
+                    $insert[$pk] = Yii::app()->db->getCommandBuilder()->getLastInsertID($from);
                     $this->lookup[$from]['hash'][$hashKey] = $insert;
                     
                     ## assign inserted id into attrs

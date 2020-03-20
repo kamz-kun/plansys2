@@ -131,7 +131,7 @@ app.directive('numberField', function ($timeout, $http) {
                     $timeout(function () {
                         var ngModelValue = $scope.$eval(attrs.ngModel);
                         if (typeof ngModelValue != "undefined") {
-                            $scope.value = ngModelValue;
+                            $scope.value = ngModelValue;                        
                             $scope.valueshow = $scope.numberWithCommas(ngModelValue);
                             $scope.update();
                         }
@@ -141,6 +141,9 @@ app.directive('numberField', function ($timeout, $http) {
 				//get only number
 				$scope.onlynumber = function(r){
 					if(r!=''){
+                        if(r.charAt(0) == '0'){
+                            r = r.substring(1)
+                        }
 						return r.replace(/[^0-9.]/g, "");
 					}
 				}

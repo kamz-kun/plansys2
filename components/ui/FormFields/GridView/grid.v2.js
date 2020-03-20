@@ -24,10 +24,8 @@ app.directive('gridView', function($timeout, $http) {
                 $scope.columns = JSON.parse(columnRaw);
                 $scope.columnsParams = JSON.parse($el.find("data[name=columnsfp]:eq(0)").text());
                 $scope.defaultPageSize = $el.find("data[name=dpz]:eq(0)").text();
-                $scope.datasource = parent[$el.find("data[name=datasource]:eq(0)").text()];            
-                $scope.vScroll = $el.find("data[name=vScroll]:eq(0)").html();
-                $scope.hScroll = $el.find("data[name=hScroll]:eq(0)").html();                
-
+                $scope.datasource = parent[$el.find("data[name=datasource]:eq(0)").text()];
+                
                 $scope.checkboxCol = false;
                 $scope.checkMode = function() {
                     if ($el.width() < 750) {
@@ -69,7 +67,8 @@ app.directive('gridView', function($timeout, $http) {
                 }
                 $scope.paste = function(e, row, ridx, col, cidx) {
                     var raw = e.originalEvent.clipboardData.getData('text');
-                    var pasted = raw.trim().split("\n");                    
+                    var pasted = raw.trim().split("\n");
+                    console.log(pasted)
                     if (pasted.length >= 1) {
                         e.preventDefault();
                         $timeout(function() {
@@ -249,7 +248,31 @@ app.directive('gridView', function($timeout, $http) {
 
                         var didx = $scope.datasource.data.indexOf(row);
                         $scope.datasource.data.splice(didx, 1);
-                        return;
+
+                        var temp = angular.copy($scope.datasource.data);
+                        $timeout(function() {
+                            $scope.datasource.insertData = [];
+                            $scope.datasource.updateData = [];
+                            $scope.datasource.deleteData = [];
+                            var rw = {};
+                            for(let i in temp) {
+                                rw = angular.copy(temp[i]);
+                                if(rw.$rowState == 'insert') {
+                                    rw.$rowState = 'insert';
+                                    $scope.datasource.insertData.push(rw);
+                                    $scope.datasource.data[i].$rowState = 'insert';
+                                } else if(rw.$rowState == 'edit') {
+                                    rw.$rowState = 'edit';
+                                    $scope.datasource.updateData.push(rw);
+                                    $scope.datasource.data[i].$rowState = 'edit';
+                                } else if(rw.$rowState == 'remove') {
+                                    rw.$rowState = 'remove';
+                                    $scope.datasource.deleteData.push(rw);
+                                    $scope.datasource.data[i].$rowState = 'remove';
+                                }
+                            }
+                            return;
+                        });
                     }
                 }
 
@@ -287,7 +310,7 @@ app.directive('gridView', function($timeout, $http) {
                     }
 
                     $timeout(function() {
-                        // $scope.recalcHeaderWidth();
+                        $scope.recalcHeaderWidth();
                     });
                 }
 
@@ -305,7 +328,7 @@ app.directive('gridView', function($timeout, $http) {
                     }
                     row.$rowState = '';
                     $timeout(function() {
-                        // $scope.recalcHeaderWidth();
+                        $scope.recalcHeaderWidth();
                     });
                 }
 
@@ -383,7 +406,7 @@ app.directive('gridView', function($timeout, $http) {
                     };
                     $scope.updateSorting($scope.gridOptions.sortInfo);
                     $timeout(function() {
-                        // $scope.recalcHeaderWidth();
+                        $scope.recalcHeaderWidth();
                     });
                 }
                 $scope.isSort = function(col, dir) {
@@ -444,7 +467,7 @@ app.directive('gridView', function($timeout, $http) {
                             loop = false;
                         }
                     }
-                    // $scope.recalcHeaderWidth();
+                    $scope.recalcHeaderWidth();
                 }
 
                 // update paging
@@ -528,7 +551,7 @@ app.directive('gridView', function($timeout, $http) {
                 }
 
                 // fixed header on scroll
-                var $container = $el.parents('.container-full');                
+                var $container = $el.parents('.container-full');
                 var $header = $el.find("table.tdata > thead");
                 var inViewport = function(el, offset) {
                     var rect = el[0].getBoundingClientRect();
@@ -549,31 +572,77 @@ app.directive('gridView', function($timeout, $http) {
 
                 $scope.freezedTh = [];
                 $scope.freezedCols = [];
-                $scope.recalcTBodyWidth = function(){
-                    
-                }
                 $scope.recalcHeaderWidth = function() {
                     $scope.firstColWidth = $header.find("table.tdata th:eq(0)").outerWidth();
                     if ($scope.firstColWidth == 0) return;
 
-                    $scope.paneV = $el.find('.pane-vScroll');                                                
-                    $scope.paneVt = $el.find('.pane-vScroll > table');        
-                    $scope.paneVt.width($scope.paneV.width() - 1);
-                    
+                    var hoff = $header.offset();
+                    $scope.freezedTh = [];
+                    $scope.freezedCols = [];
+                    $el.find('.thead .tr').each(function(tr) {
+                        $el.find('.thead .tr:eq(' + tr + ') .th:not(.rowspan)').each(function(th) {
+                            var c = $header.find("tr:eq(" + tr + ") th:eq(" + th + ")");
+                            var w = c.outerWidth();
+                            var h = c.outerHeight();
+                            $(this).css({
+                                width: w,
+                                minWidth: w,
+                                maxWidth: w,
+                                height: h + 1,
+                            });
+                            
+                            // recalc freezed header
+                            if (c.attr('freeze') == 'true') {
+                                if (tr == 0) {
+                                    $scope.columns[th].idx = th;
+                                    $scope.freezedCols.push($scope.columns[th]);
+                                }
 
-                    $timeout(function(){
-                        var tds = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td');                        
-                        for(var c = 1;c <= tds.length; c++){
-                            var td = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td:nth-child('+c+')');
-                            var th = $el.find('.pane-hScroll > table > tbody > tr:last-child > th:nth-child('+c+')');                                            
-                            th.outerWidth(td.outerWidth());
-                        }                          
-                    })                    
-                                    
-                    
-                
+                                var f = $el.find(".tcols tr:eq(" + tr + ") th[cidx=" + c.attr('cidx') + "]");
+                                var coff = c.offset();
+                                $scope.freezedTh.push(f);
+                                
+                                f.css({
+                                    width: w + 1,
+                                    minWidth: w + 1,
+                                    maxWidth: w + 1,
+                                    height: h + 1,
+                                    overflow: 'hidden',
+                                    lineHeight: h + 'px',
+                                    left: coff.left - hoff.left - (th > 1 ? 1 :0),
+                                    top: coff.top - hoff.top - (tr > 1 ? 1 :0)
+                                });
+                            }
+
+                            if (c.attr('rowspan') > 0) {
+                                if (!c.hasClass('rowspanned')) {
+                                    var d = $el.find(".thead .tr:eq(" + (tr + 1) + ")");
+                                    var e = $el.find(".thead .tr:eq(" + (tr + 1) + ") .th:eq(" + (th - 1) + ")");
+                                    $('<div class="th rowspan" style="height:0px;width:' + w + 'px;opacity:0;"></div>').insertAfter(e);
+                                    d.css({
+                                        marginTop: -1 * (h / 2)
+                                    })
+                                    c.addClass('rowspanned');
+
+                                    $(this).css({
+                                        lineHeight: h + 'px'
+                                    });
+                                }
+                                else {
+                                    var d = $el.find(".thead .tr:eq(" + (tr + 1) + ") .th:eq(" + th + ")");
+                                    if (d) {
+                                        d.css({
+                                            width: w
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    });
+
+                    //$el.parents('.container-fluid').width(Math.max($el.parents('.container-fluid').width(), $el.width() + 15));
                 }
-                
+
                 $scope.isCbFreezed = false;
                 var paddingLeft = $el.offset().left;
                 $scope.freezeControlBar = function() {
@@ -587,12 +656,12 @@ app.directive('gridView', function($timeout, $http) {
                     $scope.isCbFreezed = !!$scope.gridOptions.freezeControlBar || !!$scope.gridOptions.freeze;
                 };
 
-                $(window).resize(function() {                    
-                    
+                $(window).resize(function() {
+                    $timeout(function() {
                         $scope.recalcHeaderWidth();
                         $scope.checkMode();
-                        $scope.freezeControlBar();                        
-                    
+                        $scope.freezeControlBar();
+                    }, 400);
                 });
 
                 function getScrollbarWidth() {
@@ -607,8 +676,36 @@ app.directive('gridView', function($timeout, $http) {
                     }
                     return W;
                 };
-                
+
                 $scope.scrollBarWidth = getScrollbarWidth();
+                $container.scroll(function() {
+                    if ($scope.firstColWidth == 0) {
+                        $scope.recalcHeaderWidth();
+                    }
+
+                    var $thead = $el.find(".thead");
+                    var elOffset = parseInt($el.css('padding-top'));
+                    var headerOffset = elOffset + $header.height();
+                    var fixedHeader = inViewport($el, headerOffset);
+
+                    $scope.freezeControlBar();
+
+                    if (fixedHeader) {
+                        $thead.css({
+                            top: $container.offset().top + 'px',
+                            left: $el.offset().left + 'px',
+                            right: $scope.scrollBarWidth + 'px',
+                            overflow: 'hidden'
+                        });
+                        $thead.addClass("show");
+                    }
+                    else {
+                        $thead.removeClass("show");
+                    }
+                    
+                    $scope.renderFreezedCols();
+                }.bind($scope));
+
                 // merge same row value
                 $scope.mergeSameRowValue = function() {
                     $el.find('table tbody tr.r td.rowSpanned').removeClass('rowSpanned');
@@ -840,8 +937,14 @@ app.directive('gridView', function($timeout, $http) {
                     var isChecked = $scope.checkbox[colName].indexOf(row);
                     var rowFound = -1;
                     for (a in $scope.checkbox[colName]) {
-                        if ($scope.checkbox[colName][a][$scope.datasource.primaryKey] == row[$scope.datasource.primaryKey]) {
-                            rowFound = a;
+                        if ($scope.checkbox[colName][a][$scope.datasource.primaryKey] !== undefined && row[$scope.datasource.primaryKey] !== undefined ) {
+                            if ($scope.checkbox[colName][a][$scope.datasource.primaryKey] == row[$scope.datasource.primaryKey] ) {
+                                rowFound = a;
+                            }
+                        } else {
+                            if (JSON.stringify($scope.checkbox[colName][a]) === JSON.stringify(row)) {
+                                rowFound = a;
+                            }
                         }
                     }
 
@@ -865,7 +968,7 @@ app.directive('gridView', function($timeout, $http) {
                     else {
                         isChecked = e;
                     }
-
+                    
                     if (isChecked) {
                         if (rowFound < 0) {
                             $scope.checkbox[colName].push(row);
@@ -887,13 +990,13 @@ app.directive('gridView', function($timeout, $http) {
                     var availableHeader = [];
                     var rows = [];
                     var row = [];
-                    $el.find('.pane-hScroll > table > tbody > tr > th').each(function(i, e) {
+                    $el.find('table.tdata thead tr:last-child th').each(function(i, e) {
                         if ($(e).text().trim() != "") {
                             availableHeader.push(i);
                         }
                     });
 
-                    $el.find('.pane-hScroll > table > tbody > tr').each(function(i, e) {
+                    $el.find('table.tdata thead tr').each(function(i, e) {
                         var row = [];
                         $(e).find('th').each(function(j, f) {
                             if (availableHeader.indexOf(j) >= 0 || j == 0) {
@@ -911,7 +1014,7 @@ app.directive('gridView', function($timeout, $http) {
                         rows.push(row);
                     });
 
-                    $el.find('.pane-vScroll > table > tbody > tr').each(function(i, e) {
+                    $el.find('table tbody tr').each(function(i, e) {
                         var row = [];
                         $(e).find('td').each(function(j, f) {
                             if (availableHeader.indexOf(j) >= 0) {
@@ -930,18 +1033,18 @@ app.directive('gridView', function($timeout, $http) {
                 $scope.checkboxGroup = function(rowIdx, colName, colIdx, e) {
                     var loop = true;
                     var modify = $scope.getModifyDS($scope.columns[colIdx]);
-                    var cursor = $(e.target).parents("table").next().find('table tbody tr');                    
+                    var cursor = $(e.target).parents("tr").next();
                     var level = (rowIdx == -1 ? -1 : $scope.datasource.data[rowIdx].$level);
-                
                     if (level < 0) {
-                        cursor = $el.find(".pane-vScroll table tbody tr:eq(0)");                        
-                    }                    
+                        cursor = $el.find("table tbody tr:eq(0)");
+                    }
                     var isChecked = $(e.target).is(":checked");
                     if(isChecked){
                         var checkedValue = $scope.columns[colIdx].checkedValue;    
                     } else {
                         var checkedValue = $scope.columns[colIdx].uncheckedValue;    
                     }
+                    
                     //loop through all rows
                     while (loop) {
                         var row = $scope.datasource.data[++rowIdx];
@@ -1123,9 +1226,7 @@ app.directive('gridView', function($timeout, $http) {
                         };
                 
                         $scope.loadPageSetting();
-
                     });
-                                                                                                 
                 };
 
                 if (!$scope.datasource) {
@@ -1137,6 +1238,8 @@ app.directive('gridView', function($timeout, $http) {
 
                 $scope.gridRenderTimeout = null;
                 $scope.onGridRender = function(flag) {
+
+                    
                     
                     if (flag == 'templateload') {
                         $scope.loading = true;
@@ -1163,19 +1266,7 @@ app.directive('gridView', function($timeout, $http) {
                             $scope.gridRenderTimeout = null;
                             $scope.loading = false;
                         });
-                    }, 100);           
-                    
-                    $timeout(function() {
-                        $scope.paneH = $el.find('.pane-hScroll');
-                        $scope.paneV = $el.find('.pane-vScroll');                                                
-                        $scope.paneVt = $el.find('.pane-vScroll > table');        
-                        $scope.paneVt.width($scope.paneV.width() - 1);
-
-                        $scope.paneH.scroll(function(){                                                  
-                            $scope.paneV.width($scope.paneH.width() + $scope.paneH.scrollLeft());
-                            $scope.paneVt.width($scope.paneV.width() - 1);
-                        })                      
-                    }, 100);                      
+                    }, 100);
                 };
                 
                 $scope.freezedColsReady = false
@@ -1256,8 +1347,6 @@ app.directive('gridView', function($timeout, $http) {
                             p: JSON.stringify(params)
                         });
                     });
-
-                    
                 }
 
                 if ($scope.columns.length > 0) {

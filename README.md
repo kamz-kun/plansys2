@@ -14,6 +14,13 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.7.06 :
+- Fixing GridView Cancel Insert Bugs
+- Fixing GridView Checked Items Count
+- Fixing Assign Session to Js Variables
+- Fixing Misleading 0 at NumberField
+- Fixing Import Excel for PostgreSQL
+
 ### Build 1.7.01 :
 - Fixing GridView Bugs
 

@@ -125,6 +125,9 @@ ob_start();
         <?php if (!Yii::app()->user->isGuest) : ?>
         $scope.user = <?php echo @json_encode(Yii::app()->user->info); ?>;
         if ($scope.user != null) {
+            $scope.user.full_role = <?php echo @json_encode(Yii::app()->user->fullRole); ?>;
+            $scope.user.role_desc = <?php echo @json_encode(Role::model()->findByAttributes(['role_name' => Yii::app()->user->fullRole])->role_description); ?>;
+            
             $scope.user.role = [];
             for (i in $scope.user.roles) {
                 $scope.user.role.push($scope.user.roles[i]['role_name']);
