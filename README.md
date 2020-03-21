@@ -14,6 +14,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.7.07
+- Fixing GridView Table Options
+
 ### Build 1.7.06 :
 - Fixing GridView Cancel Insert Bugs
 - Fixing GridView Checked Items Count

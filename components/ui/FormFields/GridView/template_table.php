@@ -3,7 +3,7 @@
    <?php $cols = $this->getFreezedCols(); ?>
 </div>
 
-<div class="pane pane--table1">
+<div class="pane pane--table1" <?= $this->expandAttributes($this->tableOptions); ?>>
   <div class="pane-hScroll" <?php 
                                  if($this->hScroll != 0){
                                   echo 'style="max-width: '.$this->hScroll.'px"';
