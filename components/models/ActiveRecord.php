@@ -376,8 +376,13 @@ class ActiveRecord extends CActiveRecord
                 }
             }
         }
-
+		
+		// $id = Yii::app()->db->getLastInsertID();
+		// $modelClass::getLastInsertID();
+		
         
+		$idN = $model::model()->findAll(array('order'=>'id desc','limit'=>'1'))[0]['id'];
+		
         $builder = Yii::app()->db->schema->commandBuilder;
         $command = $builder->createMultipleInsertCommand($table, $formattedData);
         $result = $command->execute();
@@ -393,9 +398,10 @@ class ActiveRecord extends CActiveRecord
                 $pk = $model->tableSchema->primaryKey;
                 if (!is_array($pk)) {
                     foreach ($data as $k => $d) {
-                        $data[$k][$pk] = $id * 1;
-                        $id++;
+                        ++$idN;
+                        $data[$k][$pk] = $idN * 1;
                     }
+					// vdump($data); die();
                 }
             }
         }

@@ -533,7 +533,8 @@ li:hover > .item-btn {
     .column-field > .column-field-row  > .column-field-cell {
         display:table-cell;
         vertical-align: top;
-        margin-left: -5px;
+        margin-left: -15px;
+		position: absolute;
     }
     
     .column-field > .column-field-row > .column-field-cell > .column-field-inner {

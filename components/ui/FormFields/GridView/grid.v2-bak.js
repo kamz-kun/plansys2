@@ -563,17 +563,11 @@ app.directive('gridView', function($timeout, $http) {
                     $scope.paneVt.width($scope.paneV.width() - 1);                    
 
                     // $timeout(function(){
-                        var tds = $el.find('.table-vScroll > tbody > .r:nth-child(1) > td');                        
+                        var tds = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td');                        
                         for(var c = 1;c <= tds.length; c++){
-                            var td = $el.find('.table-vScroll > tbody > .r:nth-child(1) > td:nth-child('+c+')');
-                            var th = $el.find('.table-vScroll > tbody > tr:last-child > th:nth-child('+c+')');
-							var style = td.attr( "style" ); //get style attribute value
-							if(style != undefined){
-								var styleMap = style.split( ";" ).reduce( ( a, c ) => ( d = c.split( ":" ), a[d[0].trim()] =  String(d[1]).trim(), a ), {}); //get style map 
-
-								th.outerWidth(styleMap["width"]);
-							}
-							
+                            var td = $el.find('.pane-vScroll > table > tbody > .r:nth-child(1) > td:nth-child('+c+')');
+                            var th = $el.find('.pane-hScroll > table > tbody > tr:last-child > th:nth-child('+c+')');                                            
+                            th.outerWidth(td.outerWidth());
                         }                          
                     // })                    
                                     

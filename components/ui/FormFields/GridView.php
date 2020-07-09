@@ -25,6 +25,7 @@ class GridView extends FormField {
     public        $columnsFunc  = "";
     public        $columnsFuncParams = [];
     public        $hasEditable  = false;
+    public        $freezeLock  = 0;
 
     public function actionDownloadExcel() {
         $postdata = file_get_contents("php://input");
@@ -159,16 +160,22 @@ class GridView extends FormField {
         echo $this->getRowTemplate($post['item'], $post['idx']);
     }
 
-    public function getRowTemplate($col, $idx) {
+    public function getRowTemplate($col, $idx, $freezeLock = null) {
         $template  = '';
         $style     = '';
         $fieldName = $col['name'];
+		$lock 		= '';
+		
         if ($fieldName == "" && !@$col['options']['mode']) return "";
 
         $attr      = [];
         if (isset($col['options']['ng-if'])) {
             $attr['ng-if'] = $col['options']['ng-if'];
         }
+		
+		if($freezeLock == 1 && $idx == 0){
+			$lock = 'stick';
+		}
 
         switch ($col['columnType']) {
             case "string":
@@ -319,7 +326,7 @@ type="checkbox" /></label>';
         }
 
         return <<<EOF
-<td{$style} class="col-{$idx}" ng-class="rowClass(row, '{$fieldName}', '{$col['columnType']}')" {$attr}>
+<td{$style} class="col-{$idx} {$lock}" ng-class="rowClass(row, '{$fieldName}', '{$col['columnType']}')" {$attr}>
     {$rowState}{$template}
 </td>
 EOF;
@@ -649,6 +656,21 @@ EOL;
                     'ng-delay' => '500',
                 ),
                 'type' => 'NumberField',
+            ),
+            array (
+                'label' => 'Freeze Lock',
+                'name' => 'freezeLock',
+                'defaultType' => 'first',
+                'options' => array (
+                    'ng-model' => 'active.freezeLock',
+                    'ng-change' => 'save()',
+                    'ng-delay' => '500',
+                ),
+                'list' => array (
+                    '0' => 'No',
+                    '1' => 'Yes',
+                ),
+                'type' => 'DropDownList',
             ),
             array (
                 'label' => 'Columns Function',

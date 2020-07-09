@@ -1,3 +1,4 @@
+
 # Plansys 2.0
 
 Fast, Compact, Mindblowing Web-app Builder
@@ -13,6 +14,11 @@ Fast, Compact, Mindblowing Web-app Builder
 
 
 ## Changelog
+
+### Build 1.8.00
+- Adding Lock First Column at GridView
+- Adding Override ChangePass Form
+- Fixing Active Record Batch Wrong Return ID
 
 ### Build 1.7.07
 - Fixing GridView Table Options

@@ -40,7 +40,7 @@ class UserIdentity extends CUserIdentity {
     }
 
     public function authenticate() {
-        $record = User::model()->findByAttributes(['username' => $this->username]);
+        $record = User::model()->find(['condition' => 'UPPER(username) = UPPER(\''.$this->username.'\')']);        
 
         $useLdap = false;
         if (!is_null($record) && $record->password == '' && Yii::app()->user->useLdap) {

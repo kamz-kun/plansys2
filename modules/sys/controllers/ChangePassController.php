@@ -12,20 +12,26 @@ class ChangePassController extends Controller {
     }
     
     public function actionIndex(){
-        $model = new SysChangePass();
-        if(isset($_POST['SysChangePass'])){
-            $post = $_POST['SysChangePass'];
+        if(@class_exists('AppChangePass')){
+            $model = new AppChangePass();   
+            $c = 'AppChangePass';
+        } else {
+            $model = new SysChangePass();
+            $c = 'SysChangePass';
+        }
+        if(isset($_POST[$c])){
+            $post = $_POST[$c];
             if($post['NewPassword'] != $post['RetypePassword']){
                 $model->addErrors(['RetypePassword' => 'Password Does Not Match']);
             } else {
                 $user = User::model()->findByPk(Yii::app()->user->info['id']);
-                $user->password = Helper::hash($_POST['SysChangePass']['NewPassword']);
+                $user->password = Helper::hash($_POST[$c]['NewPassword']);
                 $user->save();
                 $this->flash('Successfully Saved');    
             }
             
         }
-        $this->renderForm('SysChangePass', $model);
+        $this->renderForm($c, $model);
     }
 
 }
