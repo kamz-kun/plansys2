@@ -219,5 +219,11 @@ class PsDefaultController extends Controller {
         
         $this->redirect(Yii::app()->homeUrl);
     }
+	
+	
+	public function actionShowError(){ 
+		// echo"asd";die(); 
+		$this->renderForm('AppError');
+	}
 
 }

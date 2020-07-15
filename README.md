@@ -15,6 +15,13 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.9.00 ###
+- Adding New Theme Sidebar
+- Functioning Debug Mode With External Error Reporting
+- Adding Friendly Error Page
+- Adding Function Custom Friendly Error Page
+- Fixing Bug Link on DataFilter Parameter
+
 ### Build 1.8.00
 - Adding Lock First Column at GridView
 - Adding Override ChangePass Form

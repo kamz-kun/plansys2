@@ -125,7 +125,7 @@ class ErrorHandler extends CErrorHandler
 					header('Content-Encoding:');
 				}
 			}
-		}
+		}		
 
 		if($event instanceof CExceptionEvent)
 			$this->handleException($event->exception);
@@ -216,13 +216,71 @@ class ErrorHandler extends CErrorHandler
 				header("HTTP/$httpVersion {$data['code']} ".$this->getHttpHeader($data['code'], get_class($exception)));
 			}
 			
-
-			$this->renderException();
+			if(Setting::get('app.debug') == 'ON'){
+				$this->renderException();
+			} else {
+				// vdump($this->getError());die();
+				$this->errorLog();
+				header('location: index.php?&r=/site/showerror&code='.$this->getError()['code']);
+			}			
 		}
-		else
+		else{
 			$app->displayException($exception);
+		}
+			
 	}
-
+	
+	protected function filterArrayBetween($arr,$start,$end){
+		$new = [];
+		$i = 0;
+		foreach($arr as $k=>$v)
+		{
+			if($i >= $start && $i <= $end)
+			{
+				$new[$k] = $v;
+			}
+			$i++;
+		}
+		
+		return $new;
+	}
+	
+	protected function errorLog()
+	{
+		$fc = false;
+		$newContent = [];
+		$path = Setting::get('app.config_dir').'errorlogs/';
+		$dateNow = date('d-m-Y');
+		$user = (Yii::app()->user->id??'');
+		
+		$newContent[] = array_merge(
+							["date"=>date("Y-m-d H:i:s"), "user"=>$user, "URL"=>$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"],
+							$this->filterArrayBetween($this->getError(),0,5)
+						); 
+		
+		if(!file_exists($path)){
+			mkdir($path,0777);
+		}
+		
+		$fileExists = $path.$dateNow.'.json';
+		
+		if(file_exists($fileExists)){
+			$getFile = file_get_contents($fileExists);
+			$tmp = json_decode($getFile,true);
+			
+			foreach($tmp as $k=>$v){
+				$newContent[] = $v;
+			}
+		}
+		
+		if(!$fc = file_put_contents($fileExists, json_encode($newContent, JSON_PRETTY_PRINT)))
+		{
+			vdump("Failed to create error log");die();		
+		}
+		
+		return $fc;
+	}
+	
 	/**
 	 * Handles the PHP error.
 	 * @param CErrorEvent $event the PHP error event
@@ -425,9 +483,12 @@ class ErrorHandler extends CErrorHandler
 			$viewFile=$app->findLocalizedFile($viewPath.DIRECTORY_SEPARATOR."error{$code}.php",$srcLanguage);
 			if(!is_file($viewFile))
 				$viewFile=$app->findLocalizedFile($viewPath.DIRECTORY_SEPARATOR.'error.php',$srcLanguage);
-		}
-		else
+		}else{
+			$set = Setting::get('app.mode');
+			// vdump($set); die();
 			$viewFile=$viewPath.DIRECTORY_SEPARATOR."exception.php";
+		}
+			// $viewFile=$viewPath.DIRECTORY_SEPARATOR."exception.php";
 		return $viewFile;
 	}
 

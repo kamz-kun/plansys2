@@ -1,0 +1,47 @@
+.container {
+    width:40%;
+    text-align:left !important;
+    margin-left:10%;
+    font-weight:bold;
+    font-size:16px;
+    color : #444;
+}
+
+.container  h1 {
+    margin-top:0%;
+    margin-bottom:5%;
+    font-weight:bold;
+    line-height:1.2;
+}
+
+.desc-container {
+    margin-bottom:3%;
+    width: 60%;
+    color : #777;
+}
+
+.login {
+    padding: 2% 10%;
+}
+
+.landing {
+  background: url("../images/bg.png") no-repeat right 0;  
+}
+
+.services > ul {
+    padding-left:0%;
+}
+
+.vacancy h3 {
+    color:#A6CE39;
+}
+
+.vacancy ul, .requirment ul  {
+    list-style-type: none;
+    color : #777;
+    padding-left:0px;
+}
+
+.requirment h3{
+    color:#0B5612;
+}

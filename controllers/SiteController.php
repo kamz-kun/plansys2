@@ -11,4 +11,5 @@ class SiteController extends PsDefaultController {
     public function beforeLogout($model) {}
 
     public function afterLogout($model) {}
+	
 }

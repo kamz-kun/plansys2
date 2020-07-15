@@ -1,0 +1,323 @@
+/* Shrinking the sidebar from 250px to 80px and center aligining its content*/
+@import url('https://fonts.googleapis.com/css?family=Barlow');
+@import url('https://fonts.googleapis.com/css?family=Poppins:200');
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+body, html {
+	font-size: 90%;
+}
+.stretch {
+    background-color: #fafafa;
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+html.js.no-touch.cssanimations.csstransitions body.pace-done div.wrapper main.main div#content div.stretch.ui-layout-column div#col2.stretch.ui-layout-container.animate-column {
+    width: unset !important;
+}
+
+.top-bar {
+	width:82%;
+	height:60px; 
+	background: #0d47a1;
+    border-bottom: 1px solid #0277bd;
+    color: white;
+}
+
+.dl-divider {
+	background: #ececeb;
+}
+
+div[dropdown] a {
+    background: white;
+}
+
+#content > div > .stretch {
+    max-width: 82%;
+	top: 60px !important;
+}
+
+.ui-layout-column > .ui-splitbar {
+	width: 1px !important;
+}
+
+.ds-me a, .ds-me li{
+	font-size: 15px;
+	padding-top:0px !important;
+	padding-bottom:0px !important;
+}
+
+.ds-me a {
+	font-size: 18px;
+}
+
+.flyout-content .ds-nav .stacked .username{
+    background-color: #37474f;
+}
+
+.flyout-content .ds-nav .stacked .username h5{
+    color: white;
+}
+
+#sidebar {
+	overflow: auto;
+	width:18%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+	background-color: #546e7a;
+	display: none;
+    transition: all 0.3s;
+}
+
+#content {
+	height:100vh;
+	margin-left: 18%;
+}
+
+#content > div > .stretch {
+    margin-left: 18%;
+}
+
+#sidebar a[data-toggle="collapse"] {
+    position: relative;
+}
+
+#sidebar .dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+#dismiss {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    /* top right corner of the sidebar */
+    top: 10px;
+    right: 10px;
+}
+
+#sidebar.active {
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    color: white;
+    background-color: #37474f;
+    border-bottom: 1px solid #ececeb;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+}
+
+#sidebar a {
+	text-decoration: none !important;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.2em;
+    display: block;
+	color: white;
+
+}
+#sidebar ul li a:hover {
+    background: rgba(255,248,213,0.1);
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: rgba(255,248,213,0.1);
+}
+
+#sidebar ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #37474f;
+}
+
+/* Toggling the sidebar header content, hide the big heading [h3] and showing the small heading [strong] and vice versa*/
+#sidebar .sidebar-header strong {
+    display: none;
+}
+#sidebar.active .sidebar-header h3 {
+    display: none;
+}
+#sidebar.active .sidebar-header strong {
+    display: block;
+}
+
+#sidebar.active ul li a {
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 0.65em;
+}
+
+#sidebar.active ul li a i {
+    margin-right:  0;
+    display: block;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+/* Same dropdown links padding*/
+#sidebar.active ul ul a {
+    padding: 10px !important;
+}
+
+/* Changing the arrow position to bottom center position, 
+   translateX(50%) works with right: 50% 
+   to accurately  center the arrow */
+#sidebar.active .dropdown-toggle::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+#sidebar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+#sidebar::-webkit-scrollbar-thumb {
+  background: #1966194c; 
+  border-radius: 50px;
+}
+
+/* Handle on hover */
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: #196619; 
+}
+
+@media (max-width: 768px) {
+    /* 80px and its content aligned to centre. Pushing it off the screen with the
+       negative left margin
+    */
+    #sidebar.active {
+        min-width: 80px;
+        max-width: 80px;
+        text-align: center;
+        margin-left: -80px !important;
+    }
+
+
+    /* Reappearing the sidebar on toggle button click */
+    #sidebar {
+        margin-left: 0; 
+    }
+
+
+    /* Toggling the sidebar header content, 
+       hide the big heading [h3] and showing the small heading [strong] and vice versa
+    */
+    #sidebar .sidebar-header strong {
+        display: none;
+    }
+    #sidebar.active .sidebar-header h3 {
+        display: none;
+    }
+    #sidebar.active .sidebar-header strong {
+        display: block;
+    }
+
+    /* Downsize the navigation links font size */
+    #sidebar.active ul li a {
+        padding: 20px 10px;
+        font-size: 0.65em;
+    }
+
+    #sidebar.active ul li a i {
+        margin-right:  0;
+        display: block;
+        font-size: 1.2em;
+        margin-bottom: 5px;
+    }
+
+    /* Adjust the dropdown links padding*/
+    #sidebar.active ul ul a {
+        padding: 10px !important;
+    }
+
+    /* Changing the arrow position to bottom center position, 
+      translateX(50%) works with right: 50% 
+      to accurately  center the arrow */
+    .dropdown-toggle::after {
+        top: auto;
+        bottom: 10px;
+        right: 50%;
+        -webkit-transform: translateX(50%);
+        -ms-transform: translateX(50%);
+        transform: translateX(50%);
+    }
+}
+
+
+@media only screen and (max-width: 1359px) {
+  #sidebar {
+       display: none;
+  }
+  #content {
+    margin-left: 0px;
+  }
+  #content > div > .stretch {
+	margin-left: 0px;    
+	max-width: 100% !important;
+  }
+  #logo{
+    margin-left: 50px;
+    max-width: 250px;
+    height: 50px !important;
+  }
+  .top-bar {
+	width:100%;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  #sidebar {
+       display: block;
+  }
+  #content {
+    margin-left: 18%;
+  }
+  #content > div > .stretch {
+    margin-left: 18%;
+  }
+  #logo{
+	  margin-left:0px;
+	  max-width:100%;
+  }
+  .top-bar {
+	width:82%;
+  }
+
+}

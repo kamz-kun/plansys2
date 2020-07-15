@@ -1,0 +1,343 @@
+body {
+  display: flex;
+  font-family: 'Open Sans', sans-serif;
+  flex-direction: column;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+body .header {
+  flex: 0 0 49px;
+  margin: 0px;
+  border: 0px;
+  background: #7b7b7b;
+  border-radius: 0;
+  border-bottom: 1px solid #ccc;
+}
+body .header .top-menu {
+  height: 49px;
+  display: flex;
+  overflow-y: hidden;
+}
+body .header .top-menu.open {
+  overflow-y: visible;
+}
+body .header .top-menu.open .scroll {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  height: auto !important;
+  bottom: 0px;
+  z-index: 10;
+  top: 0px;
+}
+body .header .top-menu.open .scroll-arrow {
+  display: none;
+}
+body .header .top-menu .scroll-arrow {
+  border-left: 1px solid #ececeb;
+  flex: 0 0 30px;
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+}
+@media screen and (min-width: 768px) {
+  body .header .top-menu .scroll-arrow {
+    display: none;
+  }
+}
+body .header .top-menu .scroll-arrow div {
+  padding: 10px 0px;
+  text-align: center;
+  flex: 1;
+  color: #ccc;
+}
+body .header .top-menu .scroll-arrow div i {
+  font-size: 20px;
+}
+body .header .top-menu .scroll-arrow .active {
+  color: #000;
+}
+body .header .top-menu .burger {
+  position: fixed;
+  left: 0px;
+  background: #fff;
+  top: 0px;
+  z-index: 11;
+  height: 49px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  font-size: 32px;
+  cursor: pointer;
+  border-right: 1px solid #ccc;
+}
+body .header .top-menu .burger:hover {
+  background: #ececeb;
+}
+body .header .top-menu .scroll {
+  flex: 1;
+  padding-left: 50px;
+  overflow-y: auto;
+  height: 80px;
+}
+body .header .navbar-nav {
+  margin: 0px;
+  font-size: 0;
+  border-radius: 0px;
+  white-space: nowrap;
+}
+body .header .navbar-nav > .dropdown .dropdown .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -5px;
+  margin-left: 0px;
+  border: 1px solid #ccc;
+  border-radius: 0px;
+}
+body .header .navbar-nav > .dropdown .dropdown > a:before {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 4px 0 4px 4px;
+  border-left-color: #000;
+  margin-top: 5px;
+  margin-right: -20px;
+}
+body .header .navbar-nav > .dropdown .dropdown.active > a:before {
+  border-left-color: #fff;
+}
+body .header .navbar-nav > .dropdown .no-menu > a:before {
+  display: none;
+}
+body .header .navbar-nav > .open > a {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+body .header .navbar-nav > .open .dropdown-menu {
+  position: absolute;
+  background: #fff;
+  z-index: 12;
+  margin-top: 1px;
+  border: 1px solid #ccc;
+  border-radius: 0px;
+  border-top: 0px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+}
+body .header .navbar-nav > .open .dropdown-menu > li > a {
+  padding-left: 10px;
+  padding-right: 25px;
+}
+body .header .navbar-nav > .dropdown:first-child > a {
+  border-left: 1px solid transparent;
+}
+body .header .navbar-nav > .dropdown:first-child > .dropdown-menu {
+  margin-left: -1px;
+}
+body .header .navbar-nav > .dropdown:last-child > .dropdown-menu {
+  right: 0px;
+  left: auto;
+}
+body .header .navbar-nav > li {
+  display: inline-block;
+}
+body .header .navbar-nav > li:hover,
+body .header .navbar-nav > li:active,
+body .header .navbar-nav > li:focus {
+  background: #fafafa;
+  color: #222;
+}
+body .header .navbar-nav > li > a {
+  height: 49px;
+  display: inline-block;
+  box-sizing: border-box;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-top: 1px solid transparent;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 49px;
+  padding: 0px 35px 0px 15px;
+}
+body .header .navbar-nav > li > a > .caret {
+  float: right;
+  margin-top: 23px;
+  margin-right: -25px;
+}
+body .header .navbar-nav > li > a > i {
+  float: left;
+  margin-left: -5px;
+  margin-right: 5px;
+  margin-top: 18px;
+}
+body .header .navbar-nav > li.active > a {
+  border-top: 1px solid #f00;
+  color: #f00;
+  background: #fafafa;
+}
+body .header .navbar-nav > li.no-menu > a {
+  padding-right: 15px;
+}
+body .header .dropdown-menu>.active>a,
+body .header .dropdown-menu>.active>a:focus,
+body .header .dropdown-menu>.active>a:hover {
+  background: #f00;
+  opacity: 0.7;
+}
+body .main {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+}
+body .main .error-container,
+body .main .info-container {
+  margin: 0px -15px !important;
+  border-radius: 0px;
+}
+
+/*
+    Desktop Nav-Bar
+*/
+
+.ds-nav{
+  list-style:none;
+  margin-left:0;
+  padding-left: 0px;
+}
+
+.ds-nav > li,
+.ds-nav > li > a{
+  display:inline-block;
+}
+
+.stacked > li{
+  display:list-item;
+}
+  .stacked > li > a{
+      display:block;
+}
+
+.flyout,
+.flyout-alt{
+  position:relative;
+}
+  .flyout-content{
+      /* Position the flyouts off-screen. This is typically better than `display:none;`. */
+      position:absolute;
+      top:100%;
+      left:-99999px;
+      height:0;
+      overflow:hidden;      
+  }
+  
+  .flyout:hover > .flyout-content{
+      left:0;
+  }
+  .flyout-alt:hover > .flyout-content{
+      top:0;
+      left:100%;
+  }
+  .flyout:hover > .flyout-content,
+  .flyout-alt:hover > .flyout-content{
+      height:auto;
+      overflow:visible;
+  }
+
+.site-nav{
+  font-size:15px;
+
+}
+.site-nav a{
+  line-height:1;
+  padding:0.9em;
+  background-color:#0d47a1;
+  color:#f5f5f5;
+  white-space:nowrap;            
+  -o-transition:.3s;
+  -ms-transition:.3s;
+  -moz-transition:.3s;
+  -webkit-transition:.3s;
+  transition:.3s;
+}
+.site-nav .flyout:hover > a /* [1] */,
+.site-nav .flyout-alt:hover > a /* [1] */,
+.site-nav a:hover{
+  color:#f5f5f5;
+  background-color:#0277bd;
+}
+.site-nav .flyout-alt > a:after{
+  /*content:" »";*/
+  content: "\f054";
+  font-family: FontAwesome;
+  padding-left: inherit;
+  display: inline-block;
+  text-align: right;
+  width: 100%;
+}
+
+.site-nav > li:first-child > a{
+  border:none;    
+}
+.site-nav .flyout-content{
+  border-width:1px 0 0 1px; /* [4] */
+}
+.site-nav .flyout-content a{
+  border-bottom-width:1px; /* [4] */
+  display: flex;
+}
+.site-nav .flyout-alt:hover > .flyout-content{
+  top:-1px;
+}
+
+.ds-me{
+  list-style:none;
+  margin-left:0;
+  padding-left: 0px;
+}
+
+.ds-me > li,
+.ds-me > li > a{
+  display:inline-block;
+  *display:inline;
+  color:#f5f5f5;
+  -o-transition:.3s;
+  -ms-transition:.3s;
+  -moz-transition:.3s;
+  -webkit-transition:.3s;
+  transition:.3s;
+}
+
+@media only screen and (max-width: 1359px) {
+  #user {
+       display: none;
+  }
+  #desktop-menu {
+       display: none;
+  }
+  .dl-menuright {
+      display: none !important;
+ }
+  #mobile-menu {
+       display: block;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  #mobile-menu {
+       display: none;
+  }
+  #desktop-menu {
+       display: block;
+  }
+  #search-mobile {
+       display: none;
+  }
+}
