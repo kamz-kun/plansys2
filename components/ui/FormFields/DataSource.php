@@ -908,7 +908,12 @@ class DataSource extends FormField {
             'model'  => $this->model
         ]);
 
-        $count     = count($data);
+        if(is_array($data)){
+            $count     = count($data);
+        } else {
+            $count     = 0;
+        }
+        
         $countFunc = 'count($data);';
         if ($this->enablePaging == 'Yes') {
             if ($this->fieldType == 'phpsql') {

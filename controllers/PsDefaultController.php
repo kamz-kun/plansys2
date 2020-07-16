@@ -222,8 +222,12 @@ class PsDefaultController extends Controller {
 	
 	
 	public function actionShowError(){ 
-		// echo"asd";die(); 
-		$this->renderForm('AppError');
+		if(@class_exists('AppError')){
+            $e = 'AppError';
+        } else {
+            $e = 'ErrorForm';
+        }
+		$this->renderForm($e);
 	}
 
 }

@@ -1427,9 +1427,11 @@ class CStatElement
 		$pkTable=$parent->model->getTableSchema();
 
 		$fks=preg_split('/\s*,\s*/',$relation->foreignKey,-1,PREG_SPLIT_NO_EMPTY);
-		if(count($fks)!==count($pkTable->primaryKey))
-			throw new CDbException(Yii::t('yii','The relation "{relation}" in active record class "{class}" is specified with an invalid foreign key. The columns in the key must match the primary keys of the table "{table}".',
-						array('{class}'=>get_class($parent->model), '{relation}'=>$relation->name, '{table}'=>$pkTable->name)));
+		if(is_array($fks) && is_array($pkTable->primaryKey)){
+			if(count($fks)!==count($pkTable->primaryKey))
+				throw new CDbException(Yii::t('yii','The relation "{relation}" in active record class "{class}" is specified with an invalid foreign key. The columns in the key must match the primary keys of the table "{table}".',
+							array('{class}'=>get_class($parent->model), '{relation}'=>$relation->name, '{table}'=>$pkTable->name)));
+		}		
 
 		// set up mapping between fk and pk columns
 		$map=array();  // pk=>fk
@@ -1544,9 +1546,12 @@ class CStatElement
 				array('{class}'=>get_class($this->_parent->model), '{relation}'=>$relation->name, '{joinTable}'=>$joinTableName)));
 
 		$fks=preg_split('/\s*,\s*/',$keys,-1,PREG_SPLIT_NO_EMPTY);
-		if(count($fks)!==count($table->primaryKey)+count($pkTable->primaryKey))
-			throw new CDbException(Yii::t('yii','The relation "{relation}" in active record class "{class}" is specified with an incomplete foreign key. The foreign key must consist of columns referencing both joining tables.',
+		if(is_array($fks) && is_array($pkTable->primaryKey)){
+			if(count($fks)!==count($table->primaryKey)+count($pkTable->primaryKey))
+				throw new CDbException(Yii::t('yii','The relation "{relation}" in active record class "{class}" is specified with an incomplete foreign key. The foreign key must consist of columns referencing both joining tables.',
 				array('{class}'=>get_class($this->_parent->model), '{relation}'=>$relation->name)));
+		}
+		
 
 		$joinCondition=array();
 		$map=array();

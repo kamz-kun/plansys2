@@ -1060,40 +1060,45 @@ class ActiveRecord extends CActiveRecord
                 $relHash['_' . $r[$pk]] = ['idx' => $q, 'data' => $r];
             }
         }
-        if (count(@$this->__relDelete[$name]) > 0) {
-            foreach ($this->__relDelete[$name] as $item) {
-                if (is_array($item) && isset($item[$pk])) {
-                    $rpk = '_' . $item[$pk];
-                    if (isset($relHash[$rpk])) {
-                        array_splice($this->__relations[$name], $relHash[$rpk]['idx'], 1);
-                    }
-                } else if (is_string($item)) {
-                    if (isset($relHash[$item])) {
-                        array_splice($this->__relations[$name], $relHash[$item]['idx'], 1);
-                    }
-                }
-            }
-        }
-
-
-        if (count(@$this->__relInsert[$name]) > 0) {
-            foreach ($this->__relInsert[$name] as $k => $i) {
-                $this->__relations[$name][] = $i;
-            }
-        }
-
-        if (count(@$this->__relUpdate[$name]) > 0) {
-            foreach ($this->__relUpdate[$name] as $k => $i) {
-                if (isset($i[$pk])) {
-                    $rpk = '_' . $i[$pk];
-                    if (isset($relHash[$rpk])) {
-                        $this->__relations[$name][$relHash[$rpk]['idx']] = $i;
-                    } else {
-                        $this->__relations[$name][] = $i;
+        if(is_array($this->__relDelete[$name])){
+            if (count($this->__relDelete[$name]) > 0) {
+                foreach ($this->__relDelete[$name] as $item) {
+                    if (is_array($item) && isset($item[$pk])) {
+                        $rpk = '_' . $item[$pk];
+                        if (isset($relHash[$rpk])) {
+                            array_splice($this->__relations[$name], $relHash[$rpk]['idx'], 1);
+                        }
+                    } else if (is_string($item)) {
+                        if (isset($relHash[$item])) {
+                            array_splice($this->__relations[$name], $relHash[$item]['idx'], 1);
+                        }
                     }
                 }
             }
-        }
+        }        
+
+        if(is_array($this->__relInsert[$name])){
+            if (count(@$this->__relInsert[$name]) > 0) {
+                foreach ($this->__relInsert[$name] as $k => $i) {
+                    $this->__relations[$name][] = $i;
+                }
+            }
+        }        
+
+        if(is_array($this->__relUpdate[$name])){
+            if (count(@$this->__relUpdate[$name]) > 0) {
+                foreach ($this->__relUpdate[$name] as $k => $i) {
+                    if (isset($i[$pk])) {
+                        $rpk = '_' . $i[$pk];
+                        if (isset($relHash[$rpk])) {
+                            $this->__relations[$name][$relHash[$rpk]['idx']] = $i;
+                        } else {
+                            $this->__relations[$name][] = $i;
+                        }
+                    }
+                }
+            }
+        }        
     }
 
     public function isTemp($name)
@@ -1243,10 +1248,19 @@ class ActiveRecord extends CActiveRecord
 
     public function getRelChanges($name)
     {
+        if(is_array($this->__relInsert[$name])){
+            $insert = count(@$this->__relInsert[$name]) > 0 ? @$this->__relInsert[$name] : [];
+        }
+        if(is_array($this->__relUpdate[$name])){
+            $update = count(@$this->__relUpdate[$name]) > 0 ? @$this->__relUpdate[$name] : [];
+        }
+        if(is_array($this->__relDelete[$name])){
+            $delete = count(@$this->__relDelete[$name]) > 0 ? @$this->__relDelete[$name] : [];
+        }
         return [
-            'insert' => count(@$this->__relInsert[$name]) > 0 ? @$this->__relInsert[$name] : [],
-            'update' => count(@$this->__relUpdate[$name]) > 0 ? @$this->__relUpdate[$name] : [],
-            'delete' => count(@$this->__relDelete[$name]) > 0 ? @$this->__relDelete[$name] : [],
+            'insert' => $insert,
+            'update' => $update,
+            'delete' => $delete,
         ];
     }
 

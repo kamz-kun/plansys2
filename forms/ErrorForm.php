@@ -39,24 +39,30 @@ class ErrorForm extends Form
     public function getFields() {
         return array (
             array (
-                'linkBar' => array (
-                    array (
-                        'label' => 'Kembali Ke Home',
-                        'buttonType' => 'primary',
-                        'icon' => 'home',
-                        'options' => array (
-                            'ng-url' => '/site/login',
-                        ),
-                        'type' => 'LinkButton',
-                    ),
-                ),
-                'title' => 'Error',
-                'showSectionTab' => 'No',
-                'type' => 'ActionBar',
+                'type' => 'Text',
+                'value' => '<link type=\"text/css\" rel=\"stylesheet\" href=\"plansys/themes/default/views/site/id/style.css\" />
+<style>
+    #notfound {
+        position: relative;
+        height: 90vh !important;
+    }
+</style>',
             ),
             array (
                 'type' => 'Text',
-                'value' => '<h2>Terjadi Kesalahan</h2>',
+                'value' => '<div id=\"notfound\">
+		<div class=\"notfound\">
+			<div class=\"notfound-404\">
+				<h1>:(</h1>
+			</div>
+            <h2 style=\"color: red;\">Terjadi Kesalahan</h2>
+            <h2><small>Hal ini Sudah di laporkan oleh sistem</small></h2>
+			<a ng-url=\"/site\">home page</a>
+			<br>
+			<br>
+            <i>Plansys 2.0</i>
+		</div>
+	</div>',
             ),
         );
     }

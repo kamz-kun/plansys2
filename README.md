@@ -5,7 +5,7 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## System Requirements
 
-- PHP 5.6 (Max 7.1)
+- PHP 7.0
 - PHP Extension :
   > PHP mbstring
   > PHP xml
@@ -14,6 +14,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 
 ## Changelog
+
+### Build 1.9.50 ###
+- Adding Major Support to PHP 7.x
 
 ### Build 1.9.00 ###
 - Adding New Theme Sidebar
