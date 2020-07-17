@@ -1,14 +1,17 @@
 
 <?php
-if(is_array($renderParams['errors'])){
-    if (count(@$renderParams['errors']) > 0) {
-        if (isset($data['errors'])) {
-            $data['errors'] = array_merge($data['errors'], $renderParams['errors']);
-        } else {
-            $data['errors'] = $renderParams['errors'];
+if(isset($renderParams['errors'])){
+    if(is_array($renderParams['errors'])){
+        if (count(@$renderParams['errors']) > 0) {
+            if (isset($data['errors'])) {
+                $data['errors'] = array_merge($data['errors'], $renderParams['errors']);
+            } else {
+                $data['errors'] = $renderParams['errors'];
+            }
         }
     }
 }
+
 
 if (Yii::app()->user->hasFlash('error')) {
     $errors = Yii::app()->user->getFlash('error');

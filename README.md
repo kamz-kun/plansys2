@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.9.53 ###
+- Fixing Syntax Bug for PHP 7.1
+
 ### Build 1.9.50 ###
 - Adding Major Support to PHP 7.x
 
