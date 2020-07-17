@@ -1528,23 +1528,25 @@ HTML;
         $reflector = new ReflectionClass($this->model);
         $formDir   = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR;
         
-        if(is_array($this->form['includeJS'])){
-            if (count(@$this->form['includeJS']) > 0):
-                foreach ($this->form['includeJS'] as $script):
-                    $src = $flashMsg . $script;
-                    if (is_file($src)) {
-                        $scriptUrl = Asset::publish($src);
-    
-                        if ($isAjax) {
-                            echo '
-                        <script type="text/javascript" src="' . $scriptUrl . '"></script>';
-                        } else {
-                            Yii::app()->clientScript->registerScriptFile($scriptUrl, CClientScript::POS_END);
+        if(isset($this->form['includeJS'])){
+            if(is_array($this->form['includeJS'])){
+                if (count(@$this->form['includeJS']) > 0):
+                    foreach ($this->form['includeJS'] as $script):
+                        $src = $flashMsg . $script;
+                        if (is_file($src)) {
+                            $scriptUrl = Asset::publish($src);
+        
+                            if ($isAjax) {
+                                echo '
+                            <script type="text/javascript" src="' . $scriptUrl . '"></script>';
+                            } else {
+                                Yii::app()->clientScript->registerScriptFile($scriptUrl, CClientScript::POS_END);
+                            }
                         }
-                    }
-                endforeach;
-            endif;
-        }        
+                    endforeach;
+                endif;
+            }        
+        }
     }
 
 }
