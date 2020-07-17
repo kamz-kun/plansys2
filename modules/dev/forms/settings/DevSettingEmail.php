@@ -8,6 +8,7 @@ class DevSettingEmail extends Form {
     public $username = '';
     public $password = '';
     public $enabled = 'NO';
+    public $smtpSecure = '';
     
     public function __construct() {
         parent::__construct();
@@ -65,6 +66,17 @@ class DevSettingEmail extends Form {
                         'label' => 'Port',
                         'name' => 'port',
                         'type' => 'TextField',
+                    ),
+                    array (
+                        'label' => 'SMTP Secure',
+                        'name' => 'smtpSecure',
+                        'defaultType' => 'first',
+                        'list' => array (
+                            'none' => 'None',
+                            'ssl' => 'SSL',
+                            'tls' => 'TLS',
+                        ),
+                        'type' => 'DropDownList',
                     ),
                     array (
                         'type' => 'Text',

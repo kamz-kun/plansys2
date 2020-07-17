@@ -19,8 +19,12 @@ class EmailCommand extends Service {
 				$mail->SMTPDebug  = 3;
 			}
 			
-			$mail->Host = $config['host']; 
-			$mail->Port = $config['port'];                    
+			$mail->Host = $config['host'];
+			$mail->Port = $config['port'];
+
+			if ($config['smtpSecure'] != "none") {
+				$mail->SMTPSecure = $config['smtpSecure'];
+			}
 			
 			if ($config['username'] != '') {
 				$mail->SMTPAuth   = true;                  
