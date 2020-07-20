@@ -2,7 +2,8 @@
 
 class EmailCommand extends Service {
     public function actionSend() {
-     	$config = Setting::get('email');
+		$config = Setting::get('email');
+		$debugMode = Setting::get('app.debug');
 		$mail  = new PHPMailer();
 		if(@$config['enabled'] == 'YES'){
 			$mails = $this->params['mails'];
@@ -16,15 +17,22 @@ class EmailCommand extends Service {
 			
 			if ($config['transport'] == "smtp") {
 				$mail->IsSMTP(); 
-				$mail->SMTPDebug  = 3;
+				if($debugMode == 'ON'){
+					$mail->SMTPDebug  = 3;
+				} else {
+					$mail->SMTPDebug  = 0;
+				}
+				
 			}
 			
 			$mail->Host = $config['host'];
 			$mail->Port = $config['port'];
 
-			if ($config['smtpSecure'] != "none") {
-				$mail->SMTPSecure = $config['smtpSecure'];
-			}
+			if(isset($config['smtpSecure'])){
+				if ($config['smtpSecure'] != "none") {
+					$mail->SMTPSecure = $config['smtpSecure'];
+				}
+			}				
 			
 			if ($config['username'] != '') {
 				$mail->SMTPAuth   = true;                  

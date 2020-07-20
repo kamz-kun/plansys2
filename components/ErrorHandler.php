@@ -216,13 +216,13 @@ class ErrorHandler extends CErrorHandler
 				header("HTTP/$httpVersion {$data['code']} ".$this->getHttpHeader($data['code'], get_class($exception)));
 			}
 			
-			if(Setting::get('app.debug') == 'ON'){
+			// if(Setting::get('app.debug') == 'ON'){
 				$this->renderException();
-			} else {
+			// } else {
 				// vdump($this->getError());die();
-				$this->errorLog();
-				header('location: index.php?&r=/site/showerror&code='.$this->getError()['code']);
-			}			
+				// $this->errorLog();
+				// header('location: index.php?&r=/site/showerror&code='.$this->getError()['code']);
+			// }			
 		}
 		else{
 			$app->displayException($exception);
@@ -424,22 +424,28 @@ class ErrorHandler extends CErrorHandler
 	 */
 	protected function renderError()
 	{
-		if($this->errorAction!==null) {
-			Yii::app()->runController($this->errorAction);
-		} else {
-			$data=$this->getError();
-			if($this->isAjaxRequest())
-				Yii::app()->displayError($data['code'],$data['message'],$data['file'],$data['line']);
-			elseif(YII_DEBUG) {
-				if ($data['type'] == 'CHttpException' && $data['code'] == 403) {
-					$this->render('error', $data);
-				} else {
-					$this->render('exception',$data);
+		if(Setting::get('app.debug') == 'ON'){
+			if($this->errorAction!==null) {
+				Yii::app()->runController($this->errorAction);
+			} else {
+				$data=$this->getError();
+				if($this->isAjaxRequest())
+					Yii::app()->displayError($data['code'],$data['message'],$data['file'],$data['line']);
+				elseif(YII_DEBUG) {
+					if ($data['type'] == 'CHttpException' && $data['code'] == 403) {
+						$this->render('error', $data);
+					} else {
+						$this->render('exception',$data);
+					}
 				}
+				else
+					$this->render('error',$data);
 			}
-			else
-				$this->render('error',$data);
-		}
+		
+		} else {
+			$this->errorLog();
+			header('location: index.php?&r=/site/showerror&code='.$this->getError()['code']);
+		}	
 	}
 
 	/**
@@ -450,21 +456,26 @@ class ErrorHandler extends CErrorHandler
 	 */
 	protected function getViewFile($view,$code)
 	{
-		$viewPaths=array(
-			Yii::app()->getTheme()===null ? null :  Yii::app()->getTheme()->getSystemViewPath(),
-			Yii::app() instanceof CWebApplication ? Yii::app()->getSystemViewPath() : null,
-			YII_PATH.DIRECTORY_SEPARATOR.'views',
-		);
+		if(Setting::get('app.debug') == 'ON'){
+			$viewPaths=array(
+				Yii::app()->getTheme()===null ? null :  Yii::app()->getTheme()->getSystemViewPath(),
+				Yii::app() instanceof CWebApplication ? Yii::app()->getSystemViewPath() : null,
+				YII_PATH.DIRECTORY_SEPARATOR.'views',
+			);
 
-		foreach($viewPaths as $i=>$viewPath)
-		{
-			if($viewPath!==null)
+			foreach($viewPaths as $i=>$viewPath)
 			{
-				 $viewFile=$this->getViewFileInternal($viewPath,$view,$code,$i===2?'en_us':null);
-				 if(is_file($viewFile))
-				 	 return $viewFile;
+				if($viewPath!==null)
+				{
+					 $viewFile=$this->getViewFileInternal($viewPath,$view,$code,$i===2?'en_us':null);
+					 if(is_file($viewFile))
+						 return $viewFile;
+				}
 			}
-		}
+		} else {
+			$this->errorLog();
+			header('location: index.php?&r=/site/showerror&code='.$this->getError()['code']);
+		}	
 	}
 
 	/**
