@@ -2281,7 +2281,7 @@ class ActiveRecord extends CActiveRecord
                 $this->{$this->_softDelete['column']} = $this->_softDelete['value'];
                 $this->update([$this->_softDelete['column']]);
             } else {
-                parent::delete();
+                return parent::delete();
             }
         } catch (CDbException $e) {
             if ($e->errorInfo[0] == "23000") {
