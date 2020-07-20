@@ -1213,13 +1213,23 @@ class DataSource extends FormField {
         if ($this->relationTo == '' || $this->postData == 'No') {
             if (!isset($this->params['where'])) {
                 $where                 = $this->builder->findField(['datasource' => $this->name, 'type' => 'DataFilter']);
-                $this->params['where'] = $where['name'];
+                if(is_array($where)){
+                    $this->params['where'] = $where['name'];
+                } else {
+                    $this->params['where'] = null;
+                }
+                
             }
 
             if (!isset($this->params['order']) || !isset($this->params['paging'])) {
                 if (!isset($this->params['paging'])) {
                     $paging                 = $this->builder->findField(['datasource' => $this->name, 'type' => 'GridView']);
-                    $this->params['paging'] = $paging['name'];
+                    if(is_array($paging)){
+                        $this->params['paging'] = $paging['name'];
+                    } else {
+                        $this->params['paging'] = null;
+                    }
+                    
                 }
 
                 if (!isset($this->params['order'])) {
@@ -1228,7 +1238,12 @@ class DataSource extends FormField {
                     } else {
                         $order = $this->builder->findField(['datasource' => $this->name, 'type' => 'GridView']);
                     }
-                    $this->params['order'] = $order['name'];
+                    if(is_array($order)){
+                        $this->params['order'] = $order['name'];
+                    } else {
+                        $this->params['order'] = null;
+                    }
+                    
                 }
             }
         }

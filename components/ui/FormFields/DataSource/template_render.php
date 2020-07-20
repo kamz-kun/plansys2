@@ -1,6 +1,6 @@
 <div ps-data-source name="<?= $this->renderName ?>">
     <script type="text/template" name="data" class="hide"><?= @json_encode($this->data['data']); ?></script>
-    <data name="total_item" class="hide"><?= $this->data['count']; ?></data>
+    <data name="total_item" class="hide"><?= @$this->data['count']; ?></data>
     <data name="params" class="hide"><?= json_encode($this->params); ?></data>
     <data name="name" class="hide"><?= $this->name; ?></data>
     <data name="relation_to" class="hide"><?= $this->relationTo; ?></data>

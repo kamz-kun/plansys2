@@ -56,7 +56,11 @@ class ArrayGroup {
     }
 
     public function group() {
-        $this->groupCount = count($this->grouped);
+        if(is_array($this->grouped)){
+            $this->groupCount = count($this->grouped);
+        } else {
+            $this->groupCount = 0;
+        }        
         $this->grouped    = [];
         foreach ($this->data as $r => $d) {
             $this->executeGroup($r, $d);
