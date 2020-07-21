@@ -139,13 +139,15 @@ app.directive('numberField', function ($timeout, $http) {
                 }
 				
 				//get only number
-				$scope.onlynumber = function(r){
+				$scope.onlynumber = function(r){                    
 					if(r!=''){
                         if(r.charAt(0) == '0'){
                             r = r.substring(1)
                         }
 						return r.replace(/[^0-9.]/g, "");
-					}
+					} else if(r=='0' || r=='') {                        
+                        return 0;
+                    }
 				}
 				
 				//use commas
