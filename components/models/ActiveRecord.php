@@ -1490,8 +1490,10 @@ class ActiveRecord extends CActiveRecord
                 if (!!$rel) {
                     $modelClass = $rel->className;
                     if (class_exists($modelClass)) {
-                        if (count($this->__relations[$k]) > 0) {
-                            $validator->attributes[] = $k;
+                        if(is_array($this->__relations[$k])){
+                            if (count($this->__relations[$k]) > 0) {
+                                $validator->attributes[] = $k;
+                            }    
                         }
                     }
                 }
