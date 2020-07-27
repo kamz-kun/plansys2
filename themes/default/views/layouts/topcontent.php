@@ -1,5 +1,6 @@
 <ul class="ds-me ds-nav" >
     <?php
+    if(is_array(Yii::app()->user->info)){
         if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
 
     ?>
@@ -54,5 +55,6 @@
         </li>        
     <?php
             }
+    }
     ?>
 </ul>

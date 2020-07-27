@@ -12,37 +12,39 @@
           <ul class="ds-nav site-nav" style="float:left;">
          <?php
             $html = '';
-            if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
-                foreach($menu as $k => $v){
-                    
-                   if($k > 1){
-                        if($v['label'] == '---'){
-                        } else {
-                            if(isset($v['items'])){
-                                $html .= '<li class="flyout">';
+            if(is_array(Yii::app()->user->info)){
+                if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
+                    foreach($menu as $k => $v){
+                        
+                       if($k > 1){
+                            if($v['label'] == '---'){
                             } else {
-                                $html .= '<li>';
+                                if(isset($v['items'])){
+                                    $html .= '<li class="flyout">';
+                                } else {
+                                    $html .= '<li>';
+                                }
+                                 
+                                 if(isset($v['url'])){
+                                     $url = is_array($v['url']) ? $v['url'][0] : $v['url'];
+                                    $url = Yii::app()->createUrl($url);
+                                    $html .= '<a href="' . $url .'"><i class="fa '.$v['icon'].'"></i> '.$v['label'];	
+                                 } else {
+                                      $html .= '<a href="#"><i class="fa '.$v['icon'].'"></i> '.$v['label'];	
+                                 }
+                                 if(isset($v['items'])){
+                                      $html .=  ' <i class="fa fa-chevron-down"></i>';
+                                 }
+                                 $html .= '</a>';
+                                 if(isset($v['items'])){
+                                      $html .=  extractChild($v['items']);
+                                 }
+                                 $html .= '</li>';
                             }
-                             
-                             if(isset($v['url'])){
-                                 $url = is_array($v['url']) ? $v['url'][0] : $v['url'];
-                                $url = Yii::app()->createUrl($url);
-                                $html .= '<a href="' . $url .'"><i class="fa '.$v['icon'].'"></i> '.$v['label'];	
-                             } else {
-                                  $html .= '<a href="#"><i class="fa '.$v['icon'].'"></i> '.$v['label'];	
-                             }
-                             if(isset($v['items'])){
-                                  $html .=  ' <i class="fa fa-chevron-down"></i>';
-                             }
-                             $html .= '</a>';
-                             if(isset($v['items'])){
-                                  $html .=  extractChild($v['items']);
-                             }
-                             $html .= '</li>';
                         }
-                    }
-                } 
-            }            
+                    } 
+                }            
+            }
             echo $html;
         // }
          ?>
@@ -55,6 +57,7 @@
      		</button>
      		<ul class="dl-menu">
      		     <?php     		          
+     		     if(is_array(Yii::app()->user->info)){
                        if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
                             $this->includeFile('menuheader.php', [
                                 'menu' => $menu
@@ -66,7 +69,7 @@
                        } else {
                             echo  '<li><a href="index.php?r=site/login">Login</a></li>';
                        }
-     		          
+     		     }
                     ?>            
      		</ul>
      	</div><!-- /dl-menuwrapper -->

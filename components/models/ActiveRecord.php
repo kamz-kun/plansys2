@@ -2035,10 +2035,10 @@ class ActiveRecord extends CActiveRecord
                     if (!empty($new)) {
                         $relForeignKey = $rel->foreignKey;
                         if (is_array($relForeignKey))
-                            continue;
+                            continue 2;
 
                         if (!is_array($new))
-                            continue;
+                            continue 2;
 
                         if ($this->{$relForeignKey} == $new[$relPK]) {
                             $model = $relClass::model()->findByPk($this->{$relForeignKey});

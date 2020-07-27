@@ -23,7 +23,7 @@ class Layout extends CComponent {
                 switch (@$section['type']) {
                     case "menu":
                         if (@$section['file'] == "") {
-                            continue;
+                            continue 2;
                         }
                         $options = [
                             'title'    => @$section['title'],
@@ -43,7 +43,7 @@ class Layout extends CComponent {
                     case "form":
 
                         if (@$section['class'] == "") {
-                            continue;
+                            continue 2;
                         }
 
                         $fb = FormBuilder::load(@$section['class']);
