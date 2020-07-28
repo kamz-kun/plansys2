@@ -600,7 +600,7 @@ penambahan gagal dikarenakan data " . $k . " tidak dapat ditemukan ($i)");
                     
                     $resolveCol[] = $key;
                     if (isset($this->model->tableSchema->columns[$key]) && ($row[$key] == '' && $this->model->tableSchema->columns[$key]->isForeignKey)) {
-                        continue;
+                        continue 2;
                     }
                     
                     $rowVal = $row[$key];
