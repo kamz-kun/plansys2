@@ -59,6 +59,13 @@ class EmailCommand extends Service {
 					$mail->MsgHTML($m['body']);
 					$mail->IsHTML(true);
 					$mail->AddAddress($m['to']);
+					if(is_array($m['attachments'])){
+					    foreach($m['attachments'] as $i => $j){
+					        print_r($i);
+					        print_r($j);
+					        $mail->AddAttachment($i, $j);        
+					    }
+					}
 					if (!$mail->Send()) {
 						$this->log("Failed to send email to: " . $m['to']);
 					}

@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.00 ###
+- Adding Attachment for Email
+
 ### Build 1.9.75 ###
 - Fixing Common Problem for PHP 7.3
 
