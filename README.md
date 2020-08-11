@@ -11,15 +11,17 @@ Fast, Compact, Mindblowing Web-app Builder
   > PHP xml
   > PHP zip
   > PHP mcrypt
-
+- x64 Server OS
 
 ## Changelog
 
-### Build 1.10.04 ###
+### Build 1.10.06 ###
 - Fixing Auto Scroll Top on Service Page
 - Now Plansys Service can be deleted (For the time being)
 - Now Default Setting for mode is Dev
 - Now Default Setting for debug is On
+- Now Default Services Available are ImportData and SendEmail
+- Rebuilding server file both for Linux and Windows
 
 ### Build 1.10.00 ###
 - Adding Attachment for Email
