@@ -117,7 +117,7 @@ func NewStateManagerHandler(addr string, rootdirs []string) *StateManagerHandler
 					yiic[0] = "ws"
 					yiic[1] = "disconnected"
 					yiic[2] = "--tid=" + *sm.Clients[conn].Tid
-					yiic[3] = "--uid=" + *sm.Clients[conn].Uid
+					yiic[3] = "--uid=" + *sm.Clients[conn].UID
 					yiic[4] = "--sid=" + *sm.Clients[conn].Sid
 					yiic[5] = "--cid=" + *sm.Clients[conn].Cid
 
@@ -140,7 +140,7 @@ func NewStateManagerHandler(addr string, rootdirs []string) *StateManagerHandler
 					s := strings.Split(string(msg), ":")
 
 					sm.Clients[conn].Tid = &s[1]
-					sm.Clients[conn].Uid = &s[2]
+					sm.Clients[conn].UID = &s[2]
 					sm.Clients[conn].Sid = &s[3]
 
 					err = conn.WriteMessage(msgType, []byte("connect:"+Cid))
@@ -149,7 +149,7 @@ func NewStateManagerHandler(addr string, rootdirs []string) *StateManagerHandler
 					yiic[0] = "ws"
 					yiic[1] = "connected"
 					yiic[2] = "--tid=" + *sm.Clients[conn].Tid
-					yiic[3] = "--uid=" + *sm.Clients[conn].Uid
+					yiic[3] = "--uid=" + *sm.Clients[conn].UID
 					yiic[4] = "--sid=" + *sm.Clients[conn].Sid
 					yiic[5] = "--cid=" + *sm.Clients[conn].Cid
 
@@ -165,7 +165,7 @@ func NewStateManagerHandler(addr string, rootdirs []string) *StateManagerHandler
 						yiic[0] = "ws"
 						yiic[1] = "received"
 						yiic[2] = "--tid=" + *sm.Clients[conn].Tid
-						yiic[3] = "--uid=" + *sm.Clients[conn].Uid
+						yiic[3] = "--uid=" + *sm.Clients[conn].UID
 						yiic[4] = "--sid=" + *sm.Clients[conn].Sid
 						yiic[5] = "--cid=" + *sm.Clients[conn].Cid
 
@@ -267,7 +267,7 @@ func (p *StateManagerHandler) Yiic(returnOutput bool, stdin []byte, params ...st
 func (p *StateManagerHandler) Disconnect(ctx context.Context, client *state.Client, reason string) (err error) {
 	url := p.WsUrl + "disconnect"
 	url = url + "&tid=" + *client.Tid
-	url = url + "&uid=" + *client.Uid
+	url = url + "&uid=" + *client.UID
 	url = url + "&sid=" + *client.Sid
 	url = url + "&cid=" + *client.Cid
 	url = url + "&reason=" + reason
@@ -287,9 +287,9 @@ func (p *StateManagerHandler) SetTag(ctx context.Context, client *state.Client, 
 			continue
 		}
 
-		if client.Tid != nil && client.Uid != nil && client.Sid != nil && client.Cid != nil {
-			if val.Tid != nil && val.Uid != nil && val.Sid != nil && val.Cid != nil {
-				if *client.Tid == *val.Tid && *client.Uid == *val.Uid && *client.Sid == *val.Sid && *client.Cid == *val.Cid {
+		if client.Tid != nil && client.UID != nil && client.Sid != nil && client.Cid != nil {
+			if val.Tid != nil && val.UID != nil && val.Sid != nil && val.Cid != nil {
+				if *client.Tid == *val.Tid && *client.UID == *val.UID && *client.Sid == *val.Sid && *client.Cid == *val.Cid {
 					p.Clients[conn].Tag = &tag
 				}
 			}
@@ -313,19 +313,19 @@ func (p *StateManagerHandler) GetClients(ctx context.Context, to *state.Client) 
 			}
 		} else {
 			if *to.Tid != "" {
-				if *to.Uid != "" {
+				if *to.UID != "" {
 					if *to.Sid != "" {
 						if *to.Cid != "" {
-							if *to.Tid == *val.Tid && *to.Uid == *val.Uid && *to.Sid == *val.Sid && *to.Cid == *val.Cid {
+							if *to.Tid == *val.Tid && *to.UID == *val.UID && *to.Sid == *val.Sid && *to.Cid == *val.Cid {
 								clients = append(clients, val)
 							}
 						} else {
-							if *to.Tid == *val.Tid && *to.Uid == *val.Uid && *to.Sid == *val.Sid {
+							if *to.Tid == *val.Tid && *to.UID == *val.UID && *to.Sid == *val.Sid {
 								clients = append(clients, val)
 							}
 						}
 					} else {
-						if *to.Tid == *val.Tid && *to.Uid == *val.Uid {
+						if *to.Tid == *val.Tid && *to.UID == *val.UID {
 							clients = append(clients, val)
 						}
 					}
@@ -357,19 +357,19 @@ func (p *StateManagerHandler) Send(ctx context.Context, to *state.Client, messag
 			}
 		} else {
 			if *to.Tid != "" {
-				if *to.Uid != "" {
+				if *to.UID != "" {
 					if *to.Sid != "" {
 						if *to.Cid != "" {
-							if *to.Tid == *val.Tid && *to.Uid == *val.Uid && *to.Sid == *val.Sid && *to.Cid == *val.Cid {
+							if *to.Tid == *val.Tid && *to.UID == *val.UID && *to.Sid == *val.Sid && *to.Cid == *val.Cid {
 								conn.WriteMessage(websocket.TextMessage, []byte(message))
 							}
 						} else {
-							if *to.Tid == *val.Tid && *to.Uid == *val.Uid && *to.Sid == *val.Sid {
+							if *to.Tid == *val.Tid && *to.UID == *val.UID && *to.Sid == *val.Sid {
 								conn.WriteMessage(websocket.TextMessage, []byte(message))
 							}
 						}
 					} else {
-						if *to.Tid == *val.Tid && *to.Uid == *val.Uid {
+						if *to.Tid == *val.Tid && *to.UID == *val.UID {
 							conn.WriteMessage(websocket.TextMessage, []byte(message))
 						}
 					}
