@@ -308,7 +308,7 @@ EOF;
                     array (
                         'display' => 'all-line',
                         'type' => 'Text',
-                        'value' => '<div ng-if=\"!params.isNewRecord && model.commandPath.indexOf(\'application\') !== 0\" class=\"alert alert-warning text-center\" style=\"margin-top:20px\">
+                        'value' => '<div ng-if=\"!params.isNewRecord\" class=\"alert alert-warning text-center\" style=\"margin-top:20px\">
     <div ng-click=\"deleteService();\" class=\"btn btn-danger btn-sm\"><i class=\"fa fa-warning\"></i> Delete This Service
     </div><hr/>
     <small>This only delete service configuration. Source code will <B>NOT</B> be removed.</small>

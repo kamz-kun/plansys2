@@ -4,37 +4,6 @@ $scope.currentTab = "code";
 $scope.params.isRunning = $scope.model.runningInstances.length > 0;
 $scope.justrunning = false;
 $scope.status = navigator.platform.indexOf('Mac') > -1 ? 'Save: Cmd + S' : 'Save: Ctrl + S';
-console.log($scope.model);
-// $scope.ws.connected(function(client) {
-//     $scope.ws.setTag($scope.model.name + ':0');
-// });
-
-// $scope.ws.receive(function(msg) {
-//     if (typeof msg === 'string') {
-//         msgp = msg.split(":");
-//         if (msgp[0] === 'stopped' && msgp.length == 2) {
-//             $timeout(function() {
-//                 $scope.reloadModel(function() {
-//                     $scope.model.stoppedInstances.forEach(function(item) {
-//                         if (!!$scope.selectedInstance && item.pid == $scope.selectedInstance.pid) {
-//                             $scope.selectedInstance = item;
-//                         }
-//                     });
-//                 });
-//             }, 500);
-//         }
-//         else if (msgp[0] === 'started' && msgp.length == 2) {
-//             $scope.viewRunningLog();
-//         }
-//         else {
-//             $scope.selectedInstance.output += msg;
-//             $scope.updateLogWindow();
-//         }
-//     }
-//     else {
-//         console.log(msg);
-//     }
-// })
 
 $timeout(function() {
     if ($scope.params.isRunning) {
@@ -78,7 +47,7 @@ $scope.updateLogWindow = function() {
     $("#logwindow").html($scope.selectedInstance.output);
     $timeout(function() {
         if ($("#logwindow").length > 0) {
-            $('#logwindow').scrollTop($('#logwindow')[0].scrollHeight);
+            // $('#logwindow').scrollTop($('#logwindow')[0].scrollHeight);
         }
     }, 100)
 }
@@ -160,7 +129,6 @@ $scope.changeTab = function(tab) {
 
         if (tab == 'log') {
             if (!$scope.selectedInstance&&!$scope.justrunning) {
-				console.log('test', $scope.model.runningInstances);
                 if ($scope.model.runningInstances.length > 0) {
                     $scope.selectedInstance = $scope.model.runningInstances[0];
                     $scope.selectedInstancePid = $scope.selectedInstance.pid;

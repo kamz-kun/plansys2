@@ -15,6 +15,12 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.04 ###
+- Fixing Auto Scroll Top on Service Page
+- Now Plansys Service can be deleted (For the time being)
+- Now Default Setting for mode is Dev
+- Now Default Setting for debug is On
+
 ### Build 1.10.00 ###
 - Adding Attachment for Email
 

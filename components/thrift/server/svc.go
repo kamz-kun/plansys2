@@ -92,17 +92,6 @@ func NewServiceManagerHandler(db *buntdb.DB, dir string, configDir []string, por
 				SingleInstanceAction: "wait",
 				Status:               "ok",
 			}
-			service["ImportData"] = &svc.Service{
-				Name:                 "Jasper",
-				CommandPath:          "application.commands",
-				Command:              "JasperCommand",
-				Action:               "actionIndex",
-				Schedule:             "manual",
-				Period:               "",
-				InstanceMode:         "parallel",
-				SingleInstanceAction: "wait",
-				Status:               "ok",
-			}
 			for k, v := range service {
 				str, _ := json.Marshal(v)
 				tx.Set("svc:"+k, string(str), nil)

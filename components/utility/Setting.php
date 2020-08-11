@@ -30,8 +30,8 @@ class Setting {
             'dateFormat'     => 'd M Y',
             'timeFormat'     => 'H:i',
             'dateTimeFormat' => 'd M Y - H:i',
-            'mode'           => 'prod',
-            'debug'          => 'OFF',
+            'mode'           => 'dev',
+            'debug'          => 'ON',
             'oAuthGoogle'    => 'OFF'
         ],
         'email' => [
