@@ -15,6 +15,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.08 ###
+- Adding cc and bcc for Email
+
+
 ### Build 1.10.06 ###
 - Fixing Auto Scroll Top on Service Page
 - Now Plansys Service can be deleted (For the time being)

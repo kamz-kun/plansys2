@@ -110,7 +110,9 @@ class Email extends CComponent {
 				'subject' => $eb->subject,
 				'body' => $html,
 				'to' => $email,
-				'attachments' => @$value['_attachment']
+				'attachments' => @$value['_attachment'],
+				'cc' => @$value['_cc'],
+				'bcc' => @$value['_bcc'],
 			];
 		}
 		

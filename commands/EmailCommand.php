@@ -61,9 +61,17 @@ class EmailCommand extends Service {
 					$mail->AddAddress($m['to']);
 					if(is_array($m['attachments'])){
 					    foreach($m['attachments'] as $i => $j){
-					        print_r($i);
-					        print_r($j);
 					        $mail->AddAttachment($i, $j);        
+					    }
+					}
+					if(is_array($m['cc'])){
+					    foreach($m['cc'] as $k => $l){
+					        $mail->AddCc($k, $l);        
+					    }
+					}
+					if(is_array($m['bcc'])){
+					    foreach($m['bcc'] as $m => $n){
+					        $mail->AddBcc($m, $n);        
 					    }
 					}
 					if (!$mail->Send()) {
