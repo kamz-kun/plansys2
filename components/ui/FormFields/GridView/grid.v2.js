@@ -894,13 +894,13 @@ app.directive('gridView', function($timeout, $http) {
                     var availableHeader = [];
                     var rows = [];
                     var row = [];
-                    $el.find('.pane-hScroll > table > tbody > tr > th').each(function(i, e) {
+                    $el.find('.pane-hScroll > .table-vScroll > tbody:nth-child(1) > tr > th').each(function(i, e) {
                         if ($(e).text().trim() != "") {
                             availableHeader.push(i);
                         }
                     });
 
-                    $el.find('.pane-hScroll > table > tbody > tr').each(function(i, e) {
+                    $el.find('.pane-hScroll > .table-vScroll > tbody:nth-child(1) > tr').each(function(i, e) {
                         var row = [];
                         $(e).find('th').each(function(j, f) {
                             if (availableHeader.indexOf(j) >= 0 || j == 0) {
@@ -918,7 +918,7 @@ app.directive('gridView', function($timeout, $http) {
                         rows.push(row);
                     });
 
-                    $el.find('.pane-vScroll > table > tbody > tr').each(function(i, e) {
+                    $el.find('.table-vScroll > tbody:nth-child(2) > tr').each(function(i, e) {
                         var row = [];
                         $(e).find('td').each(function(j, f) {
                             if (availableHeader.indexOf(j) >= 0) {
