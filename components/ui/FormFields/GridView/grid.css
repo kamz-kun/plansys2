@@ -9,6 +9,12 @@
     width: 100%;
 }
 
+@media only screen and (max-width: 768px) {
+    [grid-view] table {
+        width: unset;
+    }
+}
+
 [grid-view] table.loaded {
     opacity: 1;
 }
@@ -23,29 +29,32 @@
 
 [grid-view] .pane {
     background: transparent;
-  }
+}
+
 [grid-view] .pane-hScroll {
     overflow: auto;
     background: transparent;
-  }
+}
+
 [grid-view] .pane-vScroll {
     overflow-y: hidden;
-    overflow-x: hidden;    
+    overflow-x: hidden;
     width: 100%;
     display: inline-block;
     background: transparent;
-  }
+}
 
-  [grid-view] .pane-vScroll:hover {
+[grid-view] .pane-vScroll:hover {
     overflow-y: auto;
     overflow-x: hidden;
-  }
+}
+
 [grid-view] .tr {
     overflow: auto;
 }
+
 [grid-view] th,
 [grid-view] .tr .th {
-
     vertical-align: middle;
     background-color: #0d47a1;
     background-repeat: repeat-x;
@@ -76,13 +85,12 @@
 
 [grid-view] .thead .tr .th {
     box-sizing: border-box;
-    
     border: 0px;
     box-shadow: 0px 0px 0px 1px #ddd;
 }
 
 [grid-view] .tdata td.freezed {
-    position:absolute;
+    position: absolute;
 }
 
 [grid-view] th i {
@@ -95,23 +103,24 @@
 
 [grid-view] .thead.show {
     position: fixed;
-    
     z-index: 100;
     white-space: nowrap;
 }
+
 [grid-view] .tcols-container {
-    position:fixed;
-    z-index:101;
-    overflow:hidden;
+    position: fixed;
+    z-index: 101;
+    overflow: hidden;
 }
 
 [grid-view] .tcols th {
-    position:absolute;
-    opacity:1;
-    z-index:102;
+    position: absolute;
+    opacity: 1;
+    z-index: 102;
 }
+
 [grid-view] .tcols tbody {
-    overflow:hidden;
+    overflow: hidden;
 }
 
 [grid-view] td.rowSpanned {
@@ -153,10 +162,10 @@
     font-weight: bold !important;
 }
 
-[grid-view] .data-grid-paging .paging-total-record { 
-    border-left:1px solid #ccc;
-    margin:2px 5px;
-    padding:3px 8px;
+[grid-view] .data-grid-paging .paging-total-record {
+    border-left: 1px solid #ccc;
+    margin: 2px 5px;
+    padding: 3px 8px;
 }
 
 [grid-view] tr.g td {
@@ -342,94 +351,89 @@
     background: transparent;
 }
 
+
 /* Lock Column */
 
 [grid-view] .table-vScroll th {
-  position: -webkit-sticky;
-  position: sticky !important;
-  top: 0;
-  z-index: 2;
+    position: -webkit-sticky;
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
 }
 
 [grid-view] .table-vScroll .stick {
-  position: -webkit-sticky;
-  position: sticky !important;
-  left: 0;
-  z-index: 1;
+    position: -webkit-sticky;
+    position: sticky !important;
+    left: 0;
+    z-index: 1;
 }
 
 [grid-view] .table-vScroll .stick {
-  vertical-align: top;
-  color: inherit;
-  background-color: #ccc;
+    vertical-align: top;
+    color: inherit;
+    background-color: #ccc;
 }
 
 [grid-view] .table-vScroll th:not([scope=row]):first-child {
-  left: 0;
-  z-index: 3;
+    left: 0;
+    z-index: 3;
 }
+
 
 /* Scrolling wrapper */
 
 div[tabindex="0"][aria-labelledby][role="region"] {
-  overflow: auto;
+    overflow: auto;
 }
 
 div[tabindex="0"][aria-labelledby][role="region"]:focus {
-  box-shadow: 0 0 .5em rgba(0,0,0,.5);
-  outline: .1em solid rgba(0,0,0,.1);
+    box-shadow: 0 0 .5em rgba(0, 0, 0, .5);
+    outline: .1em solid rgba(0, 0, 0, .1);
 }
 
 div[tabindex="0"][aria-labelledby][role="region"] table {
-  margin: 0;
+    margin: 0;
 }
 
 div[tabindex="0"][aria-labelledby][role="region"].rowheaders {
-  background:
-    linear-gradient(to right, transparent 30%, rgba(255,255,255,0)),
-    linear-gradient(to right, rgba(255,255,255,0), white 70%) 0 100%,
-    radial-gradient(farthest-side at 0% 50%, rgba(0,0,0,0.2), rgba(0,0,0,0)),
-    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.2), rgba(0,0,0,0)) 0 100%;
-  background-repeat: no-repeat;
-  background-color: #fff;
-  background-size: 4em 100%, 4em 100%, 1.4em 100%, 1.4em 100%;
-  background-position: 0 0, 100%, 0 0, 100%;
-  background-attachment: local, local, scroll, scroll;
+    background: linear-gradient(to right, transparent 30%, rgba(255, 255, 255, 0)), linear-gradient(to right, rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(farthest-side at 0% 50%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: 4em 100%, 4em 100%, 1.4em 100%, 1.4em 100%;
+    background-position: 0 0, 100%, 0 0, 100%;
+    background-attachment: local, local, scroll, scroll;
 }
 
 div[tabindex="0"][aria-labelledby][role="region"].colheaders {
-    background:
-        linear-gradient(white 30%, rgba(255,255,255,0)),
-        linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
-        radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
-        radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background: linear-gradient(white 30%, rgba(255, 255, 255, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)) 0 100%;
     background-repeat: no-repeat;
     background-color: #fff;
     background-size: 100% 4em, 100% 4em, 100% 1.4em, 100% 1.4em;
     background-attachment: local, local, scroll, scroll;
 }
 
+
 /* Strictly for making the scrolling happen. */
 
 .table-vScroll .stick {
-  min-width: 40vw;
+    min-width: 40vw;
 }
 
 @media all and (min-width: 30em) {
-  .stick {
-    min-width: 20em;
-  }
+    .stick {
+        min-width: 20em;
+    }
 }
-  
-.table-vScroll .stick + td {
-  min-width: 24em;
+
+.table-vScroll .stick+td {
+    min-width: 24em;
 }
 
 div[tabindex="0"][aria-labelledby][role="region"]:nth-child(3) {
-  max-height: 18em;
+    max-height: 18em;
 }
 
 div[tabindex="0"][aria-labelledby][role="region"]:nth-child(7) {
-  max-height: 15em;
-  margin: 0 1em;
+    max-height: 15em;
+    margin: 0 1em;
 }

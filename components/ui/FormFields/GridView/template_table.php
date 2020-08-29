@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <div class="thead">
    <?php echo $this->generateHeaders('class'); ?>
    <?php $cols = $this->getFreezedCols(); ?>
@@ -44,5 +45,5 @@
     <!--</div>-->
   </div>
 </div>
-
+</div>
 <script type="text/template" name="columnsnew"><?= json_encode($this->columns); ?></script>

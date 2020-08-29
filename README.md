@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.10 ###
+- Now GridView Is Responsive
+
 ### Build 1.10.09 ###
 - Fixing GridView Export Excel Bug
 
