@@ -553,7 +553,6 @@ app.directive('gridView', function($timeout, $http) {
                     
                 }
                 $scope.recalcHeaderWidth = function() {
-                    console.log('executed');
 
                     $scope.firstColWidth = $header.find("table.tdata th:eq(0)").outerWidth();
                     if ($scope.firstColWidth == 0) return;
@@ -939,10 +938,9 @@ app.directive('gridView', function($timeout, $http) {
                     var modify = $scope.getModifyDS($scope.columns[colIdx]);
                     var cursor = $(e.target).parents("table").next().find('table tbody tr');                    
                     var level = (rowIdx == -1 ? -1 : $scope.datasource.data[rowIdx].$level);
-                
                     if (level < 0) {
-                        cursor = $el.find(".pane-vScroll table tbody tr:eq(0)");                        
-                    }                    
+                        cursor = $el.find(".table-vScroll > tbody:nth-child(2) > tr:eq(0)");                                                                        
+                    }                                        
                     var isChecked = $(e.target).is(":checked");
                     if(isChecked){
                         var checkedValue = $scope.columns[colIdx].checkedValue;    

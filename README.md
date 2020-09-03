@@ -15,6 +15,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.11 ###
+- Fixing Gridview Select All Checkboxes
+- Fixing Common Bugs
+
 ### Build 1.10.10 ###
 - Now GridView Is Responsive
 
