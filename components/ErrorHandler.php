@@ -249,7 +249,7 @@ class ErrorHandler extends CErrorHandler
 	{
 		$fc = false;
 		$newContent = [];
-		$path = Setting::get('app.config_dir').'errorlogs/';
+		$path = Setting::get('app.config_dir').'errorlogs';
 		$dateNow = date('d-m-Y');
 		$user = (Yii::app()->user->id??'');
 		
@@ -258,10 +258,11 @@ class ErrorHandler extends CErrorHandler
 							$this->filterArrayBetween($this->getError(),0,5)
 						); 
 		
+		$path = realpath($path);
+
 		if(!file_exists($path)){
 			mkdir($path,0777);
-		}
-		
+		}						
 		$fileExists = $path.$dateNow.'.json';
 		
 		if(file_exists($fileExists)){
