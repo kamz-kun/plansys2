@@ -263,7 +263,7 @@ class ErrorHandler extends CErrorHandler
 		if(!file_exists($path)){
 			mkdir($path,0777);
 		}						
-		$fileExists = $path.$dateNow.'.json';
+		$fileExists = $path.'/'.$dateNow.'.json';
 		
 		if(file_exists($fileExists)){
 			$getFile = file_get_contents($fileExists);

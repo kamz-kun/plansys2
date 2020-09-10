@@ -61,7 +61,7 @@ class DataFilter extends FormField {
         ]
     ];
 
-    public static function getFilterOperators($date = "") {
+    public static function getFilterOperators($date = null) {
         $a = new DataFilter;
         $filters = $a->filterOperators;
         if ($date != "") {
