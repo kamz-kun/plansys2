@@ -31,8 +31,17 @@ app.directive('labelField', function ($timeout) {
                 }
 
                 // set default value
-                $scope.value = $el.find("data[name=value]").html().trim();
-                $scope.modelClass = $el.find("data[name=model_class]").html();
+                if($el.find("data[name=value]").html()){
+                    $scope.value = $el.find("data[name=value]").html().trim();    
+                } else {
+                    $scope.value = undefined;
+                }
+                
+                if($el.find("data[name=model_class]")){
+                    $scope.modelClass = $el.find("data[name=model_class]").html();    
+                } else {
+                    $scope.modelClass = undefined;
+                }
 
                 // if ngModel is present, use that instead of value from php
                 if (attrs.ngModel) {

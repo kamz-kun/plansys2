@@ -381,7 +381,13 @@ class ActiveRecord extends CActiveRecord
 		// $modelClass::getLastInsertID();
 		
         
-		$idN = $model::model()->findAll(array('order'=>'id desc','limit'=>'1'))[0]['id'];
+		$idN = $model::model()->findAll(array('order'=>'id desc','limit'=>'1'));
+        
+        if($idN??false){
+            $idN = $idN[0]['id'];
+        }else{
+            $idN = 0;
+        }
 		
         $builder = Yii::app()->db->schema->commandBuilder;
         $command = $builder->createMultipleInsertCommand($table, $formattedData);

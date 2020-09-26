@@ -15,6 +15,11 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.15 ###
+- Fixing DataFilter Cache Bug
+- Fixing ActiveRecords Bug
+- Fixing Label Field Error Bug
+
 ### Build 1.10.13 ###
 - Fixing DataFilter Default Operator Option Bug
 - Fixing Write Error Files Bug

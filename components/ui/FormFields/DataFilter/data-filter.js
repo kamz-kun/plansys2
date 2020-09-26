@@ -1,9 +1,9 @@
-app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStorage) {
+app.directive('psDataFilter', function($timeout, dateFilter, $http, $localStorage) {
     return {
         scope: true,
-        compile: function (element, attrs, transclude) {
+        compile: function(element, attrs, transclude) {
             //hide filter criteria when mouse is clicked outside
-            $(document).mouseup(function (e) {
+            $(document).mouseup(function(e) {
                 var container = $(".filter-criteria");
 
                 if (!container.is(e.target) && container.parent().has(e.target).length === 0) {
@@ -13,13 +13,13 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
             });
 
 
-            return function ($scope, $el, attrs, ctrl) {
+            return function($scope, $el, attrs, ctrl) {
                 var parent = $scope.getParent($scope);
                 $scope.name = $el.find("data[name=name]:eq(0)").text();
                 parent[$scope.name] = $scope;
 
                 /************* All Filter **************/
-                $scope.toggleFilterCriteria = function (e) {
+                $scope.toggleFilterCriteria = function(e) {
                     var parent = $(e.target).parents('.btn-group');
                     var btn = parent.find('.filter-criteria-button');
                     if (parent.find("> .filter-criteria").hasClass('open')) {
@@ -51,23 +51,26 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 }
 
-                $scope.savePageSetting = function () {
-                    $scope.pageSetting.dataFilters = $scope.pageSetting.dataFilters || {};
-                    $scope.pageSetting.dataFilters[$scope.name] = $scope.filters;
+                $scope.savePageSetting = function() {
+                    $localStorage.pageSetting[window.location.href] = { 'dataFilters': {} };
+                    $localStorage.pageSetting[window.location.href].dataFilters[$scope.name] = $scope.filters;
                 }
 
-                $scope.isCached = function () {
-                    if (!$scope.pageSetting) return false;
+                $scope.isCached = function() {
 
-                    return !!$scope.pageSetting.dataFilters && !!$scope.pageSetting.dataFilters[$scope.name];
+                    if (!$localStorage.pageSetting[window.location.href]) return false;
+
+                    return !!$localStorage.pageSetting[window.location.href].dataFilters && !!$localStorage.pageSetting[window.location.href].dataFilters[$scope.name];
                 }
 
-                $scope.loadPageSetting = function () {
-                    if (!!$scope.pageSetting.dataFilters && !!$scope.pageSetting.dataFilters[$scope.name]) {
-
+                $scope.loadPageSetting = function() {
+                    if (!$localStorage.pageSetting[window.location.href]) {
+                        return;
+                    }
+                    if (!!$localStorage.pageSetting[window.location.href].dataFilters && !!$localStorage.pageSetting[window.location.href].dataFilters[$scope.name]) {
                         $scope.oldFilters = angular.copy($scope.filters);
                         $scope.filters.length = 0;
-                        $scope.pageSetting.dataFilters[$scope.name].forEach(function (filter, k) {
+                        $localStorage.pageSetting[window.location.href].dataFilters[$scope.name].forEach(function(filter, k) {
                             switch (filter.filterType) {
                                 case "dropdown":
                                 case "relation":
@@ -111,7 +114,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 }
 
-                
+
                 $scope.setFirst = function(filter) {
                     if (!isNaN(filter)) {
                         filter = $scope.filters[filter];
@@ -132,13 +135,13 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         });
                     }
                 }
-                
-                $scope.resetFilter = function (filter) {
-                    
+
+                $scope.resetFilter = function(filter) {
+
                     if (!isNaN(filter)) {
                         filter = $scope.filters[filter];
                     }
-                    
+
                     filter.value = '';
                     if (filter.filterType == 'date') {
                         filter.from = '';
@@ -162,8 +165,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         filter.list = [];
                         filter.initRel = false;
                     }
-                    
-                    $scope.datasources.map(function (dataSourceName) {
+
+                    $scope.datasources.map(function(dataSourceName) {
                         var ds = parent[dataSourceName];
                         var dsParamName = "";
                         if (filter.isCustom === "Yes") {
@@ -180,9 +183,9 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 $scope.beforeQuery(ds);
                             }
 
-                            ds.afterQueryInternal[$scope.renderID] = function () {
-                                if (ds.params.paging && $scope[ds.params.paging]
-                                    && $scope[ds.params.paging].gridOptions) {
+                            ds.afterQueryInternal[$scope.renderID] = function() {
+                                if (ds.params.paging && $scope[ds.params.paging] &&
+                                    $scope[ds.params.paging].gridOptions) {
 
                                     var paging = $scope[ds.params.paging].gridOptions.pagingOptions;
                                     if (!paging)
@@ -196,10 +199,10 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 }
                                 ds.enableTrackChanges('DataFilter:ResetFilter');
                             }
-                            
+
                             ds.disableTrackChanges('DataFilter:reset');
                             ds.lastQueryFrom = "DataFilter";
-                            ds.query(function () {
+                            ds.query(function() {
                                 delete ds.afterQueryInternal[$scope.renderID];
 
                                 if (typeof $scope.afterQuery == 'function') {
@@ -210,7 +213,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     });
                 }
 
-                $scope.initFilters = function (filters) {
+                $scope.initFilters = function(filters) {
                     for (i in filters) {
                         var f = filters[i];
                         f.value = '';
@@ -236,13 +239,13 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 f.checked = [];
                                 f.checkedLength = f.checked.length;
                             }
-                            
+
                         }
                     }
                     return filters;
                 }
 
-                $scope.prepareDSParams = function (filter) {
+                $scope.prepareDSParams = function(filter) {
                     var prepared = angular.copy(filter);
                     prepared.name = filter.name;
                     prepared.value = filter.value;
@@ -265,16 +268,13 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     return prepared;
                 }
 
-                $scope.beforeQuery = function (ds) {
-                };
-                $scope.afterQuery = function (ds) {
-                };
-                $scope.updateFilter = function (filter, e, shouldExec) {
+                $scope.beforeQuery = function(ds) {};
+                $scope.afterQuery = function(ds) {};
+                $scope.updateFilter = function(filter, e, shouldExec) {
                     $scope.changeValueText(filter);
-                    
+
                     shouldExec = typeof shouldExec == "undefined" ? true : shouldExec;
-                    if (typeof e != "undefined" && e != null &&
-                        ['list', 'check', 'relation'].indexOf(filter.filterType) < 0) {
+                    if (typeof e != "undefined" && e != null && ['list', 'check', 'relation'].indexOf(filter.filterType) < 0) {
                         $scope.toggleFilterCriteria(e);
                     }
 
@@ -283,8 +283,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                             shouldExec = false;
                         }
                     }
-                    
-                    $scope.datasources.map(function (dataSourceName) {
+
+                    $scope.datasources.map(function(dataSourceName) {
                         var ds = parent[dataSourceName];
                         if (!ds) {
                             return false;
@@ -315,9 +315,9 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                     $scope.beforeQuery(ds);
                                 }
 
-                                ds.afterQueryInternal[$scope.renderID] = function () {
-                                    if (ds.params.paging && $scope[ds.params.paging]
-                                        && $scope[ds.params.paging].gridOptions) {
+                                ds.afterQueryInternal[$scope.renderID] = function() {
+                                    if (ds.params.paging && $scope[ds.params.paging] &&
+                                        $scope[ds.params.paging].gridOptions) {
                                         var paging = $scope[ds.params.paging].gridOptions.pagingOptions;
                                         if (paging.currentPage * paging.pageSize > ds.totalItems) {
                                             paging.currentPage = Math.floor(ds.totalItems / paging.pageSize);
@@ -327,11 +327,11 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                     }
                                     ds.enableTrackChanges('DataFilter:UpdateFilter');
                                 }
-                                
+
                                 ds.disableTrackChanges('DataFilter:UpdateFilter');
                                 ds.lastQueryFrom = "DataFilter";
-                                
-                                ds.query(function () {
+
+                                ds.query(function() {
                                     delete ds.afterQueryInternal[$scope.renderID];
 
                                     if (typeof $scope.afterQuery == 'function') {
@@ -351,28 +351,28 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                 }
 
                 /************** Filter Dropdown ***************/
-                $scope.listFound = function (input, filter) {
+                $scope.listFound = function(input, filter) {
                     if (typeof filter.search == "undefined") {
                         return '';
                     }
                     return input.toLowerCase().indexOf(filter.search.toLowerCase()) > -1;
                 }
 
-                $scope.isObject = function (input) {
+                $scope.isObject = function(input) {
                     return angular.isObject(input);
                 }
-                $scope.dropdownSearchKeypress = function (e) {
+                $scope.dropdownSearchKeypress = function(e) {
                     if (e.which == 13) {
                         $scope.relationNext(e, $scope.filter);
                         e.preventDefault();
                     }
                 }
 
-                $scope.listSearch = function (e, filter) {
+                $scope.listSearch = function(e, filter) {
                     if (!filter) return;
 
                     if (filter.filterType == "relation") {
-                        $timeout(function () {
+                        $timeout(function() {
                             $scope.loading = true;
 
                             var params = {};
@@ -393,12 +393,12 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 'p': params
                             };
                             postParams[window.csrf.name] = window.csrf.token;
-                            $http.post(Yii.app.createUrl('formfield/DataFilter.relnext'), postParams).success(function (data) {
+                            $http.post(Yii.app.createUrl('formfield/DataFilter.relnext'), postParams).success(function(data) {
                                 $scope.loading = false;
                                 filter.list.length = 0;
 
                                 if (data.list && data.list.length && data.list.length > 0) {
-                                    data.list.forEach(function (item) {
+                                    data.list.forEach(function(item) {
                                         filter.list.push(item);
                                     });
 
@@ -415,7 +415,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 };
 
-                $scope.relationInit = function (filter) {
+                $scope.relationInit = function(filter) {
                     $scope.loading = true;
                     var postParams = {
                         'v': filter.value,
@@ -424,7 +424,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         'm': $scope.modelClass
                     };
                     postParams[window.csrf.name] = window.csrf.token;
-                    $http.post(Yii.app.createUrl('formfield/DataFilter.relInit'), postParams).success(function (data) {
+                    $http.post(Yii.app.createUrl('formfield/DataFilter.relInit'), postParams).success(function(data) {
                         $scope.loading = false;
                         filter.list.push({
                             key: data[0].value,
@@ -437,12 +437,12 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     return false;
                 }
 
-                $scope.relationNext = function (e, filter, f) {
+                $scope.relationNext = function(e, filter, f) {
                     if (!!e) {
                         e.stopPropagation();
                         e.preventDefault();
                     }
-                    
+
                     if (!filter) return;
                     $scope.loading = true;
 
@@ -461,10 +461,10 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         'm': $scope.modelClass,
                         'i': filter.list.length,
                         'p': params
-                    }).success(function (data) {
+                    }).success(function(data) {
                         $scope.loading = false;
                         if (data.list && data.list.length && data.list.length > 0) {
-                            data.list.forEach(function (item) {
+                            data.list.forEach(function(item) {
                                 filter.list.push(item);
                             });
                         }
@@ -475,7 +475,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         if (filter.list.length > 5) {
                             filter.searchable = true;
                         }
-                        
+
                         if (typeof f == "function") {
                             f(data);
                         }
@@ -484,12 +484,12 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     return false;
                 }
 
-                $scope.toggleShowFilter = function (filter) {
+                $scope.toggleShowFilter = function(filter) {
                     filter.show = (filter.show ? false : true);
                     $scope.savePageSetting();
                 }
 
-                $scope.dropdownClick = function (filter, e) {
+                $scope.dropdownClick = function(filter, e) {
                     if (filter.searchable) {
                         $(e.target).parents("[dropdown]").find(".search-dropdown").focus();
                     }
@@ -510,7 +510,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
 
                 }
 
-                $scope.generateUrl = function (url, type) {
+                $scope.generateUrl = function(url, type) {
                     var output = '';
                     if (typeof url == "string") {
 
@@ -544,7 +544,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     return $scope.$eval(output);
                 }
 
-                $scope.updateDropdown = function (e, filter, value) {
+                $scope.updateDropdown = function(e, filter, value) {
                     filter.value = value.key;
                     filter.dropdownText = value.value;
 
@@ -572,7 +572,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     $scope.updateFilter(filter, e);
                 }
 
-                $scope.dropdownChecked = function (filter, item) {
+                $scope.dropdownChecked = function(filter, item) {
                     if (filter.valueText == 'All') {
                         return false;
                     } else if (!!item && !!item.key && filter.checked.indexOf(item.key) >= 0) {
@@ -582,25 +582,25 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 }
 
-                $scope.renderFormList = function (list) {
+                $scope.renderFormList = function(list) {
                     var newList = [];
                     for (key in list) {
                         if (angular.isObject(list[key])) {
                             if (!!list[key].key) {
-                                newList.push({key: list[key].key, value: list[key].value});
+                                newList.push({ key: list[key].key, value: list[key].value });
                             } else {
                                 var subItem = [];
                                 var rawSub = list[key];
                                 for (subkey in rawSub) {
-                                    subItem.push({key: subkey, value: rawSub[subkey]});
+                                    subItem.push({ key: subkey, value: rawSub[subkey] });
                                 }
-                                newList.push({key: key, value: subItem});
+                                newList.push({ key: key, value: subItem });
                             }
                         } else {
                             if (list[key].indexOf('url:') == 0) {
-                                newList.push({key: key, value: key, url: list[key]});
+                                newList.push({ key: key, value: key, url: list[key] });
                             } else {
-                                newList.push({key: key, value: list[key]});
+                                newList.push({ key: key, value: list[key] });
                             }
                         }
                     }
@@ -608,11 +608,11 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                 }
 
                 /*************** Filter Text *************/
-                $scope.focused = function (e) {
+                $scope.focused = function(e) {
                     $(e.target).parents('.input-group').find('.focused').focus();
                 }
 
-                $scope.filterValueKeydown = function (filter, e) {
+                $scope.filterValueKeydown = function(filter, e) {
                     switch (e.which) {
                         case 13:
                             e.preventDefault();
@@ -622,23 +622,23 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 }
 
-                $scope.dateChangeOperator = function (f, o, e) {
+                $scope.dateChangeOperator = function(f, o, e) {
                     $scope.changeOperator(f, o, e);
-                    
+
                     if (f.daily && f.daily.open) {
                         f.daily.open = false
                     }
-                    
+
                     if (['Daily', 'Weekly', 'Monthly', 'Yearly'].indexOf(f.operator) >= 0) {
                         $scope.updateFilter(f, e);
                     }
                 }
 
-                $scope.changeValueText = function (filter) {
+                $scope.changeValueText = function(filter) {
                     if (filter.value == '##!@# EMPTY #@!##') {
                         filter.value = '';
                     }
-                    
+
                     var dateCondition = filter.filterType == "date" && ['Between', 'Not Between', 'More Than', 'Less Than'].indexOf(filter.operator) >= 0;
                     if (filter.operator == 'Is Empty' || filter.operator == 'Is Not Empty') {
                         filter.valueText = filter.operator;
@@ -687,7 +687,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 if (typeof to == "undefined") {
                                     to = "";
                                 }
-                                
+
                                 switch (filter.operator) {
                                     case "Between":
                                         filter.valueText = filter.operator + " " + from + " - " + to;
@@ -719,7 +719,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                             filter.from = new Date();
                                         }
                                         var monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                        ];
 
                                         if (typeof filter.from == 'string') {
                                             filter.from = new Date(filter.from);
@@ -731,16 +732,16 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                         first.setDate(startWeekDay);
                                         last.setDate(startWeekDay + 6);
 
-                                        Date.prototype.getWeekOfMonth = function (exact) {
-                                            var month = this.getMonth()
-                                                , year = this.getFullYear()
-                                                , firstWeekday = new Date(year, month, 1).getDay()
-                                                , lastDateOfMonth = new Date(year, month + 1, 0).getDate()
-                                                , offsetDate = this.getDate() + firstWeekday - 1
-                                                , index = 1 // start index at 0 or 1, your choice
-                                                , weeksInMonth = index + Math.ceil((lastDateOfMonth + firstWeekday - 7) / 7)
-                                                , week = index + Math.floor(offsetDate / 7)
-                                                ;
+                                        Date.prototype.getWeekOfMonth = function(exact) {
+                                            var month = this.getMonth(),
+                                                year = this.getFullYear(),
+                                                firstWeekday = new Date(year, month, 1).getDay(),
+                                                lastDateOfMonth = new Date(year, month + 1, 0).getDate(),
+                                                offsetDate = this.getDate() + firstWeekday - 1,
+                                                index = 1 // start index at 0 or 1, your choice
+                                                ,
+                                                weeksInMonth = index + Math.ceil((lastDateOfMonth + firstWeekday - 7) / 7),
+                                                week = index + Math.floor(offsetDate / 7);
                                             if (exact || week < 2 + index)
                                                 return week;
                                             return week === weeksInMonth ? index + 5 : week;
@@ -787,7 +788,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                             filter.from = new Date();
                                         }
                                         var monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                        ];
 
                                         if (typeof filter.from == 'string') {
                                             filter.from = new Date(filter.from);
@@ -844,16 +846,16 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                 }
 
                 /************** Filter Date *************/
-                $scope.changeOperator = function (filter, operator, e) {
+                $scope.changeOperator = function(filter, operator, e) {
                     filter.operator = operator;
                     filter.operatorDropdownOpen = false;
                     $scope.focused(e);
                     $scope.changeValueText(filter, filter.value);
                 }
 
-                $scope.getDate = function (col) {
+                $scope.getDate = function(col) {
                     var ret = "";
-                    $scope.filters.forEach(function (item, idx) {
+                    $scope.filters.forEach(function(item, idx) {
                         if (item.filterType != 'date' && item.name != "col")
                             return;
 
@@ -870,7 +872,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     return ret;
                 }
 
-                $scope.datePrev = function (filter, e) {
+                $scope.datePrev = function(filter, e) {
                     if (['Daily', 'Weekly', 'Monthly', 'Yearly'].indexOf(filter.operator) >= 0) {
                         switch (filter.operator) {
                             case 'Daily':
@@ -893,42 +895,40 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         }
                     }
                 }
-                
+
                 $scope.toggleDailyPicker = function(filter, ev) {
                     if (filter.daily && filter.daily.open) {
                         filter.daily.open = false;
                         return;
                     }
-                    
+
                     filter.daily = {
                         open: true,
                         day: filter.value.split('-')[2].split(' ')[0],
                         month: filter.value.split('-')[1].split(' ')[0],
                         year: filter.value.split('-')[0].split(' ')[0]
                     }
-                    console.log(filter.daily)
                 }
-                
+
                 $scope.filterDaily = function(filter) {
                     var date = filter.value.split(' ')[0]
                     var time = filter.value.split(' ')[1]
-                    console.log(filter.value)
                     date = date.split('-')
                     date[2] = filter.daily.day
                     date[1] = filter.daily.month
                     date[0] = filter.daily.year
                     date = date.join('-')
-                    
+
                     $timeout(function() {
                         var newdate = date + ' ' + time
                         filter.from = newdate
                         $scope.updateFilter(filter)
                         filter.daily.open = false
                     }, 0)
-                    
+
                 }
 
-                $scope.dateNext = function (filter) {
+                $scope.dateNext = function(filter) {
                     if (['Daily', 'Weekly', 'Monthly', 'Yearly'].indexOf(filter.operator) >= 0) {
                         switch (filter.operator) {
                             case 'Daily':
@@ -959,9 +959,9 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     }
                 }
 
-                $scope.changeValueFromDate = function (filter, from) {
+                $scope.changeValueFromDate = function(filter, from) {
                     filter[from + "Open"] = false;
-                    $timeout(function () {
+                    $timeout(function() {
                         if (filter.operator == 'Less Than') {
                             filter.value = {
                                 from: null,
@@ -980,23 +980,23 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                         }
                     }, 0);
                 }
-                
-                $scope.focusDatePicker = function (filter, from) {
+
+                $scope.focusDatePicker = function(filter, from) {
                     filter[from + "Open"] = true;
                 }
-                
+
                 $scope.modelClass = $el.find("data[name=model_class]").html();
                 $scope.operators = JSON.parse($('<div/>').html($el.find("data[name=operators]").html()).text());
                 $scope.options = JSON.parse($el.find("data[name=options]").html());
-                $scope.relPerPage=$el.find("data[name=relperpage]").html();
-                
+                $scope.relPerPage = $el.find("data[name=relperpage]").html();
+
                 var filterRaw = $el.find("data[name=filters]").html();
-                filterRaw = filterRaw.replace(/\%quot\%/gi,'\\"');
-                filterRaw = filterRaw.replace(/\%lt\%/gi,'<');
-                filterRaw = filterRaw.replace(/\%gt\%/gi,'>');
-                
+                filterRaw = filterRaw.replace(/\%quot\%/gi, '\\"');
+                filterRaw = filterRaw.replace(/\%lt\%/gi, '<');
+                filterRaw = filterRaw.replace(/\%gt\%/gi, '>');
+
                 $scope.filters = $scope.initFilters(JSON.parse(filterRaw));
-                
+
                 $scope.oldFilters = null;
                 $scope.datasource = $el.find("data[name=datasource]").text();
                 $scope.datasources = JSON.parse($el.find("data[name=datasources]").html());
@@ -1014,41 +1014,41 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                     date: 'filter_date'
                 }
                 $scope.available = false;
-                
+
                 if (!!$scope.options.freeze) {
                     var $container = $el.parents('.container-full');
                     var paddingLeft = $el.offset().left;
-                    var width = $container.width() ;
+                    var width = $container.width();
                     $scope.freeze = function() {
-                        var pl  =(($el.offset().left  *-1) + paddingLeft);
+                        var pl = (($el.offset().left * -1) + paddingLeft);
                         $el.css({
                             paddingLeft: pl + 'px',
                             width: (pl + width) + 'px'
                         });
                     }
-                    $(window).resize(function () {
-                        $timeout(function () {
+                    $(window).resize(function() {
+                        $timeout(function() {
                             width = $container.width();
                             $scope.freeze();
                         }, 400);
                     });
-                    $container.scroll(function () {
+                    $container.scroll(function() {
                         $scope.freeze();
                     });
                 }
-                
-                $scope.reset = function () {
+
+                $scope.reset = function() {
                     $scope.resetPageSetting();
                     location.reload();
                 }
 
-                $scope.evalValue = function (value) {
+                $scope.evalValue = function(value) {
                     if (typeof value == "string" && value.substr(0, 3) == "js:") {
                         return $scope.$parent.$eval(value.trim().substr(3));
                     }
                     return value;
                 }
-                $scope.ngIf = function (filter) {
+                $scope.ngIf = function(filter) {
                     if (!!filter.options && !!filter.options['ng-if']) {
                         return $scope.$parent.$eval(filter.options['ng-if']);
                     }
@@ -1056,7 +1056,7 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                 }
 
                 // Set Default Filters Value
-                $timeout(function () {
+                $timeout(function() {
                     var showCount = 0;
                     var watchDefaultValue = [];
                     if ($scope.isCached()) {
@@ -1070,14 +1070,14 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                             }
                         }
 
-                        $scope.datasources.map(function (dataSourceName) {
+                        $scope.datasources.map(function(dataSourceName) {
                             var ds = parent[dataSourceName];
                             if (ds) {
                                 ds.lastQueryFrom = "DataFilter";
                                 ds.disableTrackChanges('DataFilter:initDefaultValueCached');
                                 ds.lastQueryFrom = "DataFilter";
                                 ds.dataFilterName = $scope.name;
-                                
+
                                 if (ds.execMode != 'manual')
                                     ds.query();
                             }
@@ -1085,11 +1085,10 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
 
                     } else {
                         var execQuery = false;
-                        
+
                         for (i in $scope.filters) {
                             var f = $scope.filters[i];
-                            var dateCondition = (f.filterType == 'date'
-                            && ['Daily', 'Weekly', 'Monthly', 'Yearly', 'Between','Not Between','Less Than','More Than']
+                            var dateCondition = (f.filterType == 'date' && ['Daily', 'Weekly', 'Monthly', 'Yearly', 'Between', 'Not Between', 'Less Than', 'More Than']
                                 .indexOf(f.defaultOperator) >= 0);
 
                             f.show = (typeof f.show == "boolean" ? f.show : (showCount > 5 ? false : true));
@@ -1103,8 +1102,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                     if (typeof f.defaultOperator != "undefined" && f.defaultOperator != "") {
                                         f.operator = f.defaultOperator;
                                         if (f.filterType == 'date') {
-                                            if (f.defaultOperator == 'Between'
-                                                || f.defaultOperator == 'Not Between') {
+                                            if (f.defaultOperator == 'Between' ||
+                                                f.defaultOperator == 'Not Between') {
                                                 f.from = $scope.evalValue(f.defaultValueFrom);
                                                 f.to = $scope.evalValue(f.defaultValueTo);
                                             } else if (f.defaultOperator == 'Less Than') {
@@ -1114,26 +1113,25 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                                 f.from = $scope.evalValue(f.defaultValue);
                                                 f.to = null;
                                             }
-                                            
+
                                             f.value = {};
                                             if (typeof f.from == "string") {
-                                                f.from = new Date(strtotime(f.from)  * 1000);
+                                                f.from = new Date(strtotime(f.from) * 1000);
                                                 f.value.from = f.from;
                                             }
-                                            
+
                                             if (typeof f.to == "string") {
                                                 f.to = new Date(strtotime(f.to) * 1000);
                                                 f.value.to = f.to;
                                             }
-                                            
+
                                         } else {
                                             f.value = $scope.evalValue(f.defaultValue);
                                         }
                                     }
-                                    
+
                                     $scope.updateFilter(f, null, false);
-                                }
-                                else {
+                                } else {
                                     var defaultval = $scope.evalValue(f.defaultValue);
                                     if (f.filterType === 'check') {
                                         if (typeof defaultval === 'string') {
@@ -1150,8 +1148,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                         if (f.filterType == 'relation') {
                                             $scope.relationNext(false, f);
                                         }
-                                        
-                                        if (!defaultval && f.defaultValue.substr(0,3) == 'js:') {
+
+                                        if (!defaultval && f.defaultValue.substr(0, 3) == 'js:') {
                                             var fclone = $.extend({}, f, true);
                                             watchDefaultValue.push({
                                                 name: f.name,
@@ -1168,8 +1166,8 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                             }
                         }
 
-                        watchDefaultValue.map(function (item, k) {
-                            var unwatch = $scope.$parent.$watch(item.watch, function (n) {
+                        watchDefaultValue.map(function(item, k) {
+                            var unwatch = $scope.$parent.$watch(item.watch, function(n) {
                                 if (!n)
                                     return;
 
@@ -1182,16 +1180,16 @@ app.directive('psDataFilter', function ($timeout, dateFilter, $http, $localStora
                                 }
                             });
                         });
-                        
+
                         if (execQuery) {
-                            $scope.datasources.map(function (dataSourceName) {
+                            $scope.datasources.map(function(dataSourceName) {
                                 var ds = parent[dataSourceName];
                                 if (ds) {
                                     ds.lastQueryFrom = "DataFilter";
                                     ds.disableTrackChanges('DataFilter:initDefaultValue');
                                     ds.lastQueryFrom = "DataFilter";
                                     ds.dataFilterName = $scope.name;
-                                    
+
                                     if (ds.execMode != 'manual')
                                         ds.query();
                                 }
