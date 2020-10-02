@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.10.16 ###
+- Adding Angular-Calendar Module
+
 ### Build 1.10.15 ###
 - Fixing DataFilter Cache Bug
 - Fixing ActiveRecords Bug

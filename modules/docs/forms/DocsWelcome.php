@@ -62,7 +62,7 @@ class DocsWelcome extends Form {
                 'type' => 'Text',
                 'value' => '<div class=\"welcome-page\">
     <img src=\"plansys/static/img/welcome.png\" width=\"450px\">
-    <h4 style=\"margin-top: -40px;\">Build 1.10.15</h4>
+    <h4 style=\"margin-top: -40px;\">Build 1.10.16</h4>
     <hr>
     <div class=\"row\" style=\"margin-top: 10px;\">
         <div class=\"col-sm-12 col-md-3\">

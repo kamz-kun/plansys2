@@ -1,0 +1,58 @@
+<div>
+    <table class="table table-bordered table-fixed weekview-header">
+        <thead>
+        <tr>
+            <th class="calendar-hour-column"></th>
+            <th ng-repeat="dt in dates" class="text-center weekview-header-label">{{dt.date| date:
+                formatWeekViewDayHeader}}
+            </th>
+            <th ng-if="gutterWidth>0" class="gutter-column" ng-style="{width: gutterWidth+'px'}"></th>
+        </tr>
+        </thead>
+    </table><!-- 
+    <div class="weekview-allday-table">
+        <div class="weekview-allday-label">
+            {{allDayLabel}}
+        </div>
+        <div class="weekview-allday-content-wrapper">
+            <table class="table table-bordered table-fixed weekview-allday-content-table">
+                <tbody>
+                <tr>
+                    <td ng-repeat="day in dates track by day.date" class="calendar-cell">
+                        <div ng-class="{'calendar-event-wrap': day.events}" ng-if="day.events"
+                             ng-style="{height: 25*day.events.length+'px'}">
+                            <div ng-repeat="displayEvent in day.events" class="calendar-event"
+                                 ng-click="eventSelected({event:displayEvent.event})"
+                                 ng-style="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                                <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td ng-if="allDayEventGutterWidth>0" class="gutter-column"
+                        ng-style="{width: allDayEventGutterWidth+'px'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="scrollable" style="height: 400px">
+        <table class="table table-bordered table-fixed">
+            <tbody>
+            <tr ng-repeat="row in rows track by $index">
+                <td class="calendar-hour-column text-center">
+                    {{row[0].time | date: formatHourColumn}}
+                </td>
+                <td ng-repeat="tm in row track by tm.time" class="calendar-cell" ng-click="select(tm.time, tm.events)">
+                    <div ng-class="{'calendar-event-wrap': tm.events}" ng-if="tm.events">
+                        <div ng-repeat="displayEvent in tm.events" class="calendar-event"
+                             ng-click="eventSelected({event:displayEvent.event})"
+                             ng-style="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">                            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+                        </div>
+                    </div>
+                </td>
+                <td ng-if="normalGutterWidth>0" class="gutter-column" ng-style="{width: normalGutterWidth+'px'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div> -->
+</div>

@@ -4,6 +4,7 @@
      <?php Asset::registerCSS('application.themes.default.views.css.ui'); ?>
      <?php Asset::registerCSS('application.themes.default.views.css.default'); ?>
      <?php Asset::registerCSS('application.themes.default.views.css.component'); ?>
+     <?php Asset::registerCSS('application.static.calendar.calendar'); ?>
      <?php
         if(file_exists(Setting::getRootPath() . '/app/static/custom.css')){
           Asset::registerCSS('app.static.custom');
@@ -38,4 +39,5 @@
      <?php //Asset::registerJS('application.themes.default.views.js.headerctrl'); ?>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <?php Asset::registerJS('application.static.calendar.calendar-tpls'); ?>     
 </head>
