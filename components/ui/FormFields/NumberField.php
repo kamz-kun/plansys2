@@ -107,6 +107,62 @@ class NumberField extends FormField {
                 'value' => '<hr/>',
             ),
             array (
+                'column1' => array (
+                    array (
+                        'label' => 'Min Value',
+                        'name' => 'minValue',
+                        'layout' => 'Vertical',
+                        'labelWidth' => '12',
+                        'fieldWidth' => '11',
+                        'options' => array (
+                            'ng-model' => 'active.minValue',
+                            'ng-change' => 'save()',
+                            'ng-delay' => '500',
+                            'ng-disabled' => 'active.layout == \'Vertical\'',
+                        ),
+                        'type' => 'TextField',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'column2' => array (
+                    array (
+                        'label' => 'Max Value',
+                        'name' => 'maxValue',
+                        'layout' => 'Vertical',
+                        'labelWidth' => 12,
+                        'fieldWidth' => '11',
+                        'options' => array (
+                            'ng-model' => 'active.maxValue',
+                            'ng-change' => 'save()',
+                            'ng-delay' => '500',
+                        ),
+                        'type' => 'TextField',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'column3' => array (
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'column4' => array (
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                ),
+                'w1' => '50%',
+                'w2' => '50%',
+                'type' => 'ColumnField',
+            ),
+            array (
                 'label' => 'Use Commas',
                 'name' => 'usecommas',
                 'options' => array (
@@ -204,6 +260,10 @@ class NumberField extends FormField {
 	
     /** @var string $usecommas */
     public $usecommas = 'y';
+    /** @var string $usecommas */
+    public $minValue = '';
+    /** @var string $usecommas */
+    public $maxValue = '';
 
     /** @var string $prefix */
     public $prefix = '';

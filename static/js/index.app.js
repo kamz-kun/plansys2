@@ -240,6 +240,52 @@ app.filter('dateFormat', function (dateFilter) {
 
         }
 
+        if (format == "dateindL" || format == "datetimeindL" || format == "dateindS" || format == "datetimeindS") {
+            if(input == null) {
+                return "-";
+            }
+            var d = new Date(input);
+            var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            var bul = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
+                         'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+            var seconds = d.getSeconds() < 10 ? "0" + "" + d.getSeconds() : d.getSeconds();
+            var minutes = d.getMinutes() < 10 ? "0" + "" + d.getMinutes() : d.getMinutes();
+            var hours = d.getHours() < 10 ? "0" + "" + d.getHours() : d.getHours();
+            var dates = d.getDate() < 10 ? "0" + "" + d.getDate() : d.getDate();
+            var indodateL = dates + " " + bulan[d.getMonth()] + " " + d.getFullYear();
+            var indodateS = dates + " " + bul[d.getMonth()] + " " + d.getFullYear();
+            
+            if (format == "dateindL") {
+                return indodateL;
+            } else if(format == "datetimeindL") {
+                return indodateL + " - " + hours + ":" + minutes + ":" + seconds;
+            } else if (format == "dateindS") {
+                return indodateS;
+            } else if(format == "datetimeindS") {
+                return indodateS + " - " + hours + ":" + minutes + ":" + seconds;
+            }
+        }
+
+        if (format == "monthIndL" || format == "monthIndS") {
+            if(input == null) {
+                return "-";
+            }
+            var d = new Date(input);
+            var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            var bul = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
+                         'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+            var monthIndL = bulan[d.getMonth()];
+            var monthIndS = bul[d.getMonth()];
+            
+            if (format == "monthIndL") {
+                return monthIndL;
+            } else if (format == "monthIndS") {
+                return monthIndS;
+            }
+        }
+
         if (input != "0000-00-00" && !!input && input != null) {
             input = input + "";
             var pinput = input.split(" ");

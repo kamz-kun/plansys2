@@ -928,6 +928,13 @@ app.directive('psDataFilter', function($timeout, dateFilter, $http, $localStorag
 
                 }
 
+                $scope.dateKeyPress = function(e,filter) {
+                    if(e.keyCode == 13){
+                        $scope.filterDaily(filter);
+                        e.preventDefault();
+                    }
+                }
+                
                 $scope.dateNext = function(filter) {
                     if (['Daily', 'Weekly', 'Monthly', 'Yearly'].indexOf(filter.operator) >= 0) {
                         switch (filter.operator) {

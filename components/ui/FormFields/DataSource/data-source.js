@@ -475,7 +475,7 @@ app.directive('psDataSource', function ($timeout, $http, $q) {
                             for (var i in newval) {
                                 delete newval[i].$rowState;
                             }  
-                        } else if ($scope.trackChanges) {
+                        } else  {
                             var df = diff($scope.original, newval);
                             
                             // Generate UpdateData Hash (to enable faster primary key look up)

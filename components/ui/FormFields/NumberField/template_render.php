@@ -16,6 +16,8 @@
         <data name="value" class="hide"><?= $this->value ?></data>
         <data name="valueshow" class="hide"><?= $this->valueshow ?></data>
         <data name="usecommas" class="hide"><?= $this->usecommas ?></data>
+        <data name="minValue" class="hide"><?= $this->minValue ?></data>
+        <data name="maxValue" class="hide"><?= $this->maxValue ?></data>
         <data name="ac_mode" class="hide"><?= $this->acMode ?></data>
         <data name="model_class" class="hide"><?= Helper::getAlias($model) ?></data>
         <data name="rel_model_class" class="hide"><?= $this->modelClass ?></data>
@@ -37,7 +39,7 @@
 
                 <!-- value -->
                 <input type="<?= $this->fieldType ?>" <?= $this->expandAttributes($this->fieldOptions) ?>
-                       ng-model="valueshow" ng-change="update()" value="<?= $this->valueshow ?>"
+                       ng-model="valueshow" ng-focus="tfFocus()" ng-blur="tfBlur()" ng-change="update()" value="<?= $this->valueshow ?>"
                        />
                 <input type="<?= $this->fieldType ?>" <?= $this->expandAttributes($this->fieldOptions) ?>
                        ng-model="value" value="<?= $this->value ?>"

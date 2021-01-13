@@ -13,7 +13,10 @@ app.directive('numberField', function ($timeout, $http) {
                     if (!!ctrl) {
                         $timeout(function () {
 							$scope.value = $scope.onlynumber($scope.valueshow);
-                            $scope.valueshow = $scope.numberWithCommas($scope.value);
+							if($scope.usecommas=='y')
+								$scope.valueshow = $scope.numberWithCommas($scope.value);
+							else 
+								$scope.valueshow = $scope.value;
                             ctrl.$setViewValue($scope.value);
                         }, 0);
                     }
@@ -54,7 +57,9 @@ app.directive('numberField', function ($timeout, $http) {
                 $scope.name = $el.find("data[name=name]:eq(0)").html().trim();
                 $scope.value = $el.find("data[name=value]").html().trim();
 				$scope.valueshow = $el.find("data[name=valueshow]").html().trim();
-				$scope.usecommas = $el.find("data[name=usecommas]").html().trim();
+                $scope.usecommas = $el.find("data[name=usecommas]").html().trim();
+                $scope.maxValue = $el.find("data[name=maxValue]").html().trim();
+				$scope.minValue = $el.find("data[name=minValue]").html().trim();
                 $scope.modelClass = $el.find("data[name=model_class]").html();
                 $scope.relModelClass = $el.find("data[name=rel_model_class]").html();
                 $scope.acMode = $el.find("data[name=ac_mode]").html();
@@ -124,7 +129,41 @@ app.directive('numberField', function ($timeout, $http) {
                         }
                     }, 200);
                     $scope.isFocused = false;
-                }
+
+                    
+					if($scope.minValue!=''){
+						var chk = parseFloat($scope.onlynumber($scope.valueshow))
+						if(chk<parseFloat($scope.minValue)){
+							$scope.value = $scope.onlynumber($scope.minValue)
+						} else {
+							$scope.value = $scope.onlynumber($scope.valueshow);	
+						}
+					} else {
+						$scope.value = $scope.onlynumber($scope.valueshow);
+					}
+					
+					if($scope.maxValue!=''){
+						var chk = parseFloat($scope.onlynumber($scope.valueshow))
+						if(chk>parseFloat($scope.maxValue)){
+							$scope.value = $scope.onlynumber($scope.maxValue)
+						} else {
+							$scope.value = $scope.onlynumber($scope.valueshow);	
+						}
+					} else {
+						$scope.value = $scope.onlynumber($scope.valueshow);
+					}
+					
+					if($scope.value==""){
+						$scope.value = 0;
+					}
+							
+					if($scope.usecommas=='y')
+						$scope.valueshow = $scope.numberWithCommas($scope.value);
+					else 
+						$scope.valueshow = $scope.value;
+					ctrl.$setViewValue($scope.value);
+					
+                }                   
                 
                 // if ngModel is present, use that instead of value from php
                 if (attrs.ngModel) {

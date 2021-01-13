@@ -15,6 +15,14 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.11.00 ###
+- Adding Max and Min Value on NumberField
+- Fixing bug Export Excel when GridView had more than 1 header row
+- Link Button now not detecting delete button
+- Fixing bug daily type date mode data filter
+- Adding Indonesian dateFormat angular filter
+- Localizing Bootstrap Js
+
 ### Build 1.10.16 ###
 - Adding Angular-Calendar Module
 

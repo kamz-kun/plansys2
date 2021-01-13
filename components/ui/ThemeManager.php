@@ -13,6 +13,7 @@ class ThemeManager extends CThemeManager {
             '/js/lib/angular.lazyload.min.js',
             '/js/lib/angular.ui.layout.js',
             '/js/lib/angular.ui.bootstrap.min.js',
+            '/js/lib/bootstrap.js',
             '/js/index.app.js',
             '/js/index.ctrl.js'
         ];

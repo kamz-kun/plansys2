@@ -36,9 +36,9 @@
         background:white;border:1px solid #aaa;margin-top:35px;
         z-index:999;padding:5px;border-radius:4px;
         box-shadow:0 6px 12px rgba(0,0,0,.175)" role="menu" > 
-        <input type="text" ng-model="filter.daily.day" style="width:50px">
-        <input type="text" ng-model="filter.daily.month" style="width:50px">
-        <input type="text" ng-model="filter.daily.year" style="width:50px">
+        <input type="text" ng-model="filter.daily.day" style="width:50px" ng-keypress="dateKeyPress($event,filter)">
+        <input type="text" ng-model="filter.daily.month" style="width:50px" ng-keypress="dateKeyPress($event,filter)">
+        <input type="text" ng-model="filter.daily.year" style="width:50px" ng-keypress="dateKeyPress($event,filter)">
         <div class="btn btn-xs btn-default" ng-click="filterDaily(filter)"><i class="fa fa-play"></i></div>
     </div>
     <div class="dropdown-menu filter-criteria" style="min-width:190px;" role="menu" >  

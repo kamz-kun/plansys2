@@ -98,13 +98,6 @@ app.directive('linkBtn', function ($timeout, $parse, $compile, $http) {
                 }
 
                 $scope.isDeleteButton = function (e) {
-
-                    if ($el.hasClass('btn-danger')) {
-                        if (/hapus|delete|del/ig.test($el.text())) {
-                            return true;
-                        }
-                    }
-
                     return false;
                 }
 
