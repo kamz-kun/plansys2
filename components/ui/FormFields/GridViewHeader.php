@@ -152,6 +152,23 @@ border-bottom:1px solid #ddd\'>
                         'value' => '<column-placeholder></column-placeholder>',
                     ),
                 ),
+                'column3' => array (
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                    array (
+                        'label' => 'Style',
+                        'name' => 'custom_style',
+                        'options' => array (
+                            'ng-model' => 'selected.custom_style',
+                        ),
+                        'fieldOptions' => array (
+                            'auto-grow' => 'true',
+                        ),
+                        'type' => 'TextArea',
+                    ),
+                ),
                 'w1' => '33%',
                 'w2' => '33%',
                 'w3' => '33%',

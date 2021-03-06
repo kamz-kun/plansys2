@@ -98,13 +98,18 @@ $scope.select = function(row,col,e) {
     $scope.activeRow = row;
     $scope.activeCol = col;
     $scope.selected = $scope.active.columns[col];
-    
+
     if (!$scope.selected.options) {
         $scope.selected.options = {};
     }
     
     if (!$scope.selected.options.width) {
         $scope.selected.options.width = ''
+    }
+    
+    
+    if (!$scope.selected.custom_style) {
+        $scope.selected.custom_style = ''
     }
 
     if (row > 1) {
@@ -121,6 +126,10 @@ $scope.select = function(row,col,e) {
         
         if (!$scope.selected.headers['r' + row].label) {
             $scope.selected.headers['r' + row].label = '';
+        }
+        
+        if (!$scope.selected.headers['r' + row].custom_style) {
+            $scope.selected.headers['r' + row].custom_style = '';
         }
         
         $scope.selected = $scope.selected.headers['r' + row];

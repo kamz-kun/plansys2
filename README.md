@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.11.02 ###
+- Now GridView Header Have Individual Custom Style
+
 ### Build 1.11.00 ###
 - Adding Max and Min Value on NumberField
 - Fixing bug Export Excel when GridView had more than 1 header row

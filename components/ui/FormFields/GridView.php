@@ -462,6 +462,7 @@ EOF;
         
         $headers = $col['headers']['r'. $row];
         $width = $this->getWidth($col);
+        
         if ($width != '') {
             $attr['style'] = $width;
         }
@@ -519,10 +520,18 @@ EOL;
         }
         
         $width = $this->getWidth($col);
+        $st = '';        
         if ($width != '') {
-            $attr['style'] = $width;
+            $st .= $width;
+        }
+
+        if(isset($col['custom_style']) && $col['custom_style'] != ''){
+            $st .= $col['custom_style'];
         }
         
+        if($st != ''){
+            $attr['style'] = $st;
+        }
         if (isset($col['rowSpan'])) {
             return "";
         }
