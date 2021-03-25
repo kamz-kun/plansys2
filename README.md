@@ -15,6 +15,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.11.03 ###
+- Now GridView Hover support spanned cells
+- Minor CSS Change for odd even row of GridView
+
 ### Build 1.11.02 ###
 - Now GridView Header Have Individual Custom Style
 

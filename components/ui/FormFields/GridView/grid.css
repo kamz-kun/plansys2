@@ -18,11 +18,13 @@
 [grid-view] table.loaded {
     opacity: 1;
 }
+[grid-view] tr:nth-child(even)  {background: #e1f5fe}
+[grid-view] tr:nth-child(odd) {background: #FFF}
 
 [grid-view] td,
 [grid-view] th {
     padding: 8px 0px;
-    border: 1px solid #ddd;
+    border: 1px solid #ececeb;
     overflow: visible;
     white-space: wrap;
 }
@@ -214,7 +216,7 @@
 }
 
 [grid-view] tr.r:hover td {
-    background-color: #FFFFAA;
+    background-color: #ffe0b2;
 }
 
 [grid-view] .row-group-padding {

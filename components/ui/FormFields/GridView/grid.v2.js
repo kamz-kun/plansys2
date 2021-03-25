@@ -27,7 +27,7 @@ app.directive('gridView', function($timeout, $http) {
                 $scope.datasource = parent[$el.find("data[name=datasource]:eq(0)").text()];            
                 $scope.vScroll = $el.find("data[name=vScroll]:eq(0)").html();
                 $scope.hScroll = $el.find("data[name=hScroll]:eq(0)").html();                
-
+                
                 $scope.checkboxCol = false;
                 $scope.checkMode = function() {
                     if ($el.width() < 750) {
@@ -41,6 +41,16 @@ app.directive('gridView', function($timeout, $http) {
                     return Yii.app.createUrl(a, b, c);
                 };
 
+                $scope.handleHover = function(){                              
+                    var tds = $el.find('table tbody tr.r td');   
+                    tds.hover(function() {                        
+                        $el = $(this);                      
+                        $el.parent().prev().find("td[rowspan]").addClass("hover");
+                      }, function() {                       
+                        $el.parent().prev().find("td[rowspan]").removeClass("hover");                        
+                    });
+                   
+                }
                 $scope.getSequence = function(row, idx) {
                     if (!!row.$type) {
                         if (row.$type === 'r') {
@@ -622,16 +632,40 @@ app.directive('gridView', function($timeout, $http) {
                     var totalRow = $el.find('table tbody tr.r').length;
 
                     function mergeRow(c, el, row) {
-                        var text = $(el).text();
+                        var text = $(el).text();                        
                         if (c.$prevText === 'INITIAL-PREV-TEXT') {
                             c.$newRow = $(el);
                         }
-
-                        if (!c.mergeSameRowMethod || c.mergeSameRowMethod.toLowerCase() == 'default') {
+                        if (!c.mergeSameRowMethod || c.mergeSameRowMethod.toLowerCase() == 'default') {                            
                             if (text != c.$prevText) {
                                 if (c.$totalSpan > 1) {
                                     c.$newRow.attr('rowspan', c.$totalSpan);
                                     c.$prevRow.forEach(function(r) {
+                                        var tr = r.closest('tr');
+                                        var tds = tr.find('td');                                        
+                                        if(tds.length > 0){
+                                            for(s = 0; s < tds.length; s++){
+                                                $(tds[s]).hover(function() {
+                                                    $el = $(this);
+                                                    $el.parent().addClass("hover");
+                                                  
+                                                    if ($el.parent().has('td[rowspan]').length == 0) {
+                                                      $el
+                                                        .parent()
+                                                        .prevAll('tr:has(td[rowspan]):first')
+                                                        .find('td[rowspan]')
+                                                        .addClass("hover");
+                                                    }
+                                                  }, function() {
+                                                    $el
+                                                      .parent()
+                                                      .removeClass("hover")
+                                                      .prevAll('tr:has(td[rowspan]):first')
+                                                      .find('td[rowspan]')
+                                                      .removeClass("hover");
+                                                  });
+                                            }
+                                        }
                                         r.addClass('rowSpanned');
                                     });
                                 }
@@ -651,6 +685,31 @@ app.directive('gridView', function($timeout, $http) {
                             if (c.$totalSpan > 1) {
                                 c.$newRow.attr('rowspan', c.$totalSpan);
                                 c.$prevRow.forEach(function(r) {
+                                    var tr = r.closest('tr');
+                                    var tds = tr.find('td');                                        
+                                    if(tds.length > 0){
+                                        for(s = 0; s < tds.length; s++){
+                                            $(tds[s]).hover(function() {
+                                                $el = $(this);
+                                                $el.parent().addClass("hover");
+                                              
+                                                if ($el.parent().has('td[rowspan]').length == 0) {
+                                                  $el
+                                                    .parent()
+                                                    .prevAll('tr:has(td[rowspan]):first')
+                                                    .find('td[rowspan]')
+                                                    .addClass("hover");
+                                                }
+                                              }, function() {
+                                                $el
+                                                  .parent()
+                                                  .removeClass("hover")
+                                                  .prevAll('tr:has(td[rowspan]):first')
+                                                  .find('td[rowspan]')
+                                                  .removeClass("hover");
+                                              });
+                                        }   
+                                    }
                                     r.addClass('rowSpanned');
                                 });
                             }
@@ -667,7 +726,6 @@ app.directive('gridView', function($timeout, $http) {
                         c.$prevRowIndex = c.$rowIndex;
                         c.$rowIndex = row;
                     }
-
                     $scope.mergeRowMethods = {
                         'Sum': function(values) {
                             var total = 0;
@@ -728,9 +786,8 @@ app.directive('gridView', function($timeout, $http) {
                                     c.$execValues = [];
                                     c.$prevText = 'INITIAL-PREV-TEXT';
                                     c.$totalSpan = 1;
-                                }
-
-                                if (!!c.mergeSameRowWith && c.mergeSameRowWith != c.name) {
+                                }                                
+                                if (!!c.mergeSameRowWith && c.mergeSameRowWith != c.name) {                                    
                                     if (!c.$anchorCol) {
                                         $scope.columns.forEach(function(e, ei) {
                                             if (e.name === c.mergeSameRowWith && !!e.$prevText) {
@@ -741,8 +798,7 @@ app.directive('gridView', function($timeout, $http) {
                                     }
 
                                     if (!!c.$anchorCol && c.$anchorCol.mergeSameRow == 'Yes') {
-                                        var el = $(this).find("td").eq(i);
-
+                                        var el = $(this).find("td").eq(i);                                        
                                         if (c.$anchorCol.$rowIndex != rowIndex) {
                                             mergeRow(c.$anchorCol, $(this).find("td").eq(c.$anchorIdx), c.$anchorIdx);
                                         }
@@ -790,7 +846,6 @@ app.directive('gridView', function($timeout, $http) {
                                     }
 
                                 }
-
                                 // if mergeWith == none (AND it is not merged yet)
                                 else if (c.$rowIndex != rowIndex) {
                                     mergeRow(c, $(this).find("td").eq(i), rowIndex);
@@ -1098,7 +1153,7 @@ app.directive('gridView', function($timeout, $http) {
                     $timeout(function() {
                         if (!$scope.loaded) {
                             $scope.loaded = true;
-                            $scope.onGridRender('timeout');
+                            $scope.onGridRender('timeout');                            
                         }
                         if (typeof window.resize == 'function') {
                             window.resize();
@@ -1127,12 +1182,10 @@ app.directive('gridView', function($timeout, $http) {
                             if (typeof window.resize == "function") {
                                 window.resize();
                             }
-                        };
-                
+                        };                        
                         $scope.loadPageSetting();
 
-                    });
-                                                                                                 
+                    });                                                                  
                 };
 
                 if (!$scope.datasource) {
@@ -1163,7 +1216,7 @@ app.directive('gridView', function($timeout, $http) {
                     }                                        
                     $scope.gridRenderTimeout = $timeout(function() {
                         if($scope.name != 'gvTaskNoMergeRow'){
-                            $scope.mergeSameRowValue(); //ini garai lelet
+                            $scope.mergeSameRowValue(); //ini garai lelet                            
                         }                  
                         $timeout(function() {                     
                             $scope.recalcHeaderWidth();                                   
@@ -1184,7 +1237,7 @@ app.directive('gridView', function($timeout, $http) {
                             $scope.paneV.width($scope.paneH.width() + $scope.paneH.scrollLeft());
                             $scope.paneVt.width($scope.paneV.width() - 1);
                         })                      
-                    });                      
+                    });                                          
                 };
                 
                 $scope.freezedColsReady = false
