@@ -15,6 +15,11 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.12.03 ###
+- Params for API mode function
+- User Token column for p_user now automatically created upon install
+- Bug Development role user is inserted with is_delete status true
+
 ### Build 1.12.00 ###
 - More Secure and Better API
 - Now has capability to force logout deleted user

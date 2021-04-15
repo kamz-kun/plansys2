@@ -61,7 +61,7 @@ class DefaultController extends Controller {
                     $user->username = $model->username;
                     $user->email = $model->email;
                     $user->password = Helper::hash($model->password);
-                    $user->is_deleted = 'f';
+                    $user->is_deleted = 0;
                     $status = $user->update(['username', 'password', 'is_deleted', 'email']);
                 } else {
                     vdump($user);
