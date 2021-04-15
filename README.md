@@ -15,6 +15,10 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.12.00 ###
+- More Secure and Better API
+- Now has capability to force logout deleted user
+
 ### Build 1.11.03 ###
 - Now GridView Hover support spanned cells
 - Minor CSS Change for odd even row of GridView

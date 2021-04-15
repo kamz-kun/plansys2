@@ -8,6 +8,7 @@ class DevSettingApp extends Form {
     public $mode = 'dev';
     public $debug = 'ON';
     public $restApi = 'OFF';
+    public $restApiToken = null;
     public $dateFormat = 'd M Y';
     public $timeFormat = 'H:i';
     public $dateTimeFormat = 'd M Y - H:i';
@@ -187,6 +188,16 @@ class DevSettingApp extends Form {
                     array (
                         'type' => 'Text',
                         'value' => '<column-placeholder></column-placeholder>',
+                    ),
+                    array (
+                        'label' => 'Token',
+                        'name' => 'restApiToken',
+                        'type' => 'TextField',
+                    ),
+                    array (
+                        'label' => 'Encrypt Key',
+                        'name' => 'restApiKey',
+                        'type' => 'TextField',
                     ),
                 ),
                 'w1' => '50%',
