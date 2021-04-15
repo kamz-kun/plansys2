@@ -194,11 +194,6 @@ class DevSettingApp extends Form {
                         'name' => 'restApiToken',
                         'type' => 'TextField',
                     ),
-                    array (
-                        'label' => 'Encrypt Key',
-                        'name' => 'restApiKey',
-                        'type' => 'TextField',
-                    ),
                 ),
                 'w1' => '50%',
                 'w2' => '50%',

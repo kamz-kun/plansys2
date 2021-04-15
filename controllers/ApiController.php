@@ -160,7 +160,7 @@ class ApiController extends CController {
                     echo json_encode($ret);   
                 } else if($api_params['mode'] == 'function'){ //Panggil Function di MODEL                
                     $func = $api_params['function'];
-                    echo json_encode($model::$func());
+                    echo json_encode($model::$func($api_params['params']));
                 } else if($api_params['mode'] == 'login'){ //Khusus Login
                     // Nyontek Punya Irul
                 } else if($api_params['mode'] == 'request_token'){

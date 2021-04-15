@@ -10,7 +10,8 @@ class m160112_125146_p_user extends Migration {
             'password' => 'string NOT NULL',
             'email' => 'string NOT NULL',
             'last_login' => 'datetime',
-            'is_deleted' => 'boolean'
+            'is_deleted' => 'boolean',
+            'user_token' => 'string' //for API Authentication
         ));
         $this->addAutoIncrement('p_user', 'id');
 
