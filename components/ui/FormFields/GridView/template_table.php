@@ -28,7 +28,9 @@
                                  }
                                     ?>>-->
       <table class="table-vScroll" <?php if($this->freezeLock == 1){ ?><?php } ?>>
+      <tbody style="position: sticky; top: 0;">
 		<?php echo $this->generateHeaders('tag', $cols); ?>
+      </tbody>
         <tbody>
           <tr ng-repeat-start="row in datasource.data track by $index" ng-if="row.$type=='g'" lv="{{row.$level}}" class="g">
             <?php foreach ($this->columns as $idx => $col): ?>
