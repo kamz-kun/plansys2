@@ -15,6 +15,12 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.12.06 ###
+- API Login (On Trial)
+- Bug fixing for datepicker
+- CSS smoothing for datepicker
+- Bug fixing for number type filter allowing to input non-number
+
 ### Build 1.12.03 ###
 - Params for API mode function
 - User Token column for p_user now automatically created upon install

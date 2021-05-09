@@ -127,7 +127,6 @@ app.directive('gridView', function($timeout, $http) {
                     var ngModel = $(e.target).attr('ng-model');
                     var sel = window.getSelection();
                     var textLength = $(e.target).text().length;
-                    
                     if (e.which == 13)
                     {
                         if (e.preventDefault) {
@@ -1181,10 +1180,9 @@ app.directive('gridView', function($timeout, $http) {
                             $scope.reloadTemplate();
                             if (typeof window.resize == "function") {
                                 window.resize();
-                            }
+                            }                            
                         };                        
                         $scope.loadPageSetting();
-
                     });                                                                  
                 };
 
@@ -1331,3 +1329,7 @@ app.directive('gridView', function($timeout, $http) {
         }
     }
 });
+
+function setValue() {
+    console.log('halo');
+}

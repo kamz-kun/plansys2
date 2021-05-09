@@ -92,9 +92,8 @@ app.directive('dateTimePicker', function ($timeout, dateFilter) {
                         $el.find('ul[datepicker-popup-wrap]').hide();
                     } else {
                         $el.find('ul[datepicker-popup-wrap]').show();
-                        $el.find('ul[datepicker-popup-wrap] table').attr('mouse-inside', '1').focus();
                     }
-                };
+                };            
 
                 $el.on({
                     blur: function () {
@@ -221,7 +220,6 @@ app.directive('dateTimePicker', function ($timeout, dateFilter) {
                                     if ($scope.dd.month != "" && $scope.dd.year != "" && $scope.dd.day != "") {
                                         $scope.value = $scope.dd.year + "-" + ($scope.dd.month +1) + '-' + $scope.dd.day;
                                         ctrl.$setViewValue($scope.value);
-                                        alert("INI KENAK");
                                     }
                                 }
                             } else {

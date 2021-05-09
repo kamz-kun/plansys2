@@ -35,11 +35,14 @@
                     </li>
                 </ul>
             </div>
-            <input type="text" ng-hide="filter.operator == 'Is Empty' || filter.operator == 'Is Not Empty'"
+            <input ng-if="filter.filterType != 'number'" type="text" ng-hide="filter.operator == 'Is Empty' || filter.operator == 'Is Not Empty'"
                    ng-model="filter.value" 
                    ng-keydown="filterValueKeydown(filter, $event)"
                    class="focused form-control" style="width:250px;">
-
+            <input ng-if="filter.filterType == 'number'" type="number" ng-hide="filter.operator == 'Is Empty' || filter.operator == 'Is Not Empty'"
+                   ng-model="filter.value" 
+                   ng-keydown="filterValueKeydown(filter, $event)"
+                   class="focused form-control" style="width:250px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">            
             <div class="input-group-btn">
                 <button ng-click="updateFilter(filter, $event)" class="btn btn-info" type="button">
                     <b>Update 

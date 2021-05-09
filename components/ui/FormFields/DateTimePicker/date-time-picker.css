@@ -1,0 +1,33 @@
+
+
+.date-field ul li div table .btn-default{
+    border: 0px;
+}
+
+.date-field ul li div table:focus-visible{
+    border: none !important;
+}
+
+.date-field ul li div table:focus-visible{
+    border: none !important;
+}
+
+.date-field ul li div table .btn-info:active{
+    color: white !important;
+}
+
+.date-field ul li div table .btn{
+    padding: 10px;
+}
+
+.date-field ul li div {
+    padding: 0px 5px;
+}
+
+.date-field ul.dropdown-menu li button.btn.btn-sm.btn-success.pull-right {
+    display: none !important;
+}
+
+.date-field ul.dropdown-menu li div table thead tr {
+    color: orange;
+}
