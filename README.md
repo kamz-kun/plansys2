@@ -15,6 +15,9 @@ Fast, Compact, Mindblowing Web-app Builder
 
 ## Changelog
 
+### Build 1.13.00 ###
+- Integration DatePicker in GridView
+
 ### Build 1.12.06 ###
 - API Login (On Trial)
 - Bug fixing for datepicker

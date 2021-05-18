@@ -41,6 +41,17 @@ app.directive('gridView', function($timeout, $http) {
                     return Yii.app.createUrl(a, b, c);
                 };
 
+                $scope.openDatePicker = function ($event, index) {
+                    $event.preventDefault();
+                    $event.stopPropagation();                    
+                    if ($el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).is(':visible')) {                        
+                        $el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).hide();
+                    } else {
+                        $el.find('ul[datepicker-popup-wrap]').hide();
+                        $el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).show();
+                    }
+                };    
+
                 $scope.handleHover = function(){                              
                     var tds = $el.find('table tbody tr.r td');   
                     tds.hover(function() {                        
@@ -1329,7 +1340,3 @@ app.directive('gridView', function($timeout, $http) {
         }
     }
 });
-
-function setValue() {
-    console.log('halo');
-}

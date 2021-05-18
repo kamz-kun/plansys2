@@ -79,7 +79,7 @@ class GridView extends FormField {
     }
 
     public function includeCSS() {
-        return ['grid.css'];
+        return ['grid.css', 'date-time-picker.css'];
     }
 
     public function includeJS() {
@@ -251,7 +251,7 @@ type="checkbox" /></label>';
                     $template = '
     <div ceditable="true" ' . $editableCss . $ngchange . ' ng-paste="paste($event, row, $index, \''.$fieldName.'\', '.$idx.')" ng-model="row[\'' . $fieldName . '\']"
          ng-keydown="editKey($event)"></div>';
-                    break;
+                break;
                 case "editable-insert":
                     $template = '
     <div ceditable="true" ' . $editableCss . $ngchange . ' ng-if="row.$rowState == \'insert\'"
@@ -312,6 +312,27 @@ type="checkbox" /></label>';
                     break;
                 case 'datetime':
                     $template = '{{row[\'' . $fieldName . '\'] | dateFormat:"datetime" }}';
+                    break;
+                case "datepicker":
+        //                 $template = '
+        // <div ceditable="true" ' . $editableCss . $ngchange . ' ng-paste="paste($event, row, $index, \''.$fieldName.'\', '.$idx.')" ng-model="row[\'' . $fieldName . '\']"
+        //      ng-keydown="editKey($event)"></div>';
+            $style    = ' style="width:150px;"';
+                        $template = '
+            <div class="date-field input-group">
+            <!-- value -->
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-date" datepicker-popup="dd/MM/yyyy" datepicker-options="dateOptions" datepicker-mode="day" is-open="dateOpened" style="text-align:left !important;height:30px;color:#000;" ng-change=";changeDate(this)"
+                   ng-model="row[\'' . $fieldName . '\']" 
+                   />
+
+                <!-- btn icon -->
+                <span class="input-group-btn">
+                    <div ng-click="openDatePicker($event, $index)" class="btn btn-sm btn-default">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </div>
+                </span>
+        </div>
+                        ';
                     break;
             }
         }

@@ -358,14 +358,14 @@
 
 [grid-view] .table-vScroll th {
     position: -webkit-sticky;
-    position: sticky !important;
+    position: sticky;
     top: 0;
     z-index: 2;
 }
 
 [grid-view] .table-vScroll .stick {
     position: -webkit-sticky;
-    position: sticky !important;
+    position: sticky;
     left: 0;
     z-index: 1;
 }
