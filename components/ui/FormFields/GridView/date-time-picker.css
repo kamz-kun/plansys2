@@ -62,12 +62,9 @@ table.table-vScroll tbody tr.r td div.date-field ul.dropdown-menu li div table t
     background-color: unset !important;
 }
 
-table.table-vScroll tbody tr.r td div.date-field {
-    position: static;
-}
 
 table.table-vScroll tbody tr.r td div.date-field ul.dropdown-menu {
     margin-top: 30px;
-    top: unset !important;
-    margin-right: 56px;
+    right: unset;
+    position: fixed;
 }

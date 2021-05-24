@@ -28,7 +28,7 @@
                                  }
                                     ?>>-->
       <table class="table-vScroll" <?php if($this->freezeLock == 1){ ?><?php } ?>>
-      <tbody style="position: sticky; top: 0;">
+      <tbody style="position: sticky; top: 0; z-index: 10;">
 		<?php echo $this->generateHeaders('tag', $cols); ?>
       </tbody>
         <tbody>
