@@ -314,9 +314,6 @@ type="checkbox" /></label>';
                     $template = '{{row[\'' . $fieldName . '\'] | dateFormat:"datetime" }}';
                     break;
                 case "datepicker":
-        //                 $template = '
-        // <div ceditable="true" ' . $editableCss . $ngchange . ' ng-paste="paste($event, row, $index, \''.$fieldName.'\', '.$idx.')" ng-model="row[\'' . $fieldName . '\']"
-        //      ng-keydown="editKey($event)"></div>';
             $style    = ' style="width:150px;"';
                         $template = '
             <div class="date-field input-group">

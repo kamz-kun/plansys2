@@ -11,7 +11,7 @@
     } ?>
     
     <!-- row state template -->
-    <script type="text/ng-template" id="row-state-template">
+    <!-- <script type="text/ng-template" id="row-state-template">
         <div ng-if='!!row.$rowState' class="row-state-detail row-state-{{ row.$rowState }}">
             <i class="fa fa-pencil" ng-if="row.$rowState == 'edit'"></i>
             <i class="fa fa-plus" ng-if="row.$rowState == 'insert'"></i>
@@ -21,7 +21,7 @@
                 <div class="btn btn-xs btn-default" ng-click="rowUndoState(row)"> Cancel {{ row.$rowState }}</div>
             </div>
         </div>
-    </script>
+    </script> -->
     
     <!-- info -->
     <data name="name" class="hide"><?= $this->name ?></data>

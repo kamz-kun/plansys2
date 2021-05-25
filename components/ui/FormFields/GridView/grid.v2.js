@@ -43,18 +43,21 @@ app.directive('gridView', function($timeout, $http) {
 
                 $scope.openDatePicker = function ($event, index) {
                     $event.preventDefault();
-                    $event.stopPropagation();                           
-                    if ($el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).is(':visible')) {                        
-                        $el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).hide();
-                    } else {
-                        var pos = $el.find('.date-field').slice(index, index + 1).position();
+                    $event.stopPropagation();                    
+                    $vl = $($event.currentTarget); 
+                    $dl = $($vl.parent().prev());                    
+                    if ($dl.is(':visible')) {                        
+                        $dl.hide();
+                    } else {                       
                         $el.find('ul[datepicker-popup-wrap]').hide();
-                        console.log($el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).position());
-                        console.log(pos.top, pos.left);
-                        $el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).show();
-                        $el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).css({'top' : pos.top + 55 + 'px'});
-                        console.log($el.find('ul[datepicker-popup-wrap]').slice(index, index + 1).position())
-                        
+                        var pos = $vl.parent().parent().position();
+                        $dl.hide();
+                        $dl.css({'top' : pos.top + 55 + 'px'});                                                                     
+                        $dl.show();
+                        var bounding = $dl[0].getBoundingClientRect();
+                        if (bounding.bottom > (window.innerHeight || document.documentElement.clientHeight)) {
+                            $dl.css({'top' : pos.top - $dl.height() + 'px'});
+                        }                        
                     }
                 };    
 
