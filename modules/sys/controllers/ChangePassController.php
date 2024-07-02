@@ -21,15 +21,21 @@ class ChangePassController extends Controller {
         }
         if(isset($_POST[$c])){
             $post = $_POST[$c];
-            if($post['NewPassword'] != $post['RetypePassword']){
-                $model->addErrors(['RetypePassword' => 'Password Does Not Match']);
-            } else {
+            if($c == 'AppChangePass') {
                 $user = User::model()->findByPk(Yii::app()->user->info['id']);
-                $user->password = Helper::hash($_POST[$c]['NewPassword']);
+                $user->password = Helper::hash($_POST['AppChangePass']['password']);
                 $user->save();
-                $this->flash('Successfully Saved');    
+                $this->flash('Berhasil tersimpan');
+            } else {
+                if($post['NewPassword'] != $post['RetypePassword']){
+                    $model->addErrors(['RetypePassword' => 'Password Does Not Match']);
+                } else {
+                    $user = User::model()->findByPk(Yii::app()->user->info['id']);
+                    $user->password = Helper::hash($_POST[$c]['NewPassword']);
+                    $user->save();
+                    $this->flash('Successfully Saved');    
+                }
             }
-            
         }
         $this->renderForm($c, $model);
     }

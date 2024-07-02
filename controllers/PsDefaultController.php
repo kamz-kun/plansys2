@@ -161,8 +161,15 @@ class PsDefaultController extends Controller {
         }
 
         // collect user input data
-        if (isset($_POST['LoginForm'])) {
-            $model->attributes = $_POST['LoginForm'];
+        if (isset($_POST['LoginForm'])) {            
+            $post = $_POST['LoginForm'];
+            $post['username'] = str_replace(';', '', $post['username']);
+            $post['username'] = str_replace('"', '', $post['username']);
+            $post['username'] = str_replace("'", '', $post['username']);
+            $post['username'] = str_replace("=", '', $post['username']);
+            
+            $model->attributes = $post;
+
             $this->beforeLogin($model);
 
             // validate user input and redirect to the previous page if valid

@@ -60,7 +60,7 @@ class ErrorForm extends Form
 			<a ng-url=\"/site\">home page</a>
 			<br>
 			<br>
-            <i>Plansys 2.0</i>
+            <i>Plansys2</i>
 		</div>
 	</div>',
             ),

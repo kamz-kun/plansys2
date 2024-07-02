@@ -420,7 +420,10 @@ class ModelCode extends CCodeModel
 			$relationName=rtrim(substr($fkName, 0, -2),'_');
 		else
 			$relationName=$fkName;
-		$relationName[0]=strtolower($relationName);
+		// $relationName[0]=strtolower($relationName);
+		// Convert the first character to lowercase
+		if(!empty($relationName))
+			$relationName = mb_strtolower($relationName[0]) . substr($relationName, 1);
 
 		if($multiple)
 			$relationName=$this->pluralize($relationName);

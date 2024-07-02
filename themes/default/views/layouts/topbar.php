@@ -8,7 +8,10 @@
      
 ?>
 <div class="top-bar" onload="getTime()">
-     <div id="desktop-menu">
+     <div id="desktop-menu" class="position-relative">
+     <div class="logo-navbar ">
+                   
+               </div>
           <ul class="ds-nav site-nav" style="float:left;">
          <?php
             $html = '';

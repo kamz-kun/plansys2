@@ -64,20 +64,6 @@ class DocsWelcome extends Form {
     <img src=\"plansys/static/img/welcome.png\" width=\"450px\">
     <h4 style=\"margin-top: -40px;\">Build 1.13.00</h4>
     <hr>
-    <div class=\"row\" style=\"margin-top: 10px;\">
-        <div class=\"col-sm-12 col-md-3\">
-            CPU : {{cpu}}%
-        </div>
-        <div class=\"col-sm-12 col-md-3\">
-            RAM : {{mem}}%
-        </div>
-        <div class=\"col-sm-12 col-md-3\">
-            HDD : {{hdd}}
-        </div>
-        <div class=\"col-sm-12 col-md-3\">
-            PHP : {{php}}
-        </div>
-    </div>
     <br>
     <div class=\"row\" style=\"margin-top: 10px;\">
         <h3><small>leader</small> <br>

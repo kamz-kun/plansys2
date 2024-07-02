@@ -6,6 +6,7 @@
      <?php Asset::registerCSS('application.themes.default.views.css.component'); ?>
 
      <?php Asset::registerCSS('application.themes.default.views.css.style', time()); ?>
+     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
      
      <link rel="stylesheet" href="<?= Yii::app()->controller->staticUrl('/css/font-awesome.min.css'); ?>" type="text/css" />
      <title><?php echo CHtml::encode(Yii::app()->controller->pageTitle); ?></title>
@@ -22,6 +23,11 @@
           };
      </script>
      <?php Asset::registerJS('application.themes.default.views.js.pace'); ?>
+
+     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+     <script>
+     AOS.init();
+     </script>
      
      <?php Asset::registerJS('application.themes.default.views.js.mainctrl'); ?>
      <?php //Asset::registerJS('application.themes.default.views.js.headerctrl'); ?>

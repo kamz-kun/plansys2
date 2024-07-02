@@ -11,7 +11,14 @@
     <data name="class_alias" class="hide"><?= Helper::classAlias($model) ?></data>
     <data name="params_get" class="hide"><?= json_encode($_GET); ?></data>
     <data name="params_default" class="hide"><?= @json_encode($this->data['params']); ?></data>
-    <data name="delete_data" class="hide"><?= @json_encode(@$this->data['rel']['delete_data']); ?></data>
+    <data name="delete_data" class="hide"><?php
+        if(isset($this->data['rel']['delete_data'])){
+            echo @json_encode(@$this->data['rel']['delete_data']); 
+        } else {
+            echo json_encode('');
+        }        
+    ?>
+    </data>
     <data name="options" class="hide"><?= @json_encode($this->options); ?></data>
     <data name="exec_mode" class="hide"><?= $this->execMode; ?></data>
     

@@ -182,9 +182,6 @@ class Controller extends CController {
         if (!$result) {
             $basePath = Yii::getPathOfAlias('application.themes.' . Setting::getDefaultTheme() . '.views');
             $viewPath = $basePath . DIRECTORY_SEPARATOR . $this->id;
-            vdump($viewPath);
-            vdump($unthemedViewPath);
-            vdump($result);
             $result = $this->resolveViewFile($viewName, $viewPath, $basePath, $moduleViewPath);
         }        
         return $result;
@@ -228,6 +225,7 @@ class Controller extends CController {
     }
 
     public function renderForm($class, $model = null, $params = [], $options = []) {
+        
         if (is_array($model)) {
             $options = $params;
             $params  = $model;
@@ -275,9 +273,11 @@ class Controller extends CController {
                 unset($data[$k]);
             }
         }
+        
         Yii::trace('Rendering Form: ' . $class);
+        
         if ($this->beforeRender($class)) {
-            
+                
             $layout = Layout::render($fb->form['layout']['name'], $data, $model, true);
             
             $this->renderText($layout, false);

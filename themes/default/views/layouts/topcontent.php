@@ -34,10 +34,10 @@
     
 
 
-    <li style="margin-top: 0px; padding: 10px; vertical-align: bottom;">
+    <li style="margin-top: 0px; padding: 10px 5px; vertical-align: bottom;">
         <a href="index.php?r=sys/changePass" title="Change Password"><i class="fa fa-key"></i></a>
     </li>        
-    <li style="margin-top: 0px; padding: 10px; vertical-align: bottom;">
+    <li style="margin-top: 0px; padding: 10px 5px; vertical-align: bottom;">
         <a href="index.php?r=site/logout" title="Logout"><i class="fa fa-sign-out"></i></a>
     </li>            
      <li style="margin-top: 4px; padding-left: 10px; border-left: 1px solid #fff;">

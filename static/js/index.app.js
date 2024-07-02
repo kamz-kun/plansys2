@@ -56,7 +56,7 @@ function registerController(controllerName) {
 var controllerProvider = null;
 var app = angular.module("main", [
     'ui.layout',
-    'ui.rCalendar',
+    // 'ui.rCalendar',
     'ui.bootstrap',
     'ngStorage',
     'oc.lazyLoad'

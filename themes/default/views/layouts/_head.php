@@ -11,6 +11,8 @@
         }
      ?>
 
+     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
      <?php
           // include(Yii::getPathOfAlias('application.themes.default.views') . '/vendor/autoload.php');
           // $dir = Yii::getPathOfAlias('application.themes.default.views.css');
@@ -39,4 +41,10 @@
      <?php //Asset::registerJS('application.themes.default.views.js.headerctrl'); ?>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
      <?php Asset::registerJS('application.static.calendar.calendar-tpls'); ?>     
+     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+     <script>
+          $(function() {
+          AOS.init();
+          });
+     </script>
 </head>

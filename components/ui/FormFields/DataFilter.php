@@ -277,7 +277,7 @@ class DataFilter extends FormField {
                             $b = self::toSQLDateTime(":{$paramName}_{$pcolumn}_to", $driver);
 
                             $sql = "({$column} BETWEEN {$a} AND {$b})";
-                            $fromStartHour = date('Y-m-d 23:59:00', strtotime('-1 day', strtotime(@$filter['value']['from'])));
+                            $fromStartHour = date('Y-m-d 00:00:00', strtotime('-0 day', strtotime(@$filter['value']['from'])));
                             $toLastHour = date('Y-m-d 23:59:00', strtotime(@$filter['value']['to']));
 
                             $param = [

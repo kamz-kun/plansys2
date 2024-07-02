@@ -158,14 +158,6 @@ class Installer {
                     }
                 ],
                 [
-                    'title' => 'Mcrypt extension',
-                    'check' => function() {
-                        $result = extension_loaded("mcrypt");
-                        $msg = "Extension \"mcrypt\" is not loaded";
-                        return $result !== true ? $msg : true;
-                    }
-                ],
-                [
                     'title' => 'CURL extension',
                     'check' => function() {
                         $result = extension_loaded("curl");

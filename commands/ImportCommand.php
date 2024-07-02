@@ -134,7 +134,7 @@ EOF;
         $import = new Import($this->params['model']);
         foreach ($reader->getSheetIterator() as $sheet) {
             ## loop each row in first sheet
-            $rowCount = count($sheet->getRowIterator());
+            $rowCount = count((array)$sheet->getRowIterator());
             
             foreach ($sheet->getRowIterator() as $r=>$row) {
                 ## first row is always column name, assign it then skip it

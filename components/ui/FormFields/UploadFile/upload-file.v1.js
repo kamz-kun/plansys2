@@ -80,7 +80,7 @@ app.directive('uploadFile', function ($timeout, Upload, $http) {
                                     $scope.value = ctrl.$viewValue;
                                     $scope.file = {
                                         name: $scope.formatName($scope.value),
-                                        downloadPath: btoa($scope.value)
+                                        downloadPath: btoa(encodeURIComponent($scope.value))
                                     };
                                     $scope.checkFile();
                                 } else if (ctrl.$viewValue instanceof File) {

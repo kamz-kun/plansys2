@@ -15,7 +15,7 @@
      		</button>
      		<ul class="dl-menu">
      		     <?php     		          
-                       if((sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
+                       if(is_array(Yii::app()->user->info) && (sizeof(Yii::app()->user->info) > 1)){ //if menu items available open bracket
                             $this->includeFile('menuheader.php', [
                                 'menu' => $menu
                             ]);                                
@@ -33,16 +33,12 @@
 	</div>
 	
 	<div class="dl-menuleft" style="margin-left: 10px;">
-	     <ul class="ds-nav">
-	          <li  style="margin-top: 0px">
-	               <!--<img src="#" width="35px" style="margin-top: 5px; margin-right:10px;">     -->
-	          </li>
-	     </ul>
-	</div>
-	<div class="dl-menuright" style="display: block;">
-	    <?php
+          <?php
             $this->includeFile('topcontent.php');   
 	     ?>
+	</div>
+	<div class="dl-menuright" style="display: block;">
+	    <img class="img-fluid logo" src="app/static/logo.png" alt="">
 	</div>
 	
 </div><!-- /top-bar -->

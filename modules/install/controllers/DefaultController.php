@@ -7,7 +7,7 @@ class DefaultController extends Controller {
             $this->redirect(['/site/login']);
             die();
         }
-
+        
         parent::beforeAction($action);
 
         $cs = Yii::app()->getClientScript();
@@ -18,7 +18,7 @@ class DefaultController extends Controller {
             $path = "/plansys" . $path;
         }
         $cs->registerCssFile(Yii::app()->baseUrl . $path . '/install.css');
-
+        
         return true;
     }
 
@@ -26,7 +26,7 @@ class DefaultController extends Controller {
         return str_replace("static", "modules/install/views/default/", $this->staticUrl(""));
     }
 
-    public function actionIndex($msg = null) { 
+    public function actionIndex($msg = null) {                 
         $base = explode("/", Yii::app()->baseUrl);
         if (array_pop($base) == "plansys") {
             echo "<a style='font-size: 20px;marign:0px auto;' href='" . implode("/", $base) . "'>Continue installation</a>";
@@ -81,6 +81,7 @@ class DefaultController extends Controller {
     }
 
     public function actionDb() {
+        
         $model = new InstallDbForm();
         $model->driver = Setting::get('db.driver');
 
@@ -130,7 +131,6 @@ class DefaultController extends Controller {
                 }
             }
         }
-
 
         $this->renderForm('InstallDbForm', $model, ['error' => $error, 'mode' => $mode]);
     }

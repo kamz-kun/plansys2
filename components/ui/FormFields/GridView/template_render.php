@@ -8,20 +8,7 @@
         if (isset($columnsWithoutHTML[$k]['labelHtml'])) {
             unset($columnsWithoutHTML[$k]['labelHtml']);
         }
-    } ?>
-    
-    <!-- row state template -->
-    <!-- <script type="text/ng-template" id="row-state-template">
-        <div ng-if='!!row.$rowState' class="row-state-detail row-state-{{ row.$rowState }}">
-            <i class="fa fa-pencil" ng-if="row.$rowState == 'edit'"></i>
-            <i class="fa fa-plus" ng-if="row.$rowState == 'insert'"></i>
-            <i class="fa fa-trash" ng-if="row.$rowState == 'remove'"></i>
-
-            <div class="row-state-options">
-                <div class="btn btn-xs btn-default" ng-click="rowUndoState(row)"> Cancel {{ row.$rowState }}</div>
-            </div>
-        </div>
-    </script> -->
+    } ?>    
     
     <!-- info -->
     <data name="name" class="hide"><?= $this->name ?></data>

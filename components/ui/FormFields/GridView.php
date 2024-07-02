@@ -222,7 +222,7 @@ type="checkbox" /></label>';
         if ($idx == 0) {
             $rowStateCss = $this->hasEditable ? "class='editable'" : "";
             if (@$this->gridOptions['showRowState'] != 'false' && @$this->gridOptions['showRowStateBtn'] != 'false') {
-                $rowState = "<div {$rowStateCss} ng-include='\"row-state-template\"'></div>\n    ";
+                $rowState = "<div {$rowStateCss}></div>\n    ";
             }
             if (!@$col['options']['mode'] && $col['columnType'] != 'checkbox') {
                 $template = "<span class='row-group-padding' ng-if='!!row.\$level'
@@ -266,21 +266,21 @@ type="checkbox" /></label>';
                     break;
                 case "del-button":
                     if (!isset($col['options']['delUrl'])) {
-                        $style    = ' style="width:35px;"';
+                        $style    = ' style="width:50px;"';
                         $template = '<div ng-if="!row.$rowState" ng-click="removeRow(row)" title="Remove" 
     class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></div>
 
     <div ng-if="(!row.$type || row.$type === \'r\') && [\'edit\',\'remove\'].indexOf(row.$rowState) >= 0" ng-click="undoRemoveRow(row)" title="Undo Remove" 
          class="btn btn-default btn-xs"><i class="fa fa-undo"></i></div>';
                     } else {
-                        $style    = ' style="width:35px;"';
+                        $style    = ' style="width:50px;"';
                         $template = '<a ng-if="(!row.$type || row.$type === \'r\')" ng-url="' . $col['options']['delUrl'] . '"
     onClick="return confirm(\'Are you sure?\')"
     class="btn-block btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     }
                     break;
                 case "unchoose-button":
-                    $style    = ' style="width:35px;"';
+                    $style    = ' style="width:50px;"';
                     $template = '<div ng-if="(!row.$type || row.$type === \'r\') && (!row.$rowState || row.$rowState == \'insert\')" ng-click="removeRow(row)"
     class="btn btn-danger btn-xs"><i class="fa fa-times"></i></div>
 
@@ -289,19 +289,19 @@ type="checkbox" /></label>';
     ';
                     break;
                 case 'edit-popup-button':
-                    $style    = ' style="width:35px;"';
+                    $style    = ' style="width:50px;"';
                     $template = '<a ng-if="row.$rowState != \'insert\'" ng-click="
 '.$col['options']['popupName'].'.editId = row[datasource.primaryKey];
 ' . $col['options']['popupName'] . '.open()"
     class="btn-block btn btn-info btn-xs"><i class="fa fa-pencil"></i></a>';
                     break;
                 case 'edit-button':
-                    $style    = ' style="width:35px;"';
+                    $style    = ' style="width:50px;"';
                     $template = '<a ng-if="(!row.$type || row.$type === \'r\')" ng-url="' . $col['options']['editUrl'] . '" title="Update" 
     class="btn-block btn btn-info btn-xs"><i class="fa fa-pencil"></i></a>';
                     break;
                 case 'sequence':
-                    $style    = ' style="width:35px;"';
+                    $style    = ' style="width:40px;text-align:center;"';
                     $template = '{{ getSequence(row, $index + 1); }}';
                     break;
                 case 'date':

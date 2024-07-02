@@ -14,7 +14,13 @@
         <!-- data -->
         <data name="name" class="hide" ><?= $this->name ?></data>
         <data name="value" class="hide"><?= $this->value ?></data>
-        <data name="model_class" class="hide"><?= @get_class($model) ?></data>
+        <data name="model_class" class="hide">
+            <?php 
+                if(!is_array($model)){
+                    get_class($model);
+                }
+            ?>
+        </data>
         <data name="options" class="hide"><?= @json_encode($this->options) ?></data>
         <data name="on_label" class="hide"><?= $this->onLabel ?></data>
         <data name="off_label" class="hide"><?= $this->offLabel ?></data>

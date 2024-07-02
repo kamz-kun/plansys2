@@ -1328,7 +1328,7 @@ app.directive('gridView', function($timeout, $http) {
 
                     $scope.loading = true;
                     $timeout(function() {
-                        $scope.templateCacheKey = Date.now();
+                        $scope.templateCacheKey = Date.now();                        
                         $scope.templateUrl = Yii.app.createUrl('formfield/GridView.template', {
                             n: $scope.name,
                             c: $scope.classAlias,

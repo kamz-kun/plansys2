@@ -21,6 +21,17 @@
      ?>
      
      <link rel="stylesheet" href="<?= Yii::app()->controller->staticUrl('/css/font-awesome.min.css'); ?>" type="text/css" />
+     <!-- <link href="app/static/interfont/stylesheet.css" rel="stylesheet">
+     <link rel="preload" href="app/static/interfont/Inter-Black.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-ExtraLight.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-Thin.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-Light.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin>
+     <link rel="preload" href="app/static/interfont/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin> -->
+     <link href="app/static/inter-woff/stylesheet.css" rel="stylesheet">
      <title><?php echo CHtml::encode(Yii::app()->controller->pageTitle); ?></title>
      <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
      <?php ThemeManager::registerCoreScript(['/js/index.ctrl.js']); ?> 

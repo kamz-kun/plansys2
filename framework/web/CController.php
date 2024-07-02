@@ -847,11 +847,12 @@ class CController extends CBaseController
 	 */
 	public function renderText($text,$return=false)
 	{
-		if(($layoutFile=$this->getLayoutFile($this->layout))!==false)
-			$text=$this->renderFile($layoutFile,array('content'=>$text),true);
-
+		if(($layoutFile=$this->getLayoutFile($this->layout))!==false){
+			$text=$this->renderFile($layoutFile,array('content'=>$text),true);			
+		}			
+		
 		$text=$this->processOutput($text);
-
+		
 		if($return)
 			return $text;
 		else

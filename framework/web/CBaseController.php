@@ -87,16 +87,20 @@ abstract class CBaseController extends CComponent
 	 * @throws CException if the view file does not exist
 	 */
 	public function renderFile($viewFile,$data=null,$return=false)
-	{
+	{		
 		$widgetCount=count($this->_widgetStack);
-		if(($renderer=Yii::app()->getViewRenderer())!==null && $renderer->fileExtension==='.'.CFileHelper::getExtension($viewFile))
+		if(($renderer=Yii::app()->getViewRenderer())!==null && $renderer->fileExtension==='.'.CFileHelper::getExtension($viewFile)) {
 			$content=$renderer->renderFile($this,$viewFile,$data,$return);
-		else
+		}			
+		else {
 			$content=$this->renderInternal($viewFile,$data,$return);
-		if(count($this->_widgetStack)===$widgetCount)
+		}
+
+		if(count($this->_widgetStack)===$widgetCount) {			
 			return $content;
+		}			
 		else
-		{
+		{			
 			$widget=end($this->_widgetStack);
 			throw new CException(Yii::t('yii','{controller} contains improperly nested widget tags in its view "{view}". A {widget} widget does not have an endWidget() call.',
 				array('{controller}'=>get_class($this), '{view}'=>$viewFile, '{widget}'=>get_class($widget))));
@@ -115,10 +119,12 @@ abstract class CBaseController extends CComponent
 	public function renderInternal($_viewFile_,$_data_=null,$_return_=false)
 	{
 		// we use special variable names here to avoid conflict when extracting data
-		if(is_array($_data_))
+		if(is_array($_data_)){
 			extract($_data_,EXTR_PREFIX_SAME,'data');
-		else
+		} else {
 			$data=$_data_;
+		}	
+		$_viewFile_ = str_replace('//', '/', $_viewFile_);
 		if($_return_)
 		{
 			ob_start();
@@ -126,8 +132,10 @@ abstract class CBaseController extends CComponent
 			require($_viewFile_);
 			return ob_get_clean();
 		}
-		else
+		else {
 			require($_viewFile_);
+		}
+			
 	}
 
 	/**

@@ -23,11 +23,11 @@ class SysChangePass extends Form {
                     array (
                         'label' => 'Save',
                         'buttonType' => 'success',
-                        'type' => 'LinkButton',
+                        'icon' => 'save',
                         'options' => array (
                             'ng-click' => 'form.submit(this)',
                         ),
-                        'icon' => 'save',
+                        'type' => 'LinkButton',
                     ),
                 ),
                 'title' => 'Change Password',
@@ -48,7 +48,10 @@ class SysChangePass extends Form {
                         'fieldType' => 'password',
                         'type' => 'TextField',
                     ),
-                    '<column-placeholder></column-placeholder>',
+                    array (
+                        'type' => 'Text',
+                        'value' => '<column-placeholder></column-placeholder>',
+                    ),
                 ),
                 'w1' => '50%',
                 'w2' => '50%',
