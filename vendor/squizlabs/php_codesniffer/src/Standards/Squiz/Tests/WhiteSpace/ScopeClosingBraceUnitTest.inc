@@ -105,3 +105,30 @@ public function foo()
 'bad indent here leads to bad indent for closer', function () {
 });
 }
+
+$fn1 = fn($x) => $x + $y;
+
+$match = match ($test) { 1 => 'a', 2 => 'b' };
+
+$match = match ($test) {
+    1 => 'a',
+    2 => 'b'
+    };
+
+?>
+<?php if ($someConditional) : ?>
+<div class="container">
+
+</div> <?php endif; ?>
+
+<?php
+
+enum Enum
+{
+}
+
+enum Suits {}
+
+enum Cards
+{
+    }

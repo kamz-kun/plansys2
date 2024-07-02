@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Zend\Tests\Files;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class ClosingTagUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the ClosingTag sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Zend\Sniffs\Files\ClosingTagSniff
+ */
+final class ClosingTagUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -27,11 +32,22 @@ class ClosingTagUnitTest extends AbstractSniffUnitTest
      */
     public function getErrorList($testFile='')
     {
-        if ($testFile !== 'ClosingTagUnitTest.1.inc') {
+        switch ($testFile) {
+        case 'ClosingTagUnitTest.1.inc':
+            return [11 => 1];
+
+        case 'ClosingTagUnitTest.3.inc':
+        case 'ClosingTagUnitTest.4.inc':
+        case 'ClosingTagUnitTest.5.inc':
+        case 'ClosingTagUnitTest.7.inc':
+            return [1 => 1];
+
+        case 'ClosingTagUnitTest.6.inc':
+            return [3 => 1];
+
+        default:
             return [];
         }
-
-        return [11 => 1];
 
     }//end getErrorList()
 

@@ -4,27 +4,20 @@
  *
  * @author    Alexander Obuhovich <aik.bold@gmail.com>
  * @copyright 2010-2014 Alexander Obuhovich
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Tests\Files;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class OneTraitPerFileUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the OneTraitPerFile sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Generic\Sniffs\Files\OneTraitPerFileSniff
+ */
+final class OneTraitPerFileUnitTest extends AbstractSniffUnitTest
 {
-
-
-    /**
-     * Should this test be skipped for some reason.
-     *
-     * @return bool
-     */
-    protected function shouldSkipTest()
-    {
-        return (PHP_VERSION_ID < 50400);
-
-    }//end shouldSkipTest()
 
 
     /**

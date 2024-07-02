@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PSR1\Sniffs\Files;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class SideEffectsSniff implements Sniff
@@ -20,7 +20,7 @@ class SideEffectsSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -36,7 +36,7 @@ class SideEffectsSniff implements Sniff
      * @param int                         $stackPtr  The position of the current token in
      *                                               the token stack.
      *
-     * @return void
+     * @return int
      */
     public function process(File $phpcsFile, $stackPtr)
     {
@@ -56,7 +56,7 @@ class SideEffectsSniff implements Sniff
         }
 
         // Ignore the rest of the file.
-        return ($phpcsFile->numTokens + 1);
+        return $phpcsFile->numTokens;
 
     }//end process()
 
@@ -82,6 +82,7 @@ class SideEffectsSniff implements Sniff
             T_CLASS     => T_CLASS,
             T_INTERFACE => T_INTERFACE,
             T_TRAIT     => T_TRAIT,
+            T_ENUM      => T_ENUM,
             T_FUNCTION  => T_FUNCTION,
         ];
 
@@ -91,15 +92,19 @@ class SideEffectsSniff implements Sniff
             T_ELSEIF => T_ELSEIF,
         ];
 
+        $checkAnnotations = $phpcsFile->config->annotations;
+
         $firstSymbol = null;
         $firstEffect = null;
         for ($i = $start; $i <= $end; $i++) {
             // Respect phpcs:disable comments.
-            if ($tokens[$i]['code'] === T_PHPCS_DISABLE
+            if ($checkAnnotations === true
+                && $tokens[$i]['code'] === T_PHPCS_DISABLE
                 && (empty($tokens[$i]['sniffCodes']) === true
                 || isset($tokens[$i]['sniffCodes']['PSR1']) === true
                 || isset($tokens[$i]['sniffCodes']['PSR1.Files']) === true
-                || isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects']) === true)
+                || isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects']) === true
+                || isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects.FoundWithSymbols']) === true)
             ) {
                 do {
                     $i = $phpcsFile->findNext(T_PHPCS_ENABLE, ($i + 1));
@@ -107,7 +112,8 @@ class SideEffectsSniff implements Sniff
                     && empty($tokens[$i]['sniffCodes']) === false
                     && isset($tokens[$i]['sniffCodes']['PSR1']) === false
                     && isset($tokens[$i]['sniffCodes']['PSR1.Files']) === false
-                    && isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects']) === false);
+                    && isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects']) === false
+                    && isset($tokens[$i]['sniffCodes']['PSR1.Files.SideEffects.FoundWithSymbols']) === false);
 
                 if ($i === false) {
                     // The entire rest of the file is disabled,
@@ -135,6 +141,11 @@ class SideEffectsSniff implements Sniff
                 continue;
             }
 
+            // Ignore logical operators.
+            if (isset(Tokens::$booleanOperators[$tokens[$i]['code']]) === true) {
+                continue;
+            }
+
             // Ignore entire namespace, declare, const and use statements.
             if ($tokens[$i]['code'] === T_NAMESPACE
                 || $tokens[$i]['code'] === T_USE
@@ -143,6 +154,12 @@ class SideEffectsSniff implements Sniff
             ) {
                 if (isset($tokens[$i]['scope_opener']) === true) {
                     $i = $tokens[$i]['scope_closer'];
+                    if ($tokens[$i]['code'] === T_ENDDECLARE) {
+                        $semicolon = $phpcsFile->findNext(Tokens::$emptyTokens, ($i + 1), null, true);
+                        if ($semicolon !== false && $tokens[$semicolon]['code'] === T_SEMICOLON) {
+                            $i = $semicolon;
+                        }
+                    }
                 } else {
                     $semicolon = $phpcsFile->findNext(T_SEMICOLON, ($i + 1));
                     if ($semicolon !== false) {
@@ -154,13 +171,23 @@ class SideEffectsSniff implements Sniff
             }
 
             // Ignore function/class prefixes.
-            if (isset(Tokens::$methodPrefixes[$tokens[$i]['code']]) === true) {
+            if (isset(Tokens::$methodPrefixes[$tokens[$i]['code']]) === true
+                || $tokens[$i]['code'] === T_READONLY
+            ) {
                 continue;
             }
 
             // Ignore anon classes.
             if ($tokens[$i]['code'] === T_ANON_CLASS) {
                 $i = $tokens[$i]['scope_closer'];
+                continue;
+            }
+
+            // Ignore attributes.
+            if ($tokens[$i]['code'] === T_ATTRIBUTE
+                && isset($tokens[$i]['attribute_closer']) === true
+            ) {
+                $i = $tokens[$i]['attribute_closer'];
                 continue;
             }
 
@@ -177,9 +204,11 @@ class SideEffectsSniff implements Sniff
             } else if ($tokens[$i]['code'] === T_STRING
                 && strtolower($tokens[$i]['content']) === 'define'
             ) {
-                $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($i - 1), null, true);
+                $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($i - 1), null, true);
                 if ($tokens[$prev]['code'] !== T_OBJECT_OPERATOR
+                    && $tokens[$prev]['code'] !== T_NULLSAFE_OBJECT_OPERATOR
                     && $tokens[$prev]['code'] !== T_DOUBLE_COLON
+                    && $tokens[$prev]['code'] !== T_FUNCTION
                 ) {
                     if ($firstSymbol === null) {
                         $firstSymbol = $i;
@@ -191,6 +220,29 @@ class SideEffectsSniff implements Sniff
                     }
 
                     continue;
+                }
+            }//end if
+
+            // Special case for defined() as it can be used to see
+            // if a constant (a symbol) should be defined or not and
+            // doesn't need to use a full conditional block.
+            if ($tokens[$i]['code'] === T_STRING
+                && strtolower($tokens[$i]['content']) === 'defined'
+            ) {
+                $openBracket = $phpcsFile->findNext(Tokens::$emptyTokens, ($i + 1), null, true);
+                if ($openBracket !== false
+                    && $tokens[$openBracket]['code'] === T_OPEN_PARENTHESIS
+                    && isset($tokens[$openBracket]['parenthesis_closer']) === true
+                ) {
+                    $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($i - 1), null, true);
+                    if ($tokens[$prev]['code'] !== T_OBJECT_OPERATOR
+                        && $tokens[$prev]['code'] !== T_NULLSAFE_OBJECT_OPERATOR
+                        && $tokens[$prev]['code'] !== T_DOUBLE_COLON
+                        && $tokens[$prev]['code'] !== T_FUNCTION
+                    ) {
+                        $i = $tokens[$openBracket]['parenthesis_closer'];
+                        continue;
+                    }
                 }
             }//end if
 

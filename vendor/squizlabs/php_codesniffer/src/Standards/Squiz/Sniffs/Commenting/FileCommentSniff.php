@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class FileCommentSniff implements Sniff
 {
@@ -29,7 +29,7 @@ class FileCommentSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -49,19 +49,17 @@ class FileCommentSniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
-        $this->currentFile = $phpcsFile;
-
         $tokens       = $phpcsFile->getTokens();
         $commentStart = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
 
         if ($tokens[$commentStart]['code'] === T_COMMENT) {
             $phpcsFile->addError('You must use "/**" style comments for a file comment', $commentStart, 'WrongStyle');
             $phpcsFile->recordMetric($stackPtr, 'File has doc comment', 'yes');
-            return ($phpcsFile->numTokens + 1);
+            return $phpcsFile->numTokens;
         } else if ($commentStart === false || $tokens[$commentStart]['code'] !== T_DOC_COMMENT_OPEN_TAG) {
             $phpcsFile->addError('Missing file doc comment', $stackPtr, 'Missing');
             $phpcsFile->recordMetric($stackPtr, 'File has doc comment', 'no');
-            return ($phpcsFile->numTokens + 1);
+            return $phpcsFile->numTokens;
         }
 
         if (isset($tokens[$commentStart]['comment_closer']) === false
@@ -69,22 +67,35 @@ class FileCommentSniff implements Sniff
             && $tokens[$commentStart]['comment_closer'] === ($phpcsFile->numTokens - 1))
         ) {
             // Don't process an unfinished file comment during live coding.
-            return ($phpcsFile->numTokens + 1);
+            return $phpcsFile->numTokens;
         }
 
         $commentEnd = $tokens[$commentStart]['comment_closer'];
 
-        $nextToken = $phpcsFile->findNext(
-            T_WHITESPACE,
-            ($commentEnd + 1),
-            null,
-            true
-        );
+        for ($nextToken = ($commentEnd + 1); $nextToken < $phpcsFile->numTokens; $nextToken++) {
+            if ($tokens[$nextToken]['code'] === T_WHITESPACE) {
+                continue;
+            }
+
+            if ($tokens[$nextToken]['code'] === T_ATTRIBUTE
+                && isset($tokens[$nextToken]['attribute_closer']) === true
+            ) {
+                $nextToken = $tokens[$nextToken]['attribute_closer'];
+                continue;
+            }
+
+            break;
+        }
+
+        if ($nextToken === $phpcsFile->numTokens) {
+            $nextToken--;
+        }
 
         $ignore = [
             T_CLASS,
             T_INTERFACE,
             T_TRAIT,
+            T_ENUM,
             T_FUNCTION,
             T_CLOSURE,
             T_PUBLIC,
@@ -93,6 +104,7 @@ class FileCommentSniff implements Sniff
             T_FINAL,
             T_STATIC,
             T_ABSTRACT,
+            T_READONLY,
             T_CONST,
             T_PROPERTY,
             T_INCLUDE,
@@ -101,10 +113,10 @@ class FileCommentSniff implements Sniff
             T_REQUIRE_ONCE,
         ];
 
-        if (in_array($tokens[$nextToken]['code'], $ignore) === true) {
+        if (in_array($tokens[$nextToken]['code'], $ignore, true) === true) {
             $phpcsFile->addError('Missing file doc comment', $stackPtr, 'Missing');
             $phpcsFile->recordMetric($stackPtr, 'File has doc comment', 'no');
-            return ($phpcsFile->numTokens + 1);
+            return $phpcsFile->numTokens;
         }
 
         $phpcsFile->recordMetric($stackPtr, 'File has doc comment', 'yes');
@@ -117,7 +129,7 @@ class FileCommentSniff implements Sniff
 
         // Exactly one blank line after the file comment.
         $next = $phpcsFile->findNext(T_WHITESPACE, ($commentEnd + 1), null, true);
-        if ($tokens[$next]['line'] !== ($tokens[$commentEnd]['line'] + 2)) {
+        if ($next !== false && $tokens[$next]['line'] !== ($tokens[$commentEnd]['line'] + 2)) {
             $error = 'There must be exactly one blank line after the file comment';
             $phpcsFile->addError($error, $commentEnd, 'SpacingAfterComment');
         }
@@ -135,7 +147,7 @@ class FileCommentSniff implements Sniff
             $name       = $tokens[$tag]['content'];
             $isRequired = isset($required[$name]);
 
-            if ($isRequired === true && in_array($name, $foundTags) === true) {
+            if ($isRequired === true && in_array($name, $foundTags, true) === true) {
                 $error = 'Only one %s tag is allowed in a file comment';
                 $data  = [$name];
                 $phpcsFile->addError($error, $tag, 'Duplicate'.ucfirst(substr($name, 1)).'Tag', $data);
@@ -185,7 +197,7 @@ class FileCommentSniff implements Sniff
         // Check if the tags are in the correct position.
         $pos = 0;
         foreach ($required as $tag => $true) {
-            if (in_array($tag, $foundTags) === false) {
+            if (in_array($tag, $foundTags, true) === false) {
                 $error = 'Missing %s tag in file comment';
                 $data  = [$tag];
                 $phpcsFile->addError($error, $commentEnd, 'Missing'.ucfirst(substr($tag, 1)).'Tag', $data);
@@ -208,7 +220,7 @@ class FileCommentSniff implements Sniff
         }//end foreach
 
         // Ignore the rest of the file.
-        return ($phpcsFile->numTokens + 1);
+        return $phpcsFile->numTokens;
 
     }//end process()
 

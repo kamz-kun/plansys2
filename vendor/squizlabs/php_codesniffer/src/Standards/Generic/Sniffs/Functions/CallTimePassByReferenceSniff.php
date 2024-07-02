@@ -4,13 +4,13 @@
  *
  * @author    Florian Grandel <jerico.dev@gmail.com>
  * @copyright 2009-2014 Florian Grandel
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\Functions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class CallTimePassByReferenceSniff implements Sniff
@@ -20,13 +20,17 @@ class CallTimePassByReferenceSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
         return [
             T_STRING,
             T_VARIABLE,
+            T_ANON_CLASS,
+            T_PARENT,
+            T_SELF,
+            T_STATIC,
         ];
 
     }//end register()
@@ -45,19 +49,17 @@ class CallTimePassByReferenceSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $findTokens = array_merge(
-            Tokens::$emptyTokens,
-            [T_BITWISE_AND]
-        );
+        $findTokens   = Tokens::$emptyTokens;
+        $findTokens[] = T_BITWISE_AND;
 
         $prev = $phpcsFile->findPrevious($findTokens, ($stackPtr - 1), null, true);
 
-        // Skip tokens that are the names of functions or classes
+        // Skip tokens that are the names of functions
         // within their definitions. For example: function myFunction...
         // "myFunction" is T_STRING but we should skip because it is not a
         // function or method *call*.
         $prevCode = $tokens[$prev]['code'];
-        if ($prevCode === T_FUNCTION || $prevCode === T_CLASS) {
+        if ($prevCode === T_FUNCTION) {
             return;
         }
 
@@ -71,7 +73,7 @@ class CallTimePassByReferenceSniff implements Sniff
             true
         );
 
-        if ($tokens[$openBracket]['code'] !== T_OPEN_PARENTHESIS) {
+        if ($openBracket === false || $tokens[$openBracket]['code'] !== T_OPEN_PARENTHESIS) {
             return;
         }
 
@@ -88,10 +90,6 @@ class CallTimePassByReferenceSniff implements Sniff
         ];
 
         while (($nextSeparator = $phpcsFile->findNext($find, ($nextSeparator + 1), $closeBracket)) !== false) {
-            if (isset($tokens[$nextSeparator]['nested_parenthesis']) === false) {
-                continue;
-            }
-
             if ($tokens[$nextSeparator]['code'] === T_OPEN_SHORT_ARRAY) {
                 $nextSeparator = $tokens[$nextSeparator]['bracket_closer'];
                 continue;
@@ -105,7 +103,6 @@ class CallTimePassByReferenceSniff implements Sniff
                 continue;
             }
 
-            // Checking this: $value = my_function(...[*]$arg...).
             $tokenBefore = $phpcsFile->findPrevious(
                 Tokens::$emptyTokens,
                 ($nextSeparator - 1),
@@ -114,7 +111,13 @@ class CallTimePassByReferenceSniff implements Sniff
             );
 
             if ($tokens[$tokenBefore]['code'] === T_BITWISE_AND) {
-                // Checking this: $value = my_function(...[*]&$arg...).
+                if ($phpcsFile->isReference($tokenBefore) === false) {
+                    continue;
+                }
+
+                // We also want to ignore references used in assignment
+                // operations passed as function arguments, but isReference()
+                // sees them as valid references (which they are).
                 $tokenBefore = $phpcsFile->findPrevious(
                     Tokens::$emptyTokens,
                     ($tokenBefore - 1),
@@ -122,16 +125,7 @@ class CallTimePassByReferenceSniff implements Sniff
                     true
                 );
 
-                // We have to exclude all uses of T_BITWISE_AND that are not
-                // references. We use a blacklist approach as we prefer false
-                // positives to not identifying a pass-by-reference call at all.
-                $tokenCode = $tokens[$tokenBefore]['code'];
-                if ($tokenCode === T_VARIABLE
-                    || $tokenCode === T_CLOSE_PARENTHESIS
-                    || $tokenCode === T_CLOSE_SQUARE_BRACKET
-                    || $tokenCode === T_LNUMBER
-                    || isset(Tokens::$assignmentTokens[$tokenCode]) === true
-                ) {
+                if (isset(Tokens::$assignmentTokens[$tokens[$tokenBefore]['code']]) === true) {
                     continue;
                 }
 

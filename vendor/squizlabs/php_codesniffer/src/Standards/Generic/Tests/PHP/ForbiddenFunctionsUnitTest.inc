@@ -43,7 +43,7 @@ class RightSideTest {
 class RightSideVisTest {
     use DelProvider {
         delete as protected delete;
-        delete insteadof delete;
+        DelProvider::delete insteadof delete;
     }
 }
 
@@ -54,4 +54,7 @@ class SizeOf implements Something {}
 function mymodule_form_callback(SizeOf $sizeof) {
 }
 
-?>
+$size = $class?->sizeof($array);
+
+#[SizeOf(10)]
+function doSomething() {}

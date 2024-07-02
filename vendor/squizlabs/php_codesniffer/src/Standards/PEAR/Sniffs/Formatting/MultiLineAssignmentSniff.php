@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\Formatting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class MultiLineAssignmentSniff implements Sniff
 {
@@ -26,7 +26,7 @@ class MultiLineAssignmentSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -83,14 +83,14 @@ class MultiLineAssignmentSniff implements Sniff
         }
 
         if ($tokens[$i]['code'] === T_WHITESPACE) {
-            $assignmentIndent = strlen($tokens[$i]['content']);
+            $assignmentIndent = $tokens[$i]['length'];
         }
 
         // Find the actual indent.
         $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1));
 
         $expectedIndent = ($assignmentIndent + $this->indent);
-        $foundIndent    = strlen($tokens[$prev]['content']);
+        $foundIndent    = $tokens[$prev]['length'];
         if ($foundIndent !== $expectedIndent) {
             $error = 'Multi-line assignment not indented correctly; expected %s spaces but found %s';
             $data  = [

@@ -40,7 +40,7 @@ function myFunction(array $arg2=array(), array $arg1)
 {
 }
 
-class myClass()
+class myClass
 {
     // No args.
     function myFunction()
@@ -93,7 +93,27 @@ function foo($baz, Foo $foo = null, $bar = true) {}
 function foo($baz, $bar = true, Foo $foo = null) {}
 
 // Valid closure
-function ($arg1, $arg2='hello') {}
+$closure = function ($arg1, $arg2='hello') {};
 
 // Invalid closure
-function(array $arg2=array(), array $arg1) {}
+$closure = function(array $arg2=array(), array $arg1) {}
+
+$fn = fn($a = [], $b) => $a[] = $b;
+
+class OnlyConstructorPropertyPromotion {
+    public function __construct(
+        public string $name = '',
+        protected $bar
+    ) {}
+}
+
+class ConstructorPropertyPromotionMixedWithNormalParams {
+    public function __construct(
+        public string $name = '',
+        ?int $optionalParam = 0,
+        mixed $requiredParam,
+    ) {}
+}
+
+// Intentional syntax error. Must be last thing in the file.
+function

@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class InlineCommentSniff implements Sniff
 {
@@ -19,7 +19,7 @@ class InlineCommentSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -41,7 +41,7 @@ class InlineCommentSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        if ($tokens[$stackPtr]['content']{0} === '#') {
+        if ($tokens[$stackPtr]['content'][0] === '#') {
             $phpcsFile->recordMetric($stackPtr, 'Inline comment style', '# ...');
 
             $error  = 'Perl-style comments are not allowed. Use "// Comment."';
@@ -52,12 +52,12 @@ class InlineCommentSniff implements Sniff
                 $newComment = '// '.$newComment;
                 $phpcsFile->fixer->replaceToken($stackPtr, $newComment);
             }
-        } else if ($tokens[$stackPtr]['content']{0} === '/'
-            && $tokens[$stackPtr]['content']{1} === '/'
+        } else if ($tokens[$stackPtr]['content'][0] === '/'
+            && $tokens[$stackPtr]['content'][1] === '/'
         ) {
             $phpcsFile->recordMetric($stackPtr, 'Inline comment style', '// ...');
-        } else if ($tokens[$stackPtr]['content']{0} === '/'
-            && $tokens[$stackPtr]['content']{1} === '*'
+        } else if ($tokens[$stackPtr]['content'][0] === '/'
+            && $tokens[$stackPtr]['content'][1] === '*'
         ) {
             $phpcsFile->recordMetric($stackPtr, 'Inline comment style', '/* ... */');
         }

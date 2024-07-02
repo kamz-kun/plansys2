@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\WhiteSpace;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ControlStructureSpacingSniff implements Sniff
@@ -30,7 +30,7 @@ class ControlStructureSpacingSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -46,6 +46,7 @@ class ControlStructureSpacingSniff implements Sniff
             T_TRY,
             T_CATCH,
             T_FINALLY,
+            T_MATCH,
         ];
 
     }//end register()
@@ -144,6 +145,7 @@ class ControlStructureSpacingSniff implements Sniff
             T_CLASS                => true,
             T_INTERFACE            => true,
             T_TRAIT                => true,
+            T_ENUM                 => true,
             T_DOC_COMMENT_OPEN_TAG => true,
         ];
 
@@ -232,6 +234,16 @@ class ControlStructureSpacingSniff implements Sniff
             }//end if
         }//end if
 
+        if ($tokens[$stackPtr]['code'] === T_MATCH) {
+            // Move the scope closer to the semicolon/comma.
+            $next = $phpcsFile->findNext(Tokens::$emptyTokens, ($scopeCloser + 1), null, true);
+            if ($next !== false
+                && ($tokens[$next]['code'] === T_SEMICOLON || $tokens[$next]['code'] === T_COMMA)
+            ) {
+                $scopeCloser = $next;
+            }
+        }
+
         $trailingContent = $phpcsFile->findNext(
             T_WHITESPACE,
             ($scopeCloser + 1),
@@ -292,8 +304,7 @@ class ControlStructureSpacingSniff implements Sniff
             }
 
             if ($tokens[$owner]['code'] === T_CLOSURE
-                && ($phpcsFile->hasCondition($stackPtr, T_FUNCTION) === true
-                || $phpcsFile->hasCondition($stackPtr, T_CLOSURE) === true
+                && ($phpcsFile->hasCondition($stackPtr, [T_FUNCTION, T_CLOSURE]) === true
                 || isset($tokens[$stackPtr]['nested_parenthesis']) === true)
             ) {
                 return;

@@ -86,14 +86,14 @@ class MyClass
     const MODE_DEBUG = 'debug';
     const MODE_DEBUG2 = 'debug';
 
-    $array[$test] = 'anything';
-    $var          = 'anything';
+    var $array[$test] = 'anything';
+    var $var          = 'anything';
 
-    const MODE_DEBUG2  = 'debug';
-    $array[$test]    = 'anything';
-    $var             = 'anything';
-    $array[($test + 1)] = 'anything';
-    $array[($blah + (10 - $test))] = 'anything';
+    const MODE_DEBUG3  = 'debug';
+    public $array[$test]    = 'anything';
+    private $vara             = 'anything';
+    protected $array[($test + 1)] = 'anything';
+    var $array[($blah + (10 - $test))] = 'anything';
 }
 
 function myFunction($var=true)
@@ -183,7 +183,7 @@ $var2      = 12;
 
 // Valid
 $error = false;
-while (list($h, $f) = each($handle)) {
+while (list($h, $f) = getKeyAndValue($handle)) {
     $error = true;
 }
 
@@ -265,3 +265,240 @@ $foo = [
     'a' => 'b',
 ];
 $barbar = 'bar';
+
+$foo = [
+
+    'a' => 'b',
+];
+$barbar = 'bar';
+
+function buildForm(FormBuilderInterface $builder, array $options)
+{
+    $transformer = new ContractTransformer($options['contracts']);
+    $types       = ['support.contact.question' => ContactData::QUESTION];
+
+    [$important, $questions, $incidents, $requests] = $this->createContractBuckets($options['contracts']);
+}
+
+function buildForm(FormBuilderInterface $builder, array $options)
+{
+    $transformer                                    = new ContractTransformer($options['contracts']);
+    $types                                          = ['support.contact.question' => ContactData::QUESTION];
+    [$important, $questions, $incidents, $requests] = $this->createContractBuckets($options['contracts']);
+}
+
+$loggerResult = $util->setLogger(new class {
+    public function log($msg)
+    {
+        $a = $msg;
+        $foobar = $msg;
+        $foo = function() {
+            $a = $msg;
+            $foobar = $msg;
+            $loggerResult = $util->setLogger(new class {
+                public function log($msg)
+                {
+                    $a = $msg;
+                    $foobar = $msg;
+                    $foo = function() {
+                        foo(function() {
+                            foo(function() {
+                                echo 'hi';
+                            });
+                            $a = $msg;
+                            $foobar = $msg;
+
+                            $foo = function() {
+
+                                $foo = 1;
+                                $barbar=2;
+                            };
+                            $barbar = function() {
+                                $foo    = 1;
+                                $barbar = 2;
+                            };
+                        });
+                        $a = $msg;
+                        $foobar      = $msg;
+                    };
+                    $bar = $msg;
+                }
+
+                public function log2($msg)
+                {
+                    $a = $msg;
+                    $foobar = $msg;
+                    $foo = function() {
+                        foo(function() {
+                            foo(function() {
+                                echo 'hi';
+                            });
+                            $a = $msg;
+                            $foobar = $msg;
+
+                            $foo = function() {
+
+                                $foo = 1;
+                                $barbar=2;
+                            };
+                            $barbar = function() {
+                                $foo    = 1;
+                                $barbar = 2;
+                            };
+                        });
+                        $a = $msg;
+                        $foobar      = $msg;
+                    };
+                    $bar = $msg;
+                }
+            });
+            $foo          = 5;
+        };
+        $bar = $msg;
+    }
+});
+$foo          = 5;
+
+$foo = [
+    0 => function () {
+        $foo = 'foo';
+        $barbar = 'bar';
+    },
+    1 => function () {
+        $foo    = 'foo';
+        $barbar = 'bar';
+    },
+];
+
+$abc = 'something';
+if ($foo) {}
+$defghi = 'longer something';
+
+function foo() {
+    $foo = 'foo';
+    $bar = 'bar';
+    ?>
+
+    <div>
+        <?php
+        $foo = 'foo';
+        $bar = 'bar';
+        ?>
+    </div>
+    <?php
+}
+
+$foo = new Foo([
+    $a = new Bar(),
+    $b = new Bar(),
+]);
+
+$foo = new Foo([
+    $a = new Bar(),
+    $b    = new Bar(),
+    $c  = new Bar(),
+]);
+$foofoo   = new Foo([
+    $a = new Bar(),
+    $b = new Bar(),
+    $c = new Bar(),
+]);
+
+$i = 0;
+echo "TEST: ".($i += 1)."\n";
+
+// Valid
+$foo      = 'Hello';
+$variable = 12;
+$foo     .= ' World';
+$test     = 1;
+$test   <<= 6;
+
+// Invalid
+$foo      = 'Hello';
+$variable = 12;
+$foo      .= ' World';
+$test     = 1;
+$test     <<= 6;
+
+// phpcs:set Generic.Formatting.MultipleStatementAlignment alignAtEnd false
+
+// Valid
+$foo      = 'Hello';
+$variable = 12;
+$foo      .= ' World';
+$test     = 1;
+$test     <<= 6;
+
+// Invalid
+$foo      = 'Hello';
+$variable = 12;
+$foo     .= ' World';
+$test     = 1;
+$test   <<= 6;
+
+// phpcs:set Generic.Formatting.MultipleStatementAlignment maxPadding 8
+
+$one                = 'one';
+$varonetwo          = 'two';
+$varonetwothree     = 'three';
+$varonetwothreefour = 'four';
+
+$one       = 'one';
+$varonetwo .= 'two';
+$varonetwo = 'two';
+$varonetwo .= 'two';
+$varonetwothree     = 'three';
+$varonetwothreefour = 'four';
+
+$one         <<= 8;
+$onetwothree = 3;
+
+// phpcs:set Generic.Formatting.MultipleStatementAlignment maxPadding 1000
+
+$a        = 123;
+$model    = new class() {
+    // empty
+};
+$resource = new class() {
+    // empty
+};
+
+// phpcs:set Generic.Formatting.MultipleStatementAlignment alignAtEnd true
+
+$one       <<= 8;
+$onetwothree = 3;
+
+// Issue 3326.
+class Test
+{
+    public const DEFAULT = 'default';
+    public const SOS     = 'sos';
+    public const HELP    = 'help';
+
+    protected static $thisIsAReallyLongVariableName = [];
+}
+
+// Issue #3460.
+function issue3460_invalid() {
+    $a = static function ($variables = false) use ($foo) {
+        return $variables;
+    };
+    $b   = $a;
+}
+
+function issue3460_valid() {
+    $a = static function ($variables = false) use ($foo) {
+        return $variables;
+    };
+    $b = $a;
+}
+
+function makeSureThatAssignmentWithinClosureAreStillHandled() {
+    $a = static function ($variables = []) use ($temp) {
+        $a = 'foo';
+        $bar = 'bar';
+        $longer = 'longer';
+        return $variables;
+    };
+}

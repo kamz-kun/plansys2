@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Tests\Formatting;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class MultipleStatementAlignmentUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the MultipleStatementAlignment sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Generic\Sniffs\Formatting\MultipleStatementAlignmentSniff
+ */
+final class MultipleStatementAlignmentUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -40,7 +45,7 @@ class MultipleStatementAlignmentUnitTest extends AbstractSniffUnitTest
      *
      * @return array<int, int>
      */
-    public function getWarningList($testFile='MultipleStatementAlignmentUnitTest.inc')
+    public function getWarningList($testFile='')
     {
         switch ($testFile) {
         case 'MultipleStatementAlignmentUnitTest.inc':
@@ -82,8 +87,47 @@ class MultipleStatementAlignmentUnitTest extends AbstractSniffUnitTest
                 252 => 1,
                 257 => 1,
                 263 => 1,
+                269 => 1,
+                293 => 1,
+                295 => 1,
+                296 => 1,
+                297 => 1,
+                301 => 1,
+                303 => 1,
+                308 => 1,
+                311 => 1,
+                313 => 1,
+                314 => 1,
+                321 => 1,
+                322 => 1,
+                324 => 1,
+                329 => 1,
+                331 => 1,
+                336 => 1,
+                339 => 1,
+                341 => 1,
+                342 => 1,
+                349 => 1,
+                350 => 1,
+                352 => 1,
+                357 => 1,
+                364 => 1,
+                396 => 1,
+                398 => 1,
+                399 => 1,
+                401 => 1,
+                420 => 1,
+                422 => 1,
+                436 => 1,
+                438 => 1,
+                442 => 1,
+                443 => 1,
+                454 => 1,
+                487 => 1,
+                499 => 1,
+                500 => 1,
             ];
-        break;
+
         case 'MultipleStatementAlignmentUnitTest.js':
             return [
                 11  => 1,
@@ -115,10 +159,9 @@ class MultipleStatementAlignmentUnitTest extends AbstractSniffUnitTest
                 114 => 1,
                 117 => 1,
             ];
-            break;
+
         default:
             return [];
-            break;
         }//end switch
 
     }//end getWarningList()

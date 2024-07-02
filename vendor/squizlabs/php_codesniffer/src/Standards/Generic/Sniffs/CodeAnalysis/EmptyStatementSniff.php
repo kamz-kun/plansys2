@@ -18,13 +18,13 @@
  * @author    Manuel Pichler <mapi@manuel-pichler.de>
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2007-2014 Manuel Pichler. All rights reserved.
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class EmptyStatementSniff implements Sniff
@@ -34,7 +34,7 @@ class EmptyStatementSniff implements Sniff
     /**
      * Registers the tokens that this sniff wants to listen for.
      *
-     * @return int[]
+     * @return array<int|string>
      */
     public function register()
     {
@@ -50,6 +50,7 @@ class EmptyStatementSniff implements Sniff
             T_IF,
             T_SWITCH,
             T_WHILE,
+            T_MATCH,
         ];
 
     }//end register()

@@ -4,14 +4,14 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PSR1\Sniffs\Methods;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Standards\Generic\Sniffs\NamingConventions\CamelCapsFunctionNameSniff as GenericCamelCapsFunctionNameSniff;
 use PHP_CodeSniffer\Util\Common;
-use PHP_CodeSniffer\Files\File;
 
 class CamelCapsMethodNameSniff extends GenericCamelCapsFunctionNameSniff
 {
@@ -29,6 +29,16 @@ class CamelCapsMethodNameSniff extends GenericCamelCapsFunctionNameSniff
      */
     protected function processTokenWithinScope(File $phpcsFile, $stackPtr, $currScope)
     {
+        $tokens = $phpcsFile->getTokens();
+
+        // Determine if this is a function which needs to be examined.
+        $conditions = $tokens[$stackPtr]['conditions'];
+        end($conditions);
+        $deepestScope = key($conditions);
+        if ($deepestScope !== $currScope) {
+            return;
+        }
+
         $methodName = $phpcsFile->getDeclarationName($stackPtr);
         if ($methodName === null) {
             // Ignore closures.
@@ -49,6 +59,10 @@ class CamelCapsMethodNameSniff extends GenericCamelCapsFunctionNameSniff
         if ($testName !== '' &&  Common::isCamelCaps($testName, false, true, false) === false) {
             $error     = 'Method name "%s" is not in camel caps format';
             $className = $phpcsFile->getDeclarationName($currScope);
+            if (isset($className) === false) {
+                $className = '[Anonymous Class]';
+            }
+
             $errorData = [$className.'::'.$methodName];
             $phpcsFile->addError($error, $stackPtr, 'NotCamelCaps', $errorData);
             $phpcsFile->recordMetric($stackPtr, 'CamelCase method name', 'no');

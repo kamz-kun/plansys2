@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Tests\CSS;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class SemicolonSpacingUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the SemicolonSpacing sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS\SemicolonSpacingSniff
+ */
+final class SemicolonSpacingUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -26,8 +31,15 @@ class SemicolonSpacingUnitTest extends AbstractSniffUnitTest
     public function getErrorList()
     {
         return [
-            2 => 1,
-            7 => 1,
+            2  => 1,
+            7  => 1,
+            30 => 1,
+            34 => 1,
+            36 => 1,
+            39 => 1,
+            43 => 1,
+            45 => 1,
+            48 => 1,
         ];
 
     }//end getErrorList()

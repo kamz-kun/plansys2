@@ -4,15 +4,18 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Util;
 
+use FilesystemIterator;
 use PHP_CodeSniffer\Autoload;
 use PHP_CodeSniffer\Config;
 use PHP_CodeSniffer\Ruleset;
-use PHP_CodeSniffer\Util\Common;
+use RecursiveCallbackFilterIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class Cache
 {
@@ -20,7 +23,7 @@ class Cache
     /**
      * The filesystem location of the cache file.
      *
-     * @var void
+     * @var string
      */
     private static $path = '';
 
@@ -96,22 +99,25 @@ class Cache
         // hash. This ensures that core PHPCS changes will also invalidate the cache.
         // Note that we ignore sniffs here, and any files that don't affect
         // the outcome of the run.
-        $di     = new \RecursiveDirectoryIterator($installDir);
-        $filter = new \RecursiveCallbackFilterIterator(
+        $di     = new RecursiveDirectoryIterator(
+            $installDir,
+            (FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS)
+        );
+        $filter = new RecursiveCallbackFilterIterator(
             $di,
             function ($file, $key, $iterator) {
-                // Skip hidden files.
+                // Skip non-php files.
                 $filename = $file->getFilename();
-                if (substr($filename, 0, 1) === '.') {
+                if ($file->isFile() === true && substr($filename, -4) !== '.php') {
                     return false;
                 }
 
-                $filePath = Common::realpath($file->getPathname());
+                $filePath = Common::realpath($key);
                 if ($filePath === false) {
                     return false;
                 }
 
-                if (is_dir($filePath) === true
+                if ($iterator->hasChildren() === true
                     && ($filename === 'Standards'
                     || $filename === 'Exceptions'
                     || $filename === 'Reports'
@@ -124,8 +130,7 @@ class Cache
             }
         );
 
-        $iterator  = new \RecursiveIteratorIterator($filter);
-        $coreFiles = [];
+        $iterator = new RecursiveIteratorIterator($filter);
         foreach ($iterator as $file) {
             if (PHP_CODESNIFFER_VERBOSITY > 1) {
                 echo "\t\t=> core file: $file".PHP_EOL;
@@ -145,23 +150,35 @@ class Cache
         // Along with the code hash, use various settings that can affect
         // the results of a run to create a new hash. This hash will be used
         // in the cache file name.
-        $rulesetHash = md5(var_export($ruleset->ignorePatterns, true).var_export($ruleset->includePatterns, true));
-        $configData  = [
-            'phpVersion'   => PHP_VERSION_ID,
-            'tabWidth'     => $config->tabWidth,
-            'encoding'     => $config->encoding,
-            'recordErrors' => $config->recordErrors,
-            'annotations'  => $config->annotations,
-            'codeHash'     => $codeHash,
-            'rulesetHash'  => $rulesetHash,
+        $rulesetHash       = md5(var_export($ruleset->ignorePatterns, true).var_export($ruleset->includePatterns, true));
+        $phpExtensionsHash = md5(var_export(get_loaded_extensions(), true));
+        $configData        = [
+            'phpVersion'    => PHP_VERSION_ID,
+            'phpExtensions' => $phpExtensionsHash,
+            'tabWidth'      => $config->tabWidth,
+            'encoding'      => $config->encoding,
+            'recordErrors'  => $config->recordErrors,
+            'annotations'   => $config->annotations,
+            'configData'    => Config::getAllConfigData(),
+            'codeHash'      => $codeHash,
+            'rulesetHash'   => $rulesetHash,
         ];
 
-        $configString = implode(',', $configData);
+        $configString = var_export($configData, true);
         $cacheHash    = substr(sha1($configString), 0, 12);
 
         if (PHP_CODESNIFFER_VERBOSITY > 1) {
             echo "\tGenerating cache key data".PHP_EOL;
             foreach ($configData as $key => $value) {
+                if (is_array($value) === true) {
+                    echo "\t\t=> $key:".PHP_EOL;
+                    foreach ($value as $subKey => $subValue) {
+                        echo "\t\t\t=> $subKey: $subValue".PHP_EOL;
+                    }
+
+                    continue;
+                }
+
                 if ($value === true || $value === false) {
                     $value = (int) $value;
                 }
@@ -170,7 +187,7 @@ class Cache
             }
 
             echo "\t\t=> cacheHash: $cacheHash".PHP_EOL;
-        }
+        }//end if
 
         if ($config->cacheFile !== null) {
             $cacheFile = $config->cacheFile;
@@ -205,9 +222,14 @@ class Cache
             ksort($paths);
             $paths = array_reverse($paths);
 
-            $numFiles  = count($config->files);
-            $tmpDir    = sys_get_temp_dir();
+            $numFiles = count($config->files);
+
             $cacheFile = null;
+            $cacheDir  = getenv('XDG_CACHE_HOME');
+            if ($cacheDir === false || is_dir($cacheDir) === false) {
+                $cacheDir = sys_get_temp_dir();
+            }
+
             foreach ($paths as $file => $count) {
                 if ($count !== $numFiles) {
                     unset($paths[$file]);
@@ -215,7 +237,7 @@ class Cache
                 }
 
                 $fileHash = substr(sha1($file), 0, 12);
-                $testFile = $tmpDir.DIRECTORY_SEPARATOR."phpcs.$fileHash.$cacheHash.cache";
+                $testFile = $cacheDir.DIRECTORY_SEPARATOR."phpcs.$fileHash.$cacheHash.cache";
                 if ($cacheFile === null) {
                     // This will be our default location if we can't find
                     // an existing file.
@@ -235,7 +257,7 @@ class Cache
 
             if ($cacheFile === null) {
                 // Unlikely, but just in case $paths is empty for some reason.
-                $cacheFile = $tmpDir.DIRECTORY_SEPARATOR."phpcs.$cacheHash.cache";
+                $cacheFile = $cacheDir.DIRECTORY_SEPARATOR."phpcs.$cacheHash.cache";
             }
         }//end if
 

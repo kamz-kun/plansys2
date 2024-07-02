@@ -4,13 +4,12 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Util;
 
-use PHP_CodeSniffer\Config;
-use PHP_CodeSniffer\Exceptions\RuntimeException;
+use Phar;
 
 class Common
 {
@@ -38,7 +37,7 @@ class Common
      *
      * @param string $path The path to use.
      *
-     * @return mixed
+     * @return bool
      */
     public static function isPharFile($path)
     {
@@ -52,13 +51,41 @@ class Common
 
 
     /**
+     * Checks if a file is readable.
+     *
+     * Addresses PHP bug related to reading files from network drives on Windows.
+     * e.g. when using WSL2.
+     *
+     * @param string $path The path to the file.
+     *
+     * @return boolean
+     */
+    public static function isReadable($path)
+    {
+        if (@is_readable($path) === true) {
+            return true;
+        }
+
+        if (@file_exists($path) === true && @is_file($path) === true) {
+            $f = @fopen($path, 'rb');
+            if (fclose($f) === true) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }//end isReadable()
+
+
+    /**
      * CodeSniffer alternative for realpath.
      *
      * Allows for PHAR support.
      *
      * @param string $path The path to use.
      *
-     * @return mixed
+     * @return string|false
      */
     public static function realpath($path)
     {
@@ -87,7 +114,7 @@ class Common
             return $path;
         }
 
-        $phar  = \Phar::running(false);
+        $phar  = Phar::running(false);
         $extra = str_replace('phar://'.$phar, '', $path);
         $path  = realpath($phar);
         if ($path === false) {
@@ -215,10 +242,32 @@ class Common
 
 
     /**
+     * Escape a path to a system command.
+     *
+     * @param string $cmd The path to the system command.
+     *
+     * @return string
+     */
+    public static function escapeshellcmd($cmd)
+    {
+        $cmd = escapeshellcmd($cmd);
+
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            // Spaces are not escaped by escapeshellcmd on Windows, but need to be
+            // for the command to be able to execute.
+            $cmd = preg_replace('`(?<!^) `', '^ ', $cmd);
+        }
+
+        return $cmd;
+
+    }//end escapeshellcmd()
+
+
+    /**
      * Prepares token content for output to screen.
      *
      * Replaces invisible characters so they are visible. On non-Windows
-     * OSes it will also colour the invisible characters.
+     * operating systems it will also colour the invisible characters.
      *
      * @param string   $content The content to prepare.
      * @param string[] $exclude A list of characters to leave invisible.
@@ -228,32 +277,32 @@ class Common
      */
     public static function prepareForOutput($content, $exclude=[])
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            if (in_array("\r", $exclude) === false) {
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            if (in_array("\r", $exclude, true) === false) {
                 $content = str_replace("\r", '\r', $content);
             }
 
-            if (in_array("\n", $exclude) === false) {
+            if (in_array("\n", $exclude, true) === false) {
                 $content = str_replace("\n", '\n', $content);
             }
 
-            if (in_array("\t", $exclude) === false) {
+            if (in_array("\t", $exclude, true) === false) {
                 $content = str_replace("\t", '\t', $content);
             }
         } else {
-            if (in_array("\r", $exclude) === false) {
+            if (in_array("\r", $exclude, true) === false) {
                 $content = str_replace("\r", "\033[30;1m\\r\033[0m", $content);
             }
 
-            if (in_array("\n", $exclude) === false) {
+            if (in_array("\n", $exclude, true) === false) {
                 $content = str_replace("\n", "\033[30;1m\\n\033[0m", $content);
             }
 
-            if (in_array("\t", $exclude) === false) {
+            if (in_array("\t", $exclude, true) === false) {
                 $content = str_replace("\t", "\033[30;1m\\t\033[0m", $content);
             }
 
-            if (in_array(' ', $exclude) === false) {
+            if (in_array(' ', $exclude, true) === false) {
                 $content = str_replace(' ', "\033[30;1m·\033[0m", $content);
             }
         }//end if
@@ -261,6 +310,20 @@ class Common
         return $content;
 
     }//end prepareForOutput()
+
+
+    /**
+     * Strip colors from a text for output to screen.
+     *
+     * @param string $text The text to process.
+     *
+     * @return string
+     */
+    public static function stripColors($text)
+    {
+        return preg_replace('`\033\[[0-9;]+m`', '', $text);
+
+    }//end stripColors()
 
 
     /**
@@ -323,12 +386,12 @@ class Common
             $lastCharWasCaps = $classFormat;
 
             for ($i = 1; $i < $length; $i++) {
-                $ascii = ord($string{$i});
+                $ascii = ord($string[$i]);
                 if ($ascii >= 48 && $ascii <= 57) {
-                    // The character is a number, so it cant be a capital.
+                    // The character is a number, so it can't be a capital.
                     $isCaps = false;
                 } else {
-                    if (strtoupper($string{$i}) === $string{$i}) {
+                    if (strtoupper($string[$i]) === $string[$i]) {
                         $isCaps = true;
                     } else {
                         $isCaps = false;
@@ -374,7 +437,7 @@ class Common
                     continue;
                 }
 
-                if ($bit{0} !== strtoupper($bit{0})) {
+                if ($bit[0] !== strtoupper($bit[0])) {
                     $validName = false;
                     break;
                 }
@@ -387,9 +450,9 @@ class Common
 
 
     /**
-     * Returns a valid variable type for param/var tag.
+     * Returns a valid variable type for param/var tags.
      *
-     * If type is not one of the standard type, it must be a custom type.
+     * If type is not one of the standard types, it must be a custom type.
      * Returns the correct type name suggestion if type name is invalid.
      *
      * @param string $varType The variable type to process.
@@ -402,7 +465,7 @@ class Common
             return '';
         }
 
-        if (in_array($varType, self::$allowedTypes) === true) {
+        if (in_array($varType, self::$allowedTypes, true) === true) {
             return $varType;
         } else {
             $lowerVarType = strtolower($varType);
@@ -448,7 +511,7 @@ class Common
                 } else {
                     return 'array';
                 }//end if
-            } else if (in_array($lowerVarType, self::$allowedTypes) === true) {
+            } else if (in_array($lowerVarType, self::$allowedTypes, true) === true) {
                 // A valid type, but not lower cased.
                 return $lowerVarType;
             } else {

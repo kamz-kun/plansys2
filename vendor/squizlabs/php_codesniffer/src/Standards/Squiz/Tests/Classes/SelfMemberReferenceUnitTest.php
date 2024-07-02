@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Tests\Classes;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class SelfMemberReferenceUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the SelfMemberReference sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\SelfMemberReferenceSniff
+ */
+final class SelfMemberReferenceUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -32,9 +37,15 @@ class SelfMemberReferenceUnitTest extends AbstractSniffUnitTest
             30  => 1,
             31  => 1,
             32  => 2,
-            79  => 1,
-            108 => 1,
-            119 => 1,
+            40  => 2,
+            92  => 1,
+            121 => 1,
+            132 => 1,
+            139 => 3,
+            140 => 1,
+            143 => 2,
+            162 => 1,
+            171 => 1,
         ];
 
     }//end getErrorList()

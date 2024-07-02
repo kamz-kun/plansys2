@@ -94,6 +94,17 @@ interface MyInterface
 
 <?php
 
+class MyClass2
+{
+    var $x;
+}
+
+
+/**
+ * No error.
+ */
+function example() {}
+
 class CorrectClassDeclaration
 {
 
@@ -108,3 +119,12 @@ class IncorrectCodeBeforeClosingBrace
 {
 
 echo phpinfo();}
+
+readonly
+class Test
+{
+}
+
+readonly    class Test
+{
+}

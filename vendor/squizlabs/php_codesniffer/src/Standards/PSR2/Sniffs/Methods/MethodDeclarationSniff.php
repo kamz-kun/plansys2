@@ -4,14 +4,14 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Files\File;
 
 class MethodDeclarationSniff extends AbstractScopeSniff
 {
@@ -22,7 +22,7 @@ class MethodDeclarationSniff extends AbstractScopeSniff
      */
     public function __construct()
     {
-        parent::__construct([T_CLASS, T_INTERFACE], [T_FUNCTION]);
+        parent::__construct(Tokens::$ooScopeTokens, [T_FUNCTION]);
 
     }//end __construct()
 
@@ -39,6 +39,14 @@ class MethodDeclarationSniff extends AbstractScopeSniff
     protected function processTokenWithinScope(File $phpcsFile, $stackPtr, $currScope)
     {
         $tokens = $phpcsFile->getTokens();
+
+        // Determine if this is a function which needs to be examined.
+        $conditions = $tokens[$stackPtr]['conditions'];
+        end($conditions);
+        $deepestScope = key($conditions);
+        if ($deepestScope !== $currScope) {
+            return;
+        }
 
         $methodName = $phpcsFile->getDeclarationName($stackPtr);
         if ($methodName === null) {
@@ -57,9 +65,8 @@ class MethodDeclarationSniff extends AbstractScopeSniff
         $abstract   = 0;
         $final      = 0;
 
-        $find   = Tokens::$methodPrefixes;
-        $find[] = T_WHITESPACE;
-        $prev   = $phpcsFile->findPrevious($find, ($stackPtr - 1), null, true);
+        $find = (Tokens::$methodPrefixes + Tokens::$emptyTokens);
+        $prev = $phpcsFile->findPrevious($find, ($stackPtr - 1), null, true);
 
         $prefix = $stackPtr;
         while (($prefix = $phpcsFile->findPrevious(Tokens::$methodPrefixes, ($prefix - 1), $prev)) !== false) {
@@ -116,7 +123,7 @@ class MethodDeclarationSniff extends AbstractScopeSniff
                 $fixes[$static]       = '';
                 $fixes[($static + 1)] = '';
                 if (isset($fixes[$visibility]) === true) {
-                    $fixes[$visibility] = $fixes[$visibility].' static';
+                    $fixes[$visibility] .= ' static';
                 } else {
                     $fixes[$visibility] = $tokens[$visibility]['content'].' static';
                 }

@@ -7,11 +7,12 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer;
 
+use PHP_CodeSniffer\Exceptions\RuntimeException;
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Util\Common;
 
@@ -70,7 +71,7 @@ class Fixer
      * If a token is being "fixed" back to its last value, the fix is
      * probably conflicting with another.
      *
-     * @var array<int, string>
+     * @var array<int, array<string, mixed>>
      */
     private $oldTokenValues = [];
 
@@ -184,6 +185,9 @@ class Fixer
                 }
 
                 echo ']... ';
+                if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                    echo PHP_EOL;
+                }
             }
 
             if ($this->numFixes === 0 && $this->inConflict === false) {
@@ -220,9 +224,11 @@ class Fixer
      * @param string  $filePath Optional file path to diff the file against.
      *                          If not specified, the original version of the
      *                          file will be used.
-     * @param boolean $colors   Print colored output or not.
+     * @param boolean $colors   Print coloured output or not.
      *
      * @return string
+     *
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException When the diff command fails.
      */
     public function generateDiff($filePath=null, $colors=true)
     {
@@ -243,16 +249,57 @@ class Fixer
         $fixedFile = fopen($tempName, 'w');
         fwrite($fixedFile, $contents);
 
-        // We must use something like shell_exec() because whitespace at the end
+        // We must use something like shell_exec() or proc_open() because whitespace at the end
         // of lines is critical to diff files.
+        // Using proc_open() instead of shell_exec improves performance on Windows significantly,
+        // while the results are the same (though more code is needed to get the results).
+        // This is specifically due to proc_open allowing to set the "bypass_shell" option.
         $filename = escapeshellarg($filename);
         $cmd      = "diff -u -L$filename -LPHP_CodeSniffer $filename \"$tempName\"";
 
-        $diff = shell_exec($cmd);
+        // Stream 0 = STDIN, 1 = STDOUT, 2 = STDERR.
+        $descriptorspec = [
+            0 => [
+                'pipe',
+                'r',
+            ],
+            1 => [
+                'pipe',
+                'w',
+            ],
+            2 => [
+                'pipe',
+                'w',
+            ],
+        ];
+
+        $options = null;
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            $options = ['bypass_shell' => true];
+        }
+
+        $process = proc_open($cmd, $descriptorspec, $pipes, $cwd, null, $options);
+        if (is_resource($process) === false) {
+            throw new RuntimeException('Could not obtain a resource to execute the diff command.');
+        }
+
+        // We don't need these.
+        fclose($pipes[0]);
+        fclose($pipes[2]);
+
+        // Stdout will contain the actual diff.
+        $diff = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        proc_close($process);
 
         fclose($fixedFile);
         if (is_file($tempName) === true) {
             unlink($tempName);
+        }
+
+        if ($diff === false || $diff === '') {
+            return '';
         }
 
         if ($colors === false) {
@@ -342,7 +389,7 @@ class Fixer
     /**
      * Start recording actions for a changeset.
      *
-     * @return void
+     * @return void|false
      */
     public function beginChangeset()
     {
@@ -351,12 +398,17 @@ class Fixer
         }
 
         if (PHP_CODESNIFFER_VERBOSITY > 1) {
-            $bt    = debug_backtrace();
-            $sniff = $bt[1]['class'];
-            $line  = $bt[0]['line'];
+            $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            if ($bt[1]['class'] === __CLASS__) {
+                $sniff = 'Fixer';
+            } else {
+                $sniff = Common::getSniffCode($bt[1]['class']);
+            }
+
+            $line = $bt[0]['line'];
 
             @ob_end_clean();
-            echo "\t=> Changeset started by $sniff (line $line)".PHP_EOL;
+            echo "\t=> Changeset started by $sniff:$line".PHP_EOL;
             ob_start();
         }
 
@@ -409,6 +461,7 @@ class Fixer
         }
 
         $this->changeset = [];
+        return true;
 
     }//end endChangeset()
 
@@ -434,10 +487,12 @@ class Fixer
                     $line  = $bt[0]['line'];
                 }
 
+                $sniff = Common::getSniffCode($sniff);
+
                 $numChanges = count($this->changeset);
 
                 @ob_end_clean();
-                echo "\t\tR: $sniff (line $line) rolled back the changeset ($numChanges changes)".PHP_EOL;
+                echo "\t\tR: $sniff:$line rolled back the changeset ($numChanges changes)".PHP_EOL;
                 echo "\t=> Changeset rolled back".PHP_EOL;
                 ob_start();
             }
@@ -480,7 +535,7 @@ class Fixer
         }
 
         if (PHP_CODESNIFFER_VERBOSITY > 1) {
-            $bt = debug_backtrace();
+            $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             if ($bt[1]['class'] === 'PHP_CodeSniffer\Fixer') {
                 $sniff = $bt[2]['class'];
                 $line  = $bt[1]['line'];
@@ -489,8 +544,11 @@ class Fixer
                 $line  = $bt[0]['line'];
             }
 
+            $sniff = Common::getSniffCode($sniff);
+
             $tokens     = $this->currentFile->getTokens();
             $type       = $tokens[$stackPtr]['type'];
+            $tokenLine  = $tokens[$stackPtr]['line'];
             $oldContent = Common::prepareForOutput($this->tokens[$stackPtr]);
             $newContent = Common::prepareForOutput($content);
             if (trim($this->tokens[$stackPtr]) === '' && isset($this->tokens[($stackPtr + 1)]) === true) {
@@ -506,7 +564,7 @@ class Fixer
 
             if (PHP_CODESNIFFER_VERBOSITY > 1) {
                 @ob_end_clean();
-                echo "\t\tQ: $sniff (line $line) replaced token $stackPtr ($type) \"$oldContent\" => \"$newContent\"".PHP_EOL;
+                echo "\t\tQ: $sniff:$line replaced token $stackPtr ($type on line $tokenLine) \"$oldContent\" => \"$newContent\"".PHP_EOL;
                 ob_start();
             }
 
@@ -532,8 +590,8 @@ class Fixer
                     $loop = $this->oldTokenValues[$stackPtr]['loop'];
 
                     @ob_end_clean();
-                    echo "$indent**** $sniff (line $line) has possible conflict with another sniff on loop $loop; caused by the following change ****".PHP_EOL;
-                    echo "$indent**** replaced token $stackPtr ($type) \"$oldContent\" => \"$newContent\" ****".PHP_EOL;
+                    echo "$indent**** $sniff:$line has possible conflict with another sniff on loop $loop; caused by the following change ****".PHP_EOL;
+                    echo "$indent**** replaced token $stackPtr ($type on line $tokenLine) \"$oldContent\" => \"$newContent\" ****".PHP_EOL;
                 }
 
                 if ($this->oldTokenValues[$stackPtr]['loop'] >= ($this->loops - 1)) {
@@ -569,7 +627,7 @@ class Fixer
                 ob_end_clean();
             }
 
-            echo "$indent$sniff (line $line) replaced token $stackPtr ($type) \"$oldContent\" => \"$newContent\"".PHP_EOL;
+            echo "$indent$sniff:$line replaced token $stackPtr ($type on line $tokenLine) \"$oldContent\" => \"$newContent\"".PHP_EOL;
             ob_start();
         }
 
@@ -592,7 +650,7 @@ class Fixer
         }
 
         if (PHP_CODESNIFFER_VERBOSITY > 1) {
-            $bt = debug_backtrace();
+            $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             if ($bt[1]['class'] === 'PHP_CodeSniffer\Fixer') {
                 $sniff = $bt[2]['class'];
                 $line  = $bt[1]['line'];
@@ -601,8 +659,11 @@ class Fixer
                 $line  = $bt[0]['line'];
             }
 
+            $sniff = Common::getSniffCode($sniff);
+
             $tokens     = $this->currentFile->getTokens();
             $type       = $tokens[$stackPtr]['type'];
+            $tokenLine  = $tokens[$stackPtr]['line'];
             $oldContent = Common::prepareForOutput($this->tokens[$stackPtr]);
             $newContent = Common::prepareForOutput($this->fixedTokens[$stackPtr]);
             if (trim($this->tokens[$stackPtr]) === '' && isset($tokens[($stackPtr + 1)]) === true) {
@@ -624,7 +685,7 @@ class Fixer
             }
 
             @ob_end_clean();
-            echo "$indent$sniff (line $line) reverted token $stackPtr ($type) \"$oldContent\" => \"$newContent\"".PHP_EOL;
+            echo "$indent$sniff:$line reverted token $stackPtr ($type on line $tokenLine) \"$oldContent\" => \"$newContent\"".PHP_EOL;
             ob_start();
         }
 
@@ -638,7 +699,7 @@ class Fixer
      *
      * @param int $stackPtr The position of the token in the token stack.
      * @param int $start    The first character to keep.
-     * @param int $length   The number of chacters to keep. If NULL, the content of
+     * @param int $length   The number of characters to keep. If NULL, the content of
      *                      the token from $start to the end of the content is kept.
      *
      * @return bool If the change was accepted.
@@ -718,6 +779,68 @@ class Fixer
         return $this->replaceToken($stackPtr, $content.$current);
 
     }//end addContentBefore()
+
+
+    /**
+     * Adjust the indent of a code block.
+     *
+     * @param int $start  The position of the token in the token stack
+     *                    to start adjusting the indent from.
+     * @param int $end    The position of the token in the token stack
+     *                    to end adjusting the indent.
+     * @param int $change The number of spaces to adjust the indent by
+     *                    (positive or negative).
+     *
+     * @return void
+     */
+    public function changeCodeBlockIndent($start, $end, $change)
+    {
+        $tokens = $this->currentFile->getTokens();
+
+        $baseIndent = '';
+        if ($change > 0) {
+            $baseIndent = str_repeat(' ', $change);
+        }
+
+        $useChangeset = false;
+        if ($this->inChangeset === false) {
+            $this->beginChangeset();
+            $useChangeset = true;
+        }
+
+        for ($i = $start; $i <= $end; $i++) {
+            if ($tokens[$i]['column'] !== 1
+                || $tokens[($i + 1)]['line'] !== $tokens[$i]['line']
+            ) {
+                continue;
+            }
+
+            $length = 0;
+            if ($tokens[$i]['code'] === T_WHITESPACE
+                || $tokens[$i]['code'] === T_DOC_COMMENT_WHITESPACE
+            ) {
+                $length = $tokens[$i]['length'];
+
+                $padding = ($length + $change);
+                if ($padding > 0) {
+                    $padding = str_repeat(' ', $padding);
+                } else {
+                    $padding = '';
+                }
+
+                $newContent = $padding.ltrim($tokens[$i]['content']);
+            } else {
+                $newContent = $baseIndent.$tokens[$i]['content'];
+            }
+
+            $this->replaceToken($i, $newContent);
+        }//end for
+
+        if ($useChangeset === true) {
+            $this->endChangeset();
+        }
+
+    }//end changeCodeBlockIndent()
 
 
 }//end class

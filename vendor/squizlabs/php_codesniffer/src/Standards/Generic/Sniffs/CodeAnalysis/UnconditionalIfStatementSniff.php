@@ -2,7 +2,7 @@
 /**
  * Detects unconditional if- and elseif-statements.
  *
- * This rule is based on the PMD rule catalog. The Unconditional If Statement
+ * This rule is based on the PMD rule catalogue. The Unconditional If Statement
  * sniff detects statement conditions that are only set to one of the constant
  * values <b>true</b> or <b>false</b>
  *
@@ -21,13 +21,13 @@
  *
  * @author    Manuel Pichler <mapi@manuel-pichler.de>
  * @copyright 2007-2014 Manuel Pichler. All rights reserved.
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class UnconditionalIfStatementSniff implements Sniff
@@ -37,7 +37,7 @@ class UnconditionalIfStatementSniff implements Sniff
     /**
      * Registers the tokens that this sniff wants to listen for.
      *
-     * @return int[]
+     * @return array<int|string>
      */
     public function register()
     {
@@ -63,8 +63,8 @@ class UnconditionalIfStatementSniff implements Sniff
         $tokens = $phpcsFile->getTokens();
         $token  = $tokens[$stackPtr];
 
-        // Skip for-loop without body.
-        if (isset($token['parenthesis_opener']) === false) {
+        // Skip if statement without body.
+        if (isset($token['parenthesis_opener'], $token['parenthesis_closer']) === false) {
             return;
         }
 

@@ -1,139 +1,216 @@
 <?php
-/* @codingStandardsIgnoreFile */
 
-namespace PHP_CodeSniffer\Tests\Core\File;
+/* testTokenizerIssue1971PHPCSlt330gt271A */
+// This has to be the first test in the file!
+[&$a, [$b, /* testTokenizerIssue1971PHPCSlt330gt271B */ &$c]] = $array;
 
-/* bitwiseAndA */
+/* testBitwiseAndA */
 error_reporting( E_NOTICE & E_STRICT );
 
-/* bitwiseAndB */
+/* testBitwiseAndB */
 $a = [ $something & $somethingElse ];
 
-/* bitwiseAndC */
+/* testBitwiseAndC */
 $a = [ $first, $something & self::$somethingElse ];
 
-/* bitwiseAndD */
-$a = array $first, $something & $somethingElse );
+/* testBitwiseAndD */
+$a = array( $first, $something & $somethingElse );
 
-/* bitwiseAndE */
+/* testBitwiseAndE */
 $a = [ 'a' => $first, 'b' => $something & $somethingElse ];
 
-/* bitwiseAndF */
+/* testBitwiseAndF */
 $a = array( 'a' => $first, 'b' => $something & \MyClass::$somethingElse );
 
-/* bitwiseAndG */
+/* testBitwiseAndG */
 $a = $something & $somethingElse;
 
-/* bitwiseAndH */
+/* testBitwiseAndH */
 function myFunction($a = 10 & 20) {}
 
-/* bitwiseAndI */
+/* testBitwiseAndI */
 $closure = function ($a = MY_CONSTANT & parent::OTHER_CONSTANT) {};
 
-/* functionReturnByReference */
+/* testFunctionReturnByReference */
 function &myFunction() {}
 
-/* functionPassByReferenceA */
+/* testFunctionPassByReferenceA */
 function myFunction( &$a ) {}
 
-/* functionPassByReferenceB */
+/* testFunctionPassByReferenceB */
 function myFunction( $a, &$b ) {}
 
-/* functionPassByReferenceC */
+/* testFunctionPassByReferenceC */
 $closure = function ( &$a ) {};
 
-/* functionPassByReferenceD */
+/* testFunctionPassByReferenceD */
 $closure = function ( $a, &$b ) {};
 
-/* functionPassByReferenceE */
+/* testFunctionPassByReferenceE */
 function myFunction(array &$one) {}
 
-/* functionPassByReferenceF */
+/* testFunctionPassByReferenceF */
 $closure = function (\MyClass &$one) {};
 
-/* functionPassByReferenceG */
-$closure = function myFunc($param, &...$moreParams) {};
+/* testFunctionPassByReferenceG */
+$closure = function ($param, &...$moreParams) {};
 
-/* foreachValueByReference */
+/* testForeachValueByReference */
 foreach( $array as $key => &$value ) {}
 
-/* foreachKeyByReference */
+/* testForeachKeyByReference */
 foreach( $array as &$key => $value ) {}
 
-/* arrayValueByReferenceA */
+/* testArrayValueByReferenceA */
 $a = [ 'a' => &$something ];
 
-/* arrayValueByReferenceB */
+/* testArrayValueByReferenceB */
 $a = [ 'a' => $something, 'b' => &$somethingElse ];
 
-/* arrayValueByReferenceC */
+/* testArrayValueByReferenceC */
 $a = [ &$something ];
 
-/* arrayValueByReferenceD */
+/* testArrayValueByReferenceD */
 $a = [ $something, &$somethingElse ];
 
-/* arrayValueByReferenceE */
+/* testArrayValueByReferenceE */
 $a = array( 'a' => &$something );
 
-/* arrayValueByReferenceF */
+/* testArrayValueByReferenceF */
 $a = array( 'a' => $something, 'b' => &$somethingElse );
 
-/* arrayValueByReferenceG */
+/* testArrayValueByReferenceG */
 $a = array( &$something );
 
-/* arrayValueByReferenceH */
+/* testArrayValueByReferenceH */
 $a = array( $something, &$somethingElse );
 
-/* assignByReferenceA */
+/* testAssignByReferenceA */
 $b = &$something;
 
-/* assignByReferenceB */
+/* testAssignByReferenceB */
 $b =& $something;
 
-/* assignByReferenceC */
+/* testAssignByReferenceC */
 $b .= &$something;
 
-/* assignByReferenceD */
+/* testAssignByReferenceD */
 $myValue = &$obj->getValue();
 
-/* assignByReferenceE */
+/* testAssignByReferenceE */
 $collection = &collector();
 
-/* passByReferenceA */
+/* testAssignByReferenceF */
+$collection ??= &collector();
+
+/* testShortListAssignByReferenceNoKeyA */
+[
+    &$a,
+    /* testShortListAssignByReferenceNoKeyB */
+    &$b,
+    /* testNestedShortListAssignByReferenceNoKey */
+    [$c, &$d]
+] = $array;
+
+/* testLongListAssignByReferenceNoKeyA */
+list($a, &$b, list(/* testLongListAssignByReferenceNoKeyB */ &$c, /* testLongListAssignByReferenceNoKeyC */ &$d)) = $array;
+
+[
+    /* testNestedShortListAssignByReferenceWithKeyA */
+    'a' => [&$a, $b],
+    /* testNestedShortListAssignByReferenceWithKeyB */
+    'b' => [$c, &$d]
+] = $array;
+
+
+/* testLongListAssignByReferenceWithKeyA */
+list(get_key()[1] => &$e) = [1, 2, 3];
+
+/* testPassByReferenceA */
 functionCall(&$something, $somethingElse);
 
-/* passByReferenceB */
+/* testPassByReferenceB */
 functionCall($something, &$somethingElse);
 
-/* passByReferenceC */
+/* testPassByReferenceC */
 functionCall($something, &$this->somethingElse);
 
-/* passByReferenceD */
+/* testPassByReferenceD */
 functionCall($something, &self::$somethingElse);
 
-/* passByReferenceE */
+/* testPassByReferenceE */
 functionCall($something, &parent::$somethingElse);
 
-/* passByReferenceF */
+/* testPassByReferenceF */
 functionCall($something, &static::$somethingElse);
 
-/* passByReferenceG */
+/* testPassByReferenceG */
 functionCall($something, &SomeClass::$somethingElse);
 
-/* passByReferenceH */
+/* testPassByReferenceH */
 functionCall(&\SomeClass::$somethingElse);
 
-/* passByReferenceI */
+/* testPassByReferenceI */
 functionCall($something, &\SomeNS\SomeClass::$somethingElse);
 
-/* passByReferenceJ */
+/* testPassByReferenceJ */
 functionCall($something, &namespace\SomeClass::$somethingElse);
 
-/* newByReferenceA */
+/* testPassByReferencePartiallyQualifiedName */
+functionCall($something, &Sub\Level\SomeClass::$somethingElse);
+
+/* testNewByReferenceA */
 $foobar2 = &new Foobar();
 
-/* newByReferenceB */
+/* testNewByReferenceB */
 functionCall( $something , &new Foobar() );
 
-/* useByReference */
+/* testUseByReference */
 $closure = function() use (&$var){};
+
+/* testUseByReferenceWithCommentFirstParam */
+$closure = function() use /*comment*/ (&$value){};
+
+/* testUseByReferenceWithCommentSecondParam */
+$closure = function() use /*comment*/ ($varA, &$varB){};
+
+/* testArrowFunctionReturnByReference */
+fn&($x) => $x;
+
+$closure = function (
+    /* testBitwiseAndExactParameterA */
+    $a = MY_CONSTANT & parent::OTHER_CONSTANT,
+    /* testPassByReferenceExactParameterB */
+    &$b,
+    /* testPassByReferenceExactParameterC */
+    &...$c,
+    /* testBitwiseAndExactParameterD */
+    $d = E_NOTICE & E_STRICT,
+) {};
+
+// Issue PHPCS#3049.
+/* testArrowFunctionPassByReferenceA */
+$fn = fn(array &$one) => 1;
+
+/* testArrowFunctionPassByReferenceB */
+$fn = fn($param, &...$moreParams) => 1;
+
+/* testClosureReturnByReference */
+$closure = function &($param) use ($value) {};
+
+/* testBitwiseAndArrowFunctionInDefault */
+$fn = fn( $one = E_NOTICE & E_STRICT) => 1;
+
+/* testIntersectionIsNotReference */
+function intersect(Foo&Bar $param) {}
+
+/* testDNFTypeIsNotReference */
+$fn = fn((Foo&\Bar)|null /* testParamPassByReference */ &$param) => $param;
+
+/* testTokenizerIssue1284PHPCSlt280A */
+if ($foo) {}
+[&$a, /* testTokenizerIssue1284PHPCSlt280B */ &$b] = $c;
+
+/* testTokenizerIssue1284PHPCSlt280C */
+if ($foo) {}
+[&$a, $b];

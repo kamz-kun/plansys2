@@ -1,4 +1,5 @@
 <?php
+array($a, array($b)) = $array;
 
 function test()
 {
@@ -10,7 +11,6 @@ function test()
             'a' => 1,
          );
 }
-
 
 class TestClass
 {
@@ -350,3 +350,200 @@ $a = array
 ( 'a', 'b' );
 
 $a = array /* comment */ ( 'a', 'b' );
+
+$x = array(
+    'a' => false);
+
+$x = array(
+    'xxxx'   => array('aaaaaaaaaa' => 'ccccccccccc',
+                 'bbbbbbbb'   => false),
+);
+
+$foo = array
+        ('foo' => array
+                ('bar1'   => 1
+                ,'bar2'   => 1
+                ,'bar3'   => 1
+                ,'bar4'   => 1
+                ,'bar5'   => 1
+                )
+        );
+
+$foo = array(
+        '1' => $row['status'] === 'rejected'
+            ? self::REJECTED_CODE
+            : self::VERIFIED_CODE,
+        '2' => in_array($row['status'], array('notverified', 'unverified'), true)
+            ? self::STATUS_PENDING
+            : self::STATUS_VERIFIED,
+        '3' => strtotime($row['date']),
+       );
+
+$foo = foo(
+    array(
+    // comment
+    )
+);
+
+$foo = array(
+        <<<HERE
+HERE
+,
+        <<<HERE
+HERE
+      ,
+       );
+
+array(
+ lorem(
+     1
+ ), 2,
+);
+
+array(
+ 1 => lorem(
+     1
+ ), 2 => 2,
+);
+
+$foo = array(
+        'тип'  => 'авто',
+        'цвет' => 'синий',
+       );
+
+$paths = array(
+          Init::ROOT_DIR.'/тип'  => 'авто',
+          Init::ROOT_DIR.'/цвет' => 'синий',
+         );
+
+$foo = array(<<<JSON
+{
+}
+JSON
+       );
+
+$array = array(
+          'a'   => fn() => return 1,
+          'bb'  => fn() => return 2,
+          'ccc' => ( true ) ?
+              fn() => return 1 :
+              fn() => return 2,
+         );
+
+$array = array(
+          1 => '1',
+          2 => fn ($x) => yield 'a' => $x,
+          3 => '3',
+         );
+
+$foo = array(
+        $this->fn => 'value',
+        $foo->fn => 'value',
+       );
+
+array($a, $b,
+$c);
+
+array('a' => $a, 'b' => $b,
+'c' => $c);
+
+array(
+ static function() {
+     return null;
+ },
+ (array) array(),
+ (bool) array(),
+ (double) array(),
+ (int) array(),
+ (object) array(),
+ (string) array(),
+ (unset) array(),
+);
+
+array(
+ 'foo',
+ 'bar'
+ // This is a non-fixable error.
+ ,
+);
+
+yield array(
+    static fn () : string => '',
+);
+
+yield array(
+       static fn () : string => '',
+      );
+
+$foo = array(
+        'foo' => match ($anything) {
+            'foo' => 'bar',
+            default => null,
+        },
+       );
+
+// Intentional syntax error.
+$a = array(
+      'a' =>
+     );
+
+// Safeguard correct errors for key/no key when PHP 7.4+ array unpacking is encountered.
+$x = array(
+    ...$a,
+      'foo' => 'bar',
+     );
+
+$x = array(
+      'foo' => 'bar',
+    ...$a,
+     );
+
+$x = array(
+      'foo' => 'bar',
+    ...$a,
+      'baz' => 'bar',
+     );
+
+$x = array(
+    ...$a,
+    'foo' => 'bar', // OK.
+    'bar', // NoKeySpecified Error (based on second entry).
+     );
+
+$x = array(
+    ...$a,
+    'bar', // OK.
+    'foo' => 'bar', // KeySpecified Error (based on second entry).
+     );
+
+$x = array(
+    'foo' => 'bar',
+    ...$a,
+    'baz' => 'bar',
+    'bar', // NoKeySpecified Error (based on first entry).
+     );
+
+$x = array(
+    'bar',
+    ...$a,
+    'bar',
+    'baz' => 'bar', // KeySpecified (based on first entry).
+     );
+
+ $x =
+ array(
+  'a',
+  'b',
+   );
+
+$x = array(
+      1, static fn (float $item): float => match ($item) {
+        2.0 => 3.0,
+        default => $item
+    },
+     );
+
+$x = array(
+      1, static::helloWorld(), $class instanceof static,
+      2,
+     );

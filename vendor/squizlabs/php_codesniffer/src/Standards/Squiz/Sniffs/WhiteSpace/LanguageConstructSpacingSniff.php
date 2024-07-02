@@ -4,13 +4,15 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ *
+ * @deprecated 3.3.0 Use the Generic.WhiteSpace.LanguageConstructSpacing sniff instead.
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\WhiteSpace;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util;
 
 class LanguageConstructSpacingSniff implements Sniff
@@ -20,7 +22,7 @@ class LanguageConstructSpacingSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -51,9 +53,8 @@ class LanguageConstructSpacingSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $nextToken = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
-        if ($nextToken === false) {
-            // Skip when at end of file.
+        if (isset($tokens[($stackPtr + 1)]) === false) {
+            // Skip if there is no next token.
             return;
         }
 

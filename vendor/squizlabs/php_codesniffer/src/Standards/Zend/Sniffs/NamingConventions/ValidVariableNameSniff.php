@@ -4,14 +4,15 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Zend\Sniffs\NamingConventions;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Util\Common;
-use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Util\Tokens;
 
 class ValidVariableNameSniff extends AbstractVariableSniff
 {
@@ -31,28 +32,15 @@ class ValidVariableNameSniff extends AbstractVariableSniff
         $tokens  = $phpcsFile->getTokens();
         $varName = ltrim($tokens[$stackPtr]['content'], '$');
 
-        $phpReservedVars = [
-            '_SERVER'              => true,
-            '_GET'                 => true,
-            '_POST'                => true,
-            '_REQUEST'             => true,
-            '_SESSION'             => true,
-            '_ENV'                 => true,
-            '_COOKIE'              => true,
-            '_FILES'               => true,
-            'GLOBALS'              => true,
-            'http_response_header' => true,
-            'HTTP_RAW_POST_DATA'   => true,
-            'php_errormsg'         => true,
-        ];
-
         // If it's a php reserved var, then its ok.
-        if (isset($phpReservedVars[$varName]) === true) {
+        if (isset($this->phpReservedVars[$varName]) === true) {
             return;
         }
 
         $objOperator = $phpcsFile->findNext([T_WHITESPACE], ($stackPtr + 1), null, true);
-        if ($tokens[$objOperator]['code'] === T_OBJECT_OPERATOR) {
+        if ($tokens[$objOperator]['code'] === T_OBJECT_OPERATOR
+            || $tokens[$objOperator]['code'] === T_NULLSAFE_OBJECT_OPERATOR
+        ) {
             // Check to see if we are using a variable from an object.
             $var = $phpcsFile->findNext([T_WHITESPACE], ($objOperator + 1), null, true);
             if ($tokens[$var]['code'] === T_STRING) {
@@ -94,7 +82,7 @@ class ValidVariableNameSniff extends AbstractVariableSniff
                 // this: MyClass::$_variable, so we don't know its scope.
                 $inClass = true;
             } else {
-                $inClass = $phpcsFile->hasCondition($stackPtr, [T_CLASS, T_INTERFACE, T_TRAIT]);
+                $inClass = $phpcsFile->hasCondition($stackPtr, Tokens::$ooScopeTokens);
             }
 
             if ($inClass === true) {
@@ -183,25 +171,10 @@ class ValidVariableNameSniff extends AbstractVariableSniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $phpReservedVars = [
-            '_SERVER',
-            '_GET',
-            '_POST',
-            '_REQUEST',
-            '_SESSION',
-            '_ENV',
-            '_COOKIE',
-            '_FILES',
-            'GLOBALS',
-            'http_response_header',
-            'HTTP_RAW_POST_DATA',
-            'php_errormsg',
-        ];
-
         if (preg_match_all('|[^\\\]\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)|', $tokens[$stackPtr]['content'], $matches) !== 0) {
             foreach ($matches[1] as $varName) {
                 // If it's a php reserved var, then its ok.
-                if (in_array($varName, $phpReservedVars) === true) {
+                if (isset($this->phpReservedVars[$varName]) === true) {
                     continue;
                 }
 

@@ -6,10 +6,12 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Generators;
+
+use DOMNode;
 
 class Text extends Generator
 {
@@ -24,7 +26,7 @@ class Text extends Generator
      *
      * @return void
      */
-    public function processSniff(\DOMNode $doc)
+    public function processSniff(DOMNode $doc)
     {
         $this->printTitle($doc);
 
@@ -48,7 +50,7 @@ class Text extends Generator
      *
      * @return void
      */
-    protected function printTitle(\DOMNode $doc)
+    protected function printTitle(DOMNode $doc)
     {
         $title    = $this->getTitle($doc);
         $standard = $this->ruleset->name;
@@ -69,24 +71,34 @@ class Text extends Generator
      *
      * @return void
      */
-    protected function printTextBlock(\DOMNode $node)
+    protected function printTextBlock(DOMNode $node)
     {
         $text = trim($node->nodeValue);
         $text = str_replace('<em>', '*', $text);
         $text = str_replace('</em>', '*', $text);
 
-        $lines    = [];
-        $tempLine = '';
-        $words    = explode(' ', $text);
+        $nodeLines = explode("\n", $text);
+        $lines     = [];
 
-        foreach ($words as $word) {
-            if (strlen($tempLine.$word) >= 99) {
-                if (strlen($tempLine.$word) === 99) {
-                    // Adding the extra space will push us to the edge
-                    // so we are done.
-                    $lines[]  = $tempLine.$word;
-                    $tempLine = '';
-                } else if (strlen($tempLine.$word) === 100) {
+        foreach ($nodeLines as $currentLine) {
+            $currentLine = trim($currentLine);
+            if ($currentLine === '') {
+                // The text contained a blank line. Respect this.
+                $lines[] = '';
+                continue;
+            }
+
+            $tempLine = '';
+            $words    = explode(' ', $currentLine);
+
+            foreach ($words as $word) {
+                $currentLength = strlen($tempLine.$word);
+                if ($currentLength < 99) {
+                    $tempLine .= $word.' ';
+                    continue;
+                }
+
+                if ($currentLength === 99 || $currentLength === 100) {
                     // We are already at the edge, so we are done.
                     $lines[]  = $tempLine.$word;
                     $tempLine = '';
@@ -94,14 +106,12 @@ class Text extends Generator
                     $lines[]  = rtrim($tempLine);
                     $tempLine = $word.' ';
                 }
-            } else {
-                $tempLine .= $word.' ';
+            }//end foreach
+
+            if ($tempLine !== '') {
+                $lines[] = rtrim($tempLine);
             }
         }//end foreach
-
-        if ($tempLine !== '') {
-            $lines[] = rtrim($tempLine);
-        }
 
         echo implode(PHP_EOL, $lines).PHP_EOL.PHP_EOL;
 
@@ -115,7 +125,7 @@ class Text extends Generator
      *
      * @return void
      */
-    protected function printCodeComparisonBlock(\DOMNode $node)
+    protected function printCodeComparisonBlock(DOMNode $node)
     {
         $codeBlocks = $node->getElementsByTagName('code');
         $first      = trim($codeBlocks->item(0)->nodeValue);
@@ -138,7 +148,7 @@ class Text extends Generator
                     $tempTitle         = '';
                 } else {
                     $firstTitleLines[] = $tempTitle;
-                    $tempTitle         = $word;
+                    $tempTitle         = $word.' ';
                 }
             } else {
                 $tempTitle .= $word.' ';
@@ -173,7 +183,7 @@ class Text extends Generator
                     $tempTitle          = '';
                 } else {
                     $secondTitleLines[] = $tempTitle;
-                    $tempTitle          = $word;
+                    $tempTitle          = $word.' ';
                 }
             } else {
                 $tempTitle .= $word.' ';
@@ -231,9 +241,9 @@ class Text extends Generator
             }
 
             echo '| ';
-            echo $firstLineText.str_repeat(' ', (47 - strlen($firstLineText)));
+            echo $firstLineText.str_repeat(' ', max(0, (47 - strlen($firstLineText))));
             echo '| ';
-            echo $secondLineText.str_repeat(' ', (48 - strlen($secondLineText)));
+            echo $secondLineText.str_repeat(' ', max(0, (48 - strlen($secondLineText))));
             echo '|'.PHP_EOL;
         }//end for
 

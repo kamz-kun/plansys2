@@ -7,13 +7,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ForbiddenFunctionsSniff implements Sniff
 {
@@ -56,7 +56,7 @@ class ForbiddenFunctionsSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -74,9 +74,18 @@ class ForbiddenFunctionsSniff implements Sniff
 
         // If we are not pattern matching, we need to work out what
         // tokens to listen for.
-        $string = '<?php ';
+        $hasHaltCompiler = false;
+        $string          = '<?php ';
         foreach ($this->forbiddenFunctionNames as $name) {
-            $string .= $name.'();';
+            if ($name === '__halt_compiler') {
+                $hasHaltCompiler = true;
+            } else {
+                $string .= $name.'();';
+            }
+        }
+
+        if ($hasHaltCompiler === true) {
+            $string .= '__halt_compiler();';
         }
 
         $register = [];
@@ -111,18 +120,19 @@ class ForbiddenFunctionsSniff implements Sniff
         $tokens = $phpcsFile->getTokens();
 
         $ignore = [
-            T_DOUBLE_COLON    => true,
-            T_OBJECT_OPERATOR => true,
-            T_FUNCTION        => true,
-            T_CONST           => true,
-            T_PUBLIC          => true,
-            T_PRIVATE         => true,
-            T_PROTECTED       => true,
-            T_AS              => true,
-            T_NEW             => true,
-            T_INSTEADOF       => true,
-            T_NS_SEPARATOR    => true,
-            T_IMPLEMENTS      => true,
+            T_DOUBLE_COLON             => true,
+            T_OBJECT_OPERATOR          => true,
+            T_NULLSAFE_OBJECT_OPERATOR => true,
+            T_FUNCTION                 => true,
+            T_CONST                    => true,
+            T_PUBLIC                   => true,
+            T_PRIVATE                  => true,
+            T_PROTECTED                => true,
+            T_AS                       => true,
+            T_NEW                      => true,
+            T_INSTEADOF                => true,
+            T_NS_SEPARATOR             => true,
+            T_IMPLEMENTS               => true,
         ];
 
         $prevToken = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
@@ -153,6 +163,11 @@ class ForbiddenFunctionsSniff implements Sniff
             return;
         }
 
+        if (empty($tokens[$stackPtr]['nested_attributes']) === false) {
+            // Class instantiation in attribute, not function call.
+            return;
+        }
+
         $function = strtolower($tokens[$stackPtr]['content']);
         $pattern  = null;
 
@@ -173,7 +188,7 @@ class ForbiddenFunctionsSniff implements Sniff
             // Remove the pattern delimiters and modifier.
             $pattern = substr($pattern, 1, -2);
         } else {
-            if (in_array($function, $this->forbiddenFunctionNames) === false) {
+            if (in_array($function, $this->forbiddenFunctionNames, true) === false) {
                 return;
             }
         }//end if

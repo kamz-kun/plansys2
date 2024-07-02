@@ -161,3 +161,144 @@ function foo(
     $param3,
 ) : SomeClass {
 }
+
+// Issue 1959.
+function __construct(
+    $foo,   // This is foo
+    $bar
+) {}
+
+function __construct(
+    $foo /* this is foo */,
+    $bar // this is bar
+) {}
+
+function __construct(
+    $foo,   // phpcs:ignore Standard.Category.Sniff -- for reasons.
+    $bar
+) {}
+
+public function hello(string $greeting
+) {
+}
+
+public function hello(string $greeting // cant fix this
+) {
+}
+
+public function hello(string $greeting // phpcs:ignore Standard.Category.Sniff -- for reasons.
+) {
+}
+
+function foo(
+
+
+    $foo,
+    $bar
+) {
+}
+
+class ConstructorPropertyPromotionSingleLineDocblockIndentOK
+{
+    public function __construct(
+        /** @var string */
+        public string $public,
+        /** @var string */
+        private string $private,
+    ) {
+    }
+}
+
+class ConstructorPropertyPromotionMultiLineDocblockAndAttributeIndentOK
+{
+    public function __construct(
+        /**
+         * @var string
+         * @Assert\NotBlank()
+         */
+        public string $public,
+        /**
+         * @var string
+         * @Assert\NotBlank()
+         */
+        #[NotBlank]
+        private string $private,
+    ) {
+    }
+}
+
+class ConstructorPropertyPromotionSingleLineDocblockIncorrectIndent
+{
+    public function __construct(
+      /** @var string */
+      public string $public,
+          /** @var string */
+          private string $private,
+    ) {
+    }
+}
+
+class ConstructorPropertyPromotionMultiLineDocblockAndAttributeIncorrectIndent
+{
+    public function __construct(
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
+    public string $public,
+/**
+ * @var string
+ * @Assert\NotBlank()
+ */
+#[NotBlank]
+private string $private,
+    ) {
+    }
+}
+
+// PHP 8.1: new in initializers means that class instantiations with parameters can occur in a function declaration.
+function usingNewInInitializersCallParamsIndented(
+    int $paramA,
+    string $paramB,
+    object $paramC = new SomeClass(
+        new InjectedDependencyA(),
+        new InjectedDependencyB
+    )
+) {}
+
+function usingNewInInitializersCallParamsNotIndented(
+    int $paramA,
+    string $paramB,
+    object $paramC = new SomeClass(
+    new InjectedDependencyA,
+    new InjectedDependencyB()
+    )
+) {}
+
+function usingNewInInitializersCallParamsIncorrectlyIndentedShouldNotBeFlaggedNorFixed(
+    int $paramA,
+    string $paramB,
+    object $paramC = new SomeClass(
+new InjectedDependencyA(), new InjectedDependencyB()
+)
+) {}
+
+class UsingNewInInitializers {
+    public function doSomething(
+        object $paramA,
+        stdClass $paramB = new stdClass(),
+        Exception $paramC = new Exception(
+            new ExceptionMessage(),
+            new ExceptionCode(),
+        ),
+    ) {
+    }
+
+    public function callParamsIncorrectlyIndentedShouldNotBeFlaggedNorFixed(
+        Exception $param = new Exception(
+new ExceptionMessage(),
+    new ExceptionCode(),
+  ),
+    ) {
+    }
+}

@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Tests\Files;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class EndFileNoNewlineUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the EndFileNoNewline sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Generic\Sniffs\Files\EndFileNoNewlineSniff
+ */
+final class EndFileNoNewlineUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -35,19 +40,11 @@ class EndFileNoNewlineUnitTest extends AbstractSniffUnitTest
             return [3 => 1];
         case 'EndFileNoNewlineUnitTest.2.css':
         case 'EndFileNoNewlineUnitTest.2.js':
-            return [2 => 1];
-        case 'EndFileNoNewlineUnitTest.5.inc':
-            // HHVM just removes the entire comment token, as if it was never there.
-            if (defined('HHVM_VERSION') === true) {
-                return [1 => 1];
-            }
-            return [];
         case 'EndFileNoNewlineUnitTest.6.inc':
-            // HHVM just removes the entire comment token, as if it was never there.
-            if (defined('HHVM_VERSION') === true) {
-                return [1 => 1];
-            }
             return [2 => 1];
+        case 'EndFileNoNewlineUnitTest.8.inc':
+        case 'EndFileNoNewlineUnitTest.9.inc':
+            return [1 => 1];
         default:
             return [];
         }//end switch

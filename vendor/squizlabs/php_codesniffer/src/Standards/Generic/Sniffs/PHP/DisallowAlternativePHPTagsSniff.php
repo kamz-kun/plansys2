@@ -6,14 +6,14 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
-use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class DisallowAlternativePHPTagsSniff implements Sniff
 {
@@ -28,7 +28,7 @@ class DisallowAlternativePHPTagsSniff implements Sniff
     /**
      * The current PHP version.
      *
-     * @var integer
+     * @var integer|string|null
      */
     private $phpVersion = null;
 
@@ -36,7 +36,7 @@ class DisallowAlternativePHPTagsSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -48,7 +48,7 @@ class DisallowAlternativePHPTagsSniff implements Sniff
         }
 
         if ($this->phpVersion < 70000) {
-            $this->aspTags = (boolean) ini_get('asp_tags');
+            $this->aspTags = (bool) ini_get('asp_tags');
         }
 
         return [
@@ -131,9 +131,8 @@ class DisallowAlternativePHPTagsSniff implements Sniff
         }//end if
 
         // Account for incorrect script open tags.
-        // The "(?:<s)?" in the regex is to work-around a bug in PHP 5.2.
         if ($openTag['code'] === T_INLINE_HTML
-            && preg_match('`((?:<s)?cript (?:[^>]+)?language=[\'"]?php[\'"]?(?:[^>]+)?>)`i', $content, $match) === 1
+            && preg_match('`(<script (?:[^>]+)?language=[\'"]?php[\'"]?(?:[^>]+)?>)`i', $content, $match) === 1
         ) {
             $error   = 'Script style opening tag used; expected "<?php" but found "%s"';
             $snippet = $this->getSnippet($content, $match[1]);

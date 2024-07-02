@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Scope;
 
-use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class MethodScopeSniff extends AbstractScopeSniff
@@ -22,7 +22,7 @@ class MethodScopeSniff extends AbstractScopeSniff
      */
     public function __construct()
     {
-        parent::__construct([T_CLASS, T_INTERFACE, T_TRAIT], [T_FUNCTION]);
+        parent::__construct(Tokens::$ooScopeTokens, [T_FUNCTION]);
 
     }//end __construct()
 
@@ -40,28 +40,22 @@ class MethodScopeSniff extends AbstractScopeSniff
     {
         $tokens = $phpcsFile->getTokens();
 
+        // Determine if this is a function which needs to be examined.
+        $conditions = $tokens[$stackPtr]['conditions'];
+        end($conditions);
+        $deepestScope = key($conditions);
+        if ($deepestScope !== $currScope) {
+            return;
+        }
+
         $methodName = $phpcsFile->getDeclarationName($stackPtr);
         if ($methodName === null) {
             // Ignore closures.
             return;
         }
 
-        if ($phpcsFile->hasCondition($stackPtr, T_FUNCTION) === true) {
-            // Ignore nested functions.
-            return;
-        }
-
-        $modifier = null;
-        for ($i = ($stackPtr - 1); $i > 0; $i--) {
-            if ($tokens[$i]['line'] < $tokens[$stackPtr]['line']) {
-                break;
-            } else if (isset(Tokens::$scopeModifiers[$tokens[$i]['code']]) === true) {
-                $modifier = $i;
-                break;
-            }
-        }
-
-        if ($modifier === null) {
+        $properties = $phpcsFile->getMethodProperties($stackPtr);
+        if ($properties['scope_specified'] === false) {
             $error = 'Visibility must be declared on method "%s"';
             $data  = [$methodName];
             $phpcsFile->addError($error, $stackPtr, 'Missing', $data);

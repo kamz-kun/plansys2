@@ -4,14 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Scope;
 
-use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Util\Tokens;
+use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 
 class MemberVarScopeSniff extends AbstractVariableSniff
 {
@@ -27,23 +26,16 @@ class MemberVarScopeSniff extends AbstractVariableSniff
      */
     protected function processMemberVar(File $phpcsFile, $stackPtr)
     {
-        $tokens = $phpcsFile->getTokens();
+        $tokens     = $phpcsFile->getTokens();
+        $properties = $phpcsFile->getMemberProperties($stackPtr);
 
-        $modifier = null;
-        for ($i = ($stackPtr - 1); $i > 0; $i--) {
-            if ($tokens[$i]['line'] < $tokens[$stackPtr]['line']) {
-                break;
-            } else if (isset(Tokens::$scopeModifiers[$tokens[$i]['code']]) === true) {
-                $modifier = $i;
-                break;
-            }
+        if ($properties === [] || $properties['scope_specified'] !== false) {
+            return;
         }
 
-        if ($modifier === null) {
-            $error = 'Scope modifier not specified for member variable "%s"';
-            $data  = [$tokens[$stackPtr]['content']];
-            $phpcsFile->addError($error, $stackPtr, 'Missing', $data);
-        }
+        $error = 'Scope modifier not specified for member variable "%s"';
+        $data  = [$tokens[$stackPtr]['content']];
+        $phpcsFile->addError($error, $stackPtr, 'Missing', $data);
 
     }//end processMemberVar()
 

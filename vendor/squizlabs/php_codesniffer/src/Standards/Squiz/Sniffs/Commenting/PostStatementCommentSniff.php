@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class PostStatementCommentSniff implements Sniff
 {
@@ -25,11 +25,29 @@ class PostStatementCommentSniff implements Sniff
         'JS',
     ];
 
+    /**
+     * Exceptions to the rule.
+     *
+     * If post statement comments are found within the condition
+     * parenthesis of these structures, leave them alone.
+     *
+     * @var array
+     */
+    private $controlStructureExceptions = [
+        T_IF      => true,
+        T_ELSEIF  => true,
+        T_SWITCH  => true,
+        T_WHILE   => true,
+        T_FOR     => true,
+        T_FOREACH => true,
+        T_MATCH   => true,
+    ];
+
 
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -58,7 +76,10 @@ class PostStatementCommentSniff implements Sniff
         $commentLine = $tokens[$stackPtr]['line'];
         $lastContent = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
 
-        if ($tokens[$lastContent]['line'] !== $commentLine) {
+        if ($lastContent === false
+            || $tokens[$lastContent]['line'] !== $commentLine
+            || $tokens[$stackPtr]['column'] === 1
+        ) {
             return;
         }
 
@@ -66,13 +87,25 @@ class PostStatementCommentSniff implements Sniff
             return;
         }
 
-        // Special case for JS files.
+        // Special case for JS files and PHP closures.
         if ($tokens[$lastContent]['code'] === T_COMMA
             || $tokens[$lastContent]['code'] === T_SEMICOLON
         ) {
             $lastContent = $phpcsFile->findPrevious(T_WHITESPACE, ($lastContent - 1), null, true);
-            if ($tokens[$lastContent]['code'] === T_CLOSE_CURLY_BRACKET) {
+            if ($lastContent === false || $tokens[$lastContent]['code'] === T_CLOSE_CURLY_BRACKET) {
                 return;
+            }
+        }
+
+        // Special case for (trailing) comments within multi-line control structures.
+        if (isset($tokens[$stackPtr]['nested_parenthesis']) === true) {
+            $nestedParens = $tokens[$stackPtr]['nested_parenthesis'];
+            foreach ($nestedParens as $open => $close) {
+                if (isset($tokens[$open]['parenthesis_owner']) === true
+                    && isset($this->controlStructureExceptions[$tokens[$tokens[$open]['parenthesis_owner']]['code']]) === true
+                ) {
+                    return;
+                }
             }
         }
 

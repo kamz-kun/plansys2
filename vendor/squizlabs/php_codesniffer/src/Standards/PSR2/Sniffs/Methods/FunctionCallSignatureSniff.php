@@ -4,14 +4,14 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions\FunctionCallSignatureSniff as PEARFunctionCallSignatureSniff;
 use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Files\File;
 
 class FunctionCallSignatureSniff extends PEARFunctionCallSignatureSniff
 {
@@ -35,7 +35,7 @@ class FunctionCallSignatureSniff extends PEARFunctionCallSignatureSniff
      * @param array                       $tokens      The stack of tokens that make up
      *                                                 the file.
      *
-     * @return void
+     * @return bool
      */
     public function isMultiLineCall(File $phpcsFile, $stackPtr, $openBracket, $tokens)
     {
@@ -48,7 +48,7 @@ class FunctionCallSignatureSniff extends PEARFunctionCallSignatureSniff
 
         $closeBracket = $tokens[$openBracket]['parenthesis_closer'];
 
-        $end = $phpcsFile->findEndOfStatement($openBracket + 1);
+        $end = $phpcsFile->findEndOfStatement(($openBracket + 1), [T_COLON]);
         while ($tokens[$end]['code'] === T_COMMA) {
             // If the next bit of code is not on the same line, this is a
             // multi-line function call.
@@ -61,7 +61,7 @@ class FunctionCallSignatureSniff extends PEARFunctionCallSignatureSniff
                 return true;
             }
 
-            $end = $phpcsFile->findEndOfStatement($next);
+            $end = $phpcsFile->findEndOfStatement($next, [T_COLON]);
         }
 
         // We've reached the last argument, so see if the next content

@@ -4,13 +4,15 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ *
+ * @deprecated 3.9.0
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ForbiddenStylesSniff implements Sniff
 {
@@ -26,7 +28,7 @@ class ForbiddenStylesSniff implements Sniff
      * A list of forbidden styles with their alternatives.
      *
      * The value is NULL if no alternative exists. i.e., the
-     * function should just not be used.
+     * style should just not be used.
      *
      * @var array<string, string|null>
      */
@@ -66,7 +68,7 @@ class ForbiddenStylesSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -115,7 +117,7 @@ class ForbiddenStylesSniff implements Sniff
             // Remove the pattern delimiters and modifier.
             $pattern = substr($pattern, 1, -2);
         } else {
-            if (in_array($style, $this->forbiddenStyleNames) === false) {
+            if (in_array($style, $this->forbiddenStyleNames, true) === false) {
                 return;
             }
         }//end if

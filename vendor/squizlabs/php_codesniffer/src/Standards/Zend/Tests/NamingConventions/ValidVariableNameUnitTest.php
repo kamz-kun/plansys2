@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Zend\Tests\NamingConventions;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class ValidVariableNameUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the ValidVariableName sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Zend\Sniffs\NamingConventions\ValidVariableNameSniff
+ */
+final class ValidVariableNameUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -26,31 +31,36 @@ class ValidVariableNameUnitTest extends AbstractSniffUnitTest
     public function getErrorList()
     {
         return [
-            3  => 1,
-            5  => 1,
-            11 => 1,
-            13 => 1,
-            17 => 1,
-            19 => 1,
-            23 => 1,
-            25 => 1,
-            29 => 1,
-            31 => 1,
-            36 => 1,
-            38 => 1,
-            42 => 1,
-            44 => 1,
-            48 => 1,
-            50 => 1,
-            61 => 1,
-            67 => 1,
-            72 => 1,
-            74 => 1,
-            75 => 1,
-            76 => 1,
-            79 => 1,
-            96 => 1,
-            99 => 1,
+            3   => 1,
+            5   => 1,
+            11  => 1,
+            13  => 1,
+            17  => 1,
+            19  => 1,
+            23  => 1,
+            25  => 1,
+            29  => 1,
+            31  => 1,
+            36  => 1,
+            38  => 1,
+            42  => 1,
+            44  => 1,
+            48  => 1,
+            50  => 1,
+            61  => 1,
+            67  => 1,
+            72  => 1,
+            74  => 1,
+            75  => 1,
+            76  => 1,
+            79  => 1,
+            96  => 1,
+            99  => 1,
+            113 => 1,
+            116 => 1,
+            121 => 1,
+            126 => 1,
+            129 => 1,
         ];
 
     }//end getErrorList()

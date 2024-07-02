@@ -11,13 +11,13 @@
  *
  * @author    Andy Brockhurst <abrock@yahoo-inc.com>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class NoSilencedErrorsSniff implements Sniff
 {
@@ -33,7 +33,7 @@ class NoSilencedErrorsSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -53,12 +53,22 @@ class NoSilencedErrorsSniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
+        // Prepare the "Found" string to display.
+        $contextLength  = 4;
+        $endOfStatement = $phpcsFile->findEndOfStatement($stackPtr, [T_COMMA, T_COLON]);
+        if (($endOfStatement - $stackPtr) < $contextLength) {
+            $contextLength = ($endOfStatement - $stackPtr);
+        }
+
+        $found = $phpcsFile->getTokensAsString($stackPtr, $contextLength);
+        $found = str_replace(["\t", "\n", "\r"], ' ', $found).'...';
+
         if ($this->error === true) {
-            $error = 'Silencing errors is forbidden';
-            $phpcsFile->addError($error, $stackPtr, 'Forbidden');
+            $error = 'Silencing errors is forbidden; found: %s';
+            $phpcsFile->addError($error, $stackPtr, 'Forbidden', [$found]);
         } else {
-            $error = 'Silencing errors is discouraged';
-            $phpcsFile->addWarning($error, $stackPtr, 'Discouraged');
+            $error = 'Silencing errors is discouraged; found: %s';
+            $phpcsFile->addWarning($error, $stackPtr, 'Discouraged', [$found]);
         }
 
     }//end process()

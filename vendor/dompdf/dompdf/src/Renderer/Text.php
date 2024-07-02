@@ -1,10 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Renderer;
@@ -45,34 +42,29 @@ class Text extends AbstractRenderer
      */
     function render(Frame $frame)
     {
+        $style = $frame->get_style();
         $text = $frame->get_text();
-        if (trim($text) === "") {
+
+        if ($text === "") {
             return;
         }
 
-        $style = $frame->get_style();
-        list($x, $y) = $frame->get_position();
+        $this->_set_opacity($frame->get_opacity($style->opacity));
+
+        [$x, $y] = $frame->get_position();
         $cb = $frame->get_containing_block();
 
-        if (($ml = $style->margin_left) === "auto" || $ml === "none") {
-            $ml = 0;
-        }
-
-        if (($pl = $style->padding_left) === "auto" || $pl === "none") {
-            $pl = 0;
-        }
-
-        if (($bl = $style->border_left_width) === "auto" || $bl === "none") {
-            $bl = 0;
-        }
-
-        $x += (float)$style->length_in_pt(array($ml, $pl, $bl), $cb["w"]);
+        $ml = $style->margin_left;
+        $pl = $style->padding_left;
+        $bl = $style->border_left_width;
+        $x += (float) $style->length_in_pt([$ml, $pl, $bl], $cb["w"]);
 
         $font = $style->font_family;
-        $size = $frame_font_size = $style->font_size;
-        $word_spacing = $frame->get_text_spacing() + (float)$style->length_in_pt($style->word_spacing);
-        $char_spacing = (float)$style->length_in_pt($style->letter_spacing);
-        $width = $style->width;
+        $size = $style->font_size;
+        $frame_font_size = $frame->get_dompdf()->getFontMetrics()->getFontHeight($font, $size);
+        $word_spacing = $frame->get_text_spacing() + $style->word_spacing;
+        $letter_spacing = $style->letter_spacing;
+        $width = (float) $style->width;
 
         /*$text = str_replace(
           array("{PAGE_NUM}"),
@@ -82,7 +74,7 @@ class Text extends AbstractRenderer
 
         $this->_canvas->text($x, $y, $text,
             $font, $size,
-            $style->color, $word_spacing, $char_spacing);
+            $style->color, $word_spacing, $letter_spacing);
 
         $line = $frame->get_containing_line();
 
@@ -113,14 +105,14 @@ class Text extends AbstractRenderer
         }
 
         $descent = $size * $underline_position;
-        $base = $size;
+        $base = $frame_font_size;
 
         // Handle text decoration:
         // http://www.w3.org/TR/CSS21/text.html#propdef-text-decoration
 
         // Draw all applicable text-decorations.  Start with the root and work our way down.
         $p = $frame;
-        $stack = array();
+        $stack = [];
         while ($p = $p->get_parent()) {
             $stack[] = $p;
         }
@@ -137,7 +129,7 @@ class Text extends AbstractRenderer
 
             switch ($text_deco) {
                 default:
-                    continue;
+                    continue 2;
 
                 case "underline":
                     $deco_y += $base - $descent + $underline_offset + $line_thickness / 2;
@@ -158,9 +150,12 @@ class Text extends AbstractRenderer
             $this->_canvas->line($x1, $deco_y, $x2, $deco_y, $color, $line_thickness);
         }
 
-        if ($this->_dompdf->getOptions()->getDebugLayout() && $this->_dompdf->getOptions()->getDebugLayoutLines()) {
-            $text_width = $this->_dompdf->getFontMetrics()->getTextWidth($text, $font, $frame_font_size);
-            $this->_debug_layout(array($x, $y, $text_width + ($line->wc - 1) * $word_spacing, $frame_font_size), "orange", array(0.5, 0.5));
+        $options = $this->_dompdf->getOptions();
+
+        if ($options->getDebugLayout() && $options->getDebugLayoutLines()) {
+            $fontMetrics = $this->_dompdf->getFontMetrics();
+            $textWidth = $fontMetrics->getTextWidth($text, $font, $size, $word_spacing, $letter_spacing);
+            $this->debugLayout([$x, $y, $textWidth, $frame_font_size], "orange", [0.5, 0.5]);
         }
     }
 }

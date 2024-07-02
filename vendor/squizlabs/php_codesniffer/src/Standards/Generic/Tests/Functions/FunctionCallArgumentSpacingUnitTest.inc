@@ -123,3 +123,52 @@ $obj->{$var}($foo,$bar);
         echo $a, $b, $c, $d;
     };
 })('a','b')('c','d');
+
+my_function_call(
+    'a'
+    /* Comment */
+    ,'b'
+    , 'c' // Comment.
+    ,'d'
+    ,'e' // phpcs:ignore Standard.Category.Sniff -- for reasons.
+    , 'f'
+);
+
+$foobar = php73_function_call_trailing_comma(
+    $foo,
+    $bar,
+);
+
+$foobar = functionCallAnonClassParam(
+    new class() {
+		public $foo=1;
+		public function methodName($param='foo',$paramTwo='bar') {
+			$bar=false;
+			$foo = array(1,2,3);
+		}
+	},
+	$args=array(),
+);
+
+$result = myFunction(param1: $arg1, param2: $arg2);
+$result = myFunction(param1: $arg1 ,  param2:$arg2);
+$result = myFunction(param1: $arg1, param2:$arg2, param3: $arg3,param4:$arg4, param5:$arg5);
+
+class Testing extends Bar
+{
+    public static function baz($foo, $bar)
+    {
+        $a = new parent($foo, $bar);
+        $a = new parent($foo ,$bar);
+    }
+}
+
+// Ignore spacing after PHP 7.3+ trailing comma in single-line function calls to prevent fixer conflicts.
+// This is something which should be decided by a sniff dealing with the function call parentheses.
+$foo = new MyClass($obj, 'getMethod',);
+$foo = new MyClass($obj, 'getMethod', );
+$foo = new MyClass($obj, 'getMethod',       );
+$foo = new MyClass(
+    $obj,
+    'getMethod',
+);

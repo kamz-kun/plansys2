@@ -6,17 +6,25 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Files;
 
-use PHP_CodeSniffer\Util;
-use PHP_CodeSniffer\Ruleset;
+use Countable;
+use FilesystemIterator;
+use Iterator;
+use PHP_CodeSniffer\Autoload;
 use PHP_CodeSniffer\Config;
 use PHP_CodeSniffer\Exceptions\DeepExitException;
+use PHP_CodeSniffer\Ruleset;
+use PHP_CodeSniffer\Util\Common;
+use RecursiveArrayIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReturnTypeWillChange;
 
-class FileList implements \Iterator, \Countable
+class FileList implements Iterator, Countable
 {
 
     /**
@@ -70,7 +78,7 @@ class FileList implements \Iterator, \Countable
 
         $paths = $config->files;
         foreach ($paths as $path) {
-            $isPharFile = Util\Common::isPharFile($path);
+            $isPharFile = Common::isPharFile($path);
             if (is_dir($path) === true || $isPharFile === true) {
                 if ($isPharFile === true) {
                     $path = 'phar://'.$path;
@@ -78,9 +86,9 @@ class FileList implements \Iterator, \Countable
 
                 $filterClass = $this->getFilterClass();
 
-                $di       = new \RecursiveDirectoryIterator($path, (\RecursiveDirectoryIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS));
+                $di       = new RecursiveDirectoryIterator($path, (RecursiveDirectoryIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS));
                 $filter   = new $filterClass($di, $path, $config, $ruleset);
-                $iterator = new \RecursiveIteratorIterator($filter);
+                $iterator = new RecursiveIteratorIterator($filter);
 
                 foreach ($iterator as $file) {
                     $this->files[$file->getPathname()] = null;
@@ -119,9 +127,9 @@ class FileList implements \Iterator, \Countable
 
         $filterClass = $this->getFilterClass();
 
-        $di       = new \RecursiveArrayIterator([$path]);
+        $di       = new RecursiveArrayIterator([$path]);
         $filter   = new $filterClass($di, $path, $this->config, $this->ruleset);
-        $iterator = new \RecursiveIteratorIterator($filter);
+        $iterator = new RecursiveIteratorIterator($filter);
 
         foreach ($iterator as $path) {
             $this->files[$path] = $file;
@@ -135,6 +143,7 @@ class FileList implements \Iterator, \Countable
      * Get the class name of the filter being used for the run.
      *
      * @return string
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException If the specified filter could not be found.
      */
     private function getFilterClass()
     {
@@ -151,7 +160,7 @@ class FileList implements \Iterator, \Countable
                     throw new DeepExitException($error, 3);
                 }
 
-                $filterClass = \PHP_CodeSniffer\Autoload::loadFile($filename);
+                $filterClass = Autoload::loadFile($filename);
             } else {
                 $filterClass = '\PHP_CodeSniffer\Filters\\'.$filterType;
             }
@@ -167,7 +176,8 @@ class FileList implements \Iterator, \Countable
      *
      * @return void
      */
-    function rewind()
+    #[ReturnTypeWillChange]
+    public function rewind()
     {
         reset($this->files);
 
@@ -179,10 +189,11 @@ class FileList implements \Iterator, \Countable
      *
      * @return \PHP_CodeSniffer\Files\File
      */
-    function current()
+    #[ReturnTypeWillChange]
+    public function current()
     {
         $path = key($this->files);
-        if ($this->files[$path] === null) {
+        if (isset($this->files[$path]) === false) {
             $this->files[$path] = new LocalFile($path, $this->ruleset, $this->config);
         }
 
@@ -194,9 +205,10 @@ class FileList implements \Iterator, \Countable
     /**
      * Return the file path of the current file being processed.
      *
-     * @return void
+     * @return string|null Path name or `null` when the end of the iterator has been reached.
      */
-    function key()
+    #[ReturnTypeWillChange]
+    public function key()
     {
         return key($this->files);
 
@@ -208,7 +220,8 @@ class FileList implements \Iterator, \Countable
      *
      * @return void
      */
-    function next()
+    #[ReturnTypeWillChange]
+    public function next()
     {
         next($this->files);
 
@@ -220,7 +233,8 @@ class FileList implements \Iterator, \Countable
      *
      * @return boolean
      */
-    function valid()
+    #[ReturnTypeWillChange]
+    public function valid()
     {
         if (current($this->files) === false) {
             return false;
@@ -236,7 +250,8 @@ class FileList implements \Iterator, \Countable
      *
      * @return integer
      */
-    function count()
+    #[ReturnTypeWillChange]
+    public function count()
     {
         return $this->numFiles;
 

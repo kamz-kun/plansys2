@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\NamingConventions;
 
-use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 
 class ValidVariableNameSniff extends AbstractVariableSniff
 {
@@ -45,7 +45,7 @@ class ValidVariableNameSniff extends AbstractVariableSniff
         }
 
         // If it's a private member, it must have an underscore on the front.
-        if ($isPublic === false && $memberName{0} !== '_') {
+        if ($isPublic === false && $memberName[0] !== '_') {
             $error = 'Private member variable "%s" must be prefixed with an underscore';
             $data  = [$memberName];
             $phpcsFile->addError($error, $stackPtr, 'PrivateNoUnderscore', $data);
@@ -53,7 +53,7 @@ class ValidVariableNameSniff extends AbstractVariableSniff
         }
 
         // If it's not a private member, it must not have an underscore on the front.
-        if ($isPublic === true && $scopeSpecified === true && $memberName{0} === '_') {
+        if ($isPublic === true && $scopeSpecified === true && $memberName[0] === '_') {
             $error = '%s member variable "%s" must not be prefixed with an underscore';
             $data  = [
                 ucfirst($scope),

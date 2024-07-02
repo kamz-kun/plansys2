@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\WhiteSpace;
 
-use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class MemberVarSpacingSniff extends AbstractVariableSniff
@@ -37,47 +37,93 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
      * @param \PHP_CodeSniffer\Files\File $phpcsFile The file where this token was found.
      * @param int                         $stackPtr  The position where the token was found.
      *
-     * @return void
+     * @return void|int Optionally returns a stack pointer. The sniff will not be
+     *                  called again on the current file until the returned stack
+     *                  pointer is reached.
      */
     protected function processMemberVar(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
-        $ignore   = Tokens::$methodPrefixes;
-        $ignore[] = T_VAR;
-        $ignore[] = T_WHITESPACE;
+        $validPrefixes   = Tokens::$methodPrefixes;
+        $validPrefixes[] = T_VAR;
 
-        $start = $stackPtr;
-        $prev  = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
+        $startOfStatement = $phpcsFile->findPrevious($validPrefixes, ($stackPtr - 1), null, false, null, true);
+        if ($startOfStatement === false) {
+            return;
+        }
+
+        $endOfStatement = $phpcsFile->findNext(T_SEMICOLON, ($stackPtr + 1), null, false, null, true);
+
+        $ignore = $validPrefixes;
+        $ignore[T_WHITESPACE] = T_WHITESPACE;
+
+        $start = $startOfStatement;
+        for ($prev = ($startOfStatement - 1); $prev >= 0; $prev--) {
+            if (isset($ignore[$tokens[$prev]['code']]) === true) {
+                continue;
+            }
+
+            if ($tokens[$prev]['code'] === T_ATTRIBUTE_END
+                && isset($tokens[$prev]['attribute_opener']) === true
+            ) {
+                $prev  = $tokens[$prev]['attribute_opener'];
+                $start = $prev;
+                continue;
+            }
+
+            break;
+        }
+
         if (isset(Tokens::$commentTokens[$tokens[$prev]['code']]) === true) {
             // Assume the comment belongs to the member var if it is on a line by itself.
             $prevContent = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($prev - 1), null, true);
             if ($tokens[$prevContent]['line'] !== $tokens[$prev]['line']) {
                 // Check the spacing, but then skip it.
-                $foundLines = ($tokens[$stackPtr]['line'] - $tokens[$prev]['line'] - 1);
+                $foundLines = ($tokens[$startOfStatement]['line'] - $tokens[$prev]['line'] - 1);
                 if ($foundLines > 0) {
-                    $error = 'Expected 0 blank lines after member var comment; %s found';
-                    $data  = [$foundLines];
-                    $fix   = $phpcsFile->addFixableError($error, $prev, 'AfterComment', $data);
-                    if ($fix === true) {
-                        $phpcsFile->fixer->beginChangeset();
-                        // Inline comments have the newline included in the content but
-                        // docblock do not.
-                        if ($tokens[$prev]['code'] === T_COMMENT) {
-                            $phpcsFile->fixer->replaceToken($prev, rtrim($tokens[$prev]['content']));
+                    for ($i = ($prev + 1); $i < $startOfStatement; $i++) {
+                        if ($tokens[$i]['column'] !== 1) {
+                            continue;
                         }
 
-                        for ($i = ($prev + 1); $i <= $stackPtr; $i++) {
-                            if ($tokens[$i]['line'] === $tokens[$stackPtr]['line']) {
-                                break;
-                            }
+                        if ($tokens[$i]['code'] === T_WHITESPACE
+                            && $tokens[$i]['line'] !== $tokens[($i + 1)]['line']
+                        ) {
+                            $error = 'Expected 0 blank lines after member var comment; %s found';
+                            $data  = [$foundLines];
+                            $fix   = $phpcsFile->addFixableError($error, $prev, 'AfterComment', $data);
+                            if ($fix === true) {
+                                $phpcsFile->fixer->beginChangeset();
+                                // Inline comments have the newline included in the content but
+                                // docblocks do not.
+                                if ($tokens[$prev]['code'] === T_COMMENT) {
+                                    $phpcsFile->fixer->replaceToken($prev, rtrim($tokens[$prev]['content']));
+                                }
 
-                            $phpcsFile->fixer->replaceToken($i, '');
-                        }
+                                for ($i = ($prev + 1); $i <= $startOfStatement; $i++) {
+                                    if ($tokens[$i]['line'] === $tokens[$startOfStatement]['line']) {
+                                        break;
+                                    }
 
-                        $phpcsFile->fixer->addNewline($prev);
-                        $phpcsFile->fixer->endChangeset();
-                    }
+                                    // Remove the newline after the docblock, and any entirely
+                                    // empty lines before the member var.
+                                    if (($tokens[$i]['code'] === T_WHITESPACE
+                                        && $tokens[$i]['line'] === $tokens[$prev]['line'])
+                                        || ($tokens[$i]['column'] === 1
+                                        && $tokens[$i]['line'] !== $tokens[($i + 1)]['line'])
+                                    ) {
+                                        $phpcsFile->fixer->replaceToken($i, '');
+                                    }
+                                }
+
+                                $phpcsFile->fixer->addNewline($prev);
+                                $phpcsFile->fixer->endChangeset();
+                            }//end if
+
+                            break;
+                        }//end if
+                    }//end for
                 }//end if
 
                 $start = $prev;
@@ -85,7 +131,7 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
         }//end if
 
         // There needs to be n blank lines before the var, not counting comments.
-        if ($start === $stackPtr) {
+        if ($start === $startOfStatement) {
             // No comment found.
             $first = $phpcsFile->findFirstOnLine(Tokens::$emptyTokens, $start, true);
             if ($first === false) {
@@ -95,11 +141,18 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
             $first = $tokens[$start]['comment_opener'];
         } else {
             $first = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($start - 1), null, true);
-            $first = $phpcsFile->findNext(Tokens::$commentTokens, ($first + 1));
+            $first = $phpcsFile->findNext(array_merge(Tokens::$commentTokens, [T_ATTRIBUTE]), ($first + 1));
         }
 
         // Determine if this is the first member var.
-        $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($first - 1), null, true);
+        $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($first - 1), null, true);
+        if ($tokens[$prev]['code'] === T_CLOSE_CURLY_BRACKET
+            && isset($tokens[$prev]['scope_condition']) === true
+            && $tokens[$tokens[$prev]['scope_condition']]['code'] === T_FUNCTION
+        ) {
+            return;
+        }
+
         if ($tokens[$prev]['code'] === T_OPEN_CURLY_BRACKET
             && isset(Tokens::$ooScopeTokens[$tokens[$tokens[$prev]['scope_condition']]['code']]) === true
         ) {
@@ -113,7 +166,18 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
         }
 
         $foundLines = ($tokens[$first]['line'] - $tokens[$prev]['line'] - 1);
+
+        if ($errorCode === 'FirstIncorrect') {
+            $phpcsFile->recordMetric($stackPtr, 'Member var spacing before first', $foundLines);
+        } else {
+            $phpcsFile->recordMetric($stackPtr, 'Member var spacing before', $foundLines);
+        }
+
         if ($foundLines === $spacing) {
+            if ($endOfStatement !== false) {
+                return $endOfStatement;
+            }
+
             return;
         }
 
@@ -122,7 +186,7 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
             $foundLines,
         ];
 
-        $fix = $phpcsFile->addFixableError($errorMsg, $stackPtr, $errorCode, $data);
+        $fix = $phpcsFile->addFixableError($errorMsg, $startOfStatement, $errorCode, $data);
         if ($fix === true) {
             $phpcsFile->fixer->beginChangeset();
             for ($i = ($prev + 1); $i < $first; $i++) {
@@ -143,6 +207,10 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
 
             $phpcsFile->fixer->endChangeset();
         }//end if
+
+        if ($endOfStatement !== false) {
+            return $endOfStatement;
+        }
 
     }//end processMemberVar()
 

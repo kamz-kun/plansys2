@@ -4,7 +4,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Reports;
@@ -23,10 +23,10 @@ class Info implements Report
      * and FALSE if it ignored the file. Returning TRUE indicates that the file and
      * its data should be counted in the grand totals.
      *
-     * @param array                 $report      Prepared report data.
-     * @param \PHP_CodeSniffer\File $phpcsFile   The file being reported on.
-     * @param bool                  $showSources Show sources?
-     * @param int                   $width       Maximum allowed line width.
+     * @param array                       $report      Prepared report data.
+     * @param \PHP_CodeSniffer\Files\File $phpcsFile   The file being reported on.
+     * @param bool                        $showSources Show sources?
+     * @param int                         $width       Maximum allowed line width.
      *
      * @return bool
      */
@@ -45,7 +45,7 @@ class Info implements Report
 
 
     /**
-     * Prints the source of all errors and warnings.
+     * Prints the recorded metrics.
      *
      * @param string $cachedData    Any partial report data that was returned from
      *                              generateFileReport during the run.
@@ -101,30 +101,61 @@ class Info implements Report
         echo str_repeat('-', 70).PHP_EOL;
 
         foreach ($metrics as $metric => $values) {
-            $winner      = '';
-            $winnerCount = 0;
-            $totalCount  = 0;
-            foreach ($values as $value => $count) {
-                $totalCount += $count;
-                if ($count > $winnerCount) {
-                    $winner      = $value;
-                    $winnerCount = $count;
-                }
-            }
+            if (count($values) === 1) {
+                $count = reset($values);
+                $value = key($values);
 
-            $winPercent = round(($winnerCount / $totalCount * 100), 2);
-            echo "$metric: \033[4m$winner\033[0m [$winnerCount/$totalCount, $winPercent%]".PHP_EOL;
-
-            asort($values);
-            $values = array_reverse($values, true);
-            foreach ($values as $value => $count) {
-                if ($value === $winner) {
-                    continue;
+                echo "$metric: \033[4m$value\033[0m [$count/$count, 100%]".PHP_EOL;
+            } else {
+                $totalCount = 0;
+                $valueWidth = 0;
+                foreach ($values as $value => $count) {
+                    $totalCount += $count;
+                    $valueWidth  = max($valueWidth, strlen($value));
                 }
 
-                $percent = round(($count / $totalCount * 100), 2);
-                echo "\t$value => $count ($percent%)".PHP_EOL;
-            }
+                // Length of the total string, plus however many
+                // thousands separators there are.
+                $countWidth = strlen($totalCount);
+                $thousandSeparatorCount = floor($countWidth / 3);
+                $countWidth            += $thousandSeparatorCount;
+
+                // Account for 'total' line.
+                $valueWidth = max(5, $valueWidth);
+
+                echo "$metric:".PHP_EOL;
+
+                ksort($values, SORT_NATURAL);
+                arsort($values);
+
+                $percentPrefixWidth = 0;
+                $percentWidth       = 6;
+                foreach ($values as $value => $count) {
+                    $percent       = round(($count / $totalCount * 100), 2);
+                    $percentPrefix = '';
+                    if ($percent === 0.00) {
+                        $percent            = 0.01;
+                        $percentPrefix      = '<';
+                        $percentPrefixWidth = 2;
+                        $percentWidth       = 4;
+                    }
+
+                    printf(
+                        "\t%-{$valueWidth}s => %{$countWidth}s (%{$percentPrefixWidth}s%{$percentWidth}.2f%%)".PHP_EOL,
+                        $value,
+                        number_format($count),
+                        $percentPrefix,
+                        $percent
+                    );
+                }
+
+                echo "\t".str_repeat('-', ($valueWidth + $countWidth + 15)).PHP_EOL;
+                printf(
+                    "\t%-{$valueWidth}s => %{$countWidth}s (100.00%%)".PHP_EOL,
+                    'total',
+                    number_format($totalCount)
+                );
+            }//end if
 
             echo PHP_EOL;
         }//end foreach

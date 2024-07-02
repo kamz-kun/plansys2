@@ -5,7 +5,7 @@
  * @author    Ben Selby <benmatselby@gmail.com>
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Reports;
@@ -51,7 +51,7 @@ class Gitblame extends VersionControl
         }
 
         $parts  = array_slice($parts, 0, (count($parts) - 2));
-        $author = preg_replace('|\(|', '', implode($parts, ' '));
+        $author = preg_replace('|\(|', '', implode(' ', $parts));
         return $author;
 
     }//end getAuthor()
@@ -63,13 +63,14 @@ class Gitblame extends VersionControl
      * @param string $filename File to blame.
      *
      * @return array
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     protected function getBlameContent($filename)
     {
         $cwd = getcwd();
 
         chdir(dirname($filename));
-        $command = 'git blame --date=short "'.$filename.'" 2>&1';
+        $command = 'git blame --date=short "'.basename($filename).'" 2>&1';
         $handle  = popen($command, 'r');
         if ($handle === false) {
             $error = 'ERROR: Could not execute "'.$command.'"'.PHP_EOL.PHP_EOL;
@@ -77,7 +78,7 @@ class Gitblame extends VersionControl
         }
 
         $rawContent = stream_get_contents($handle);
-        fclose($handle);
+        pclose($handle);
 
         $blames = explode("\n", $rawContent);
         chdir($cwd);

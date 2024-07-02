@@ -3,8 +3,11 @@ composer.phar
 composer.lock
 phpunit.xml
 vendor
+build
+tmp
 .idea
 .project
-lib/fonts/*.afm.php
-lib/fonts/*.ufm.php
+.phpunit.result.cache
+lib/fonts/*.afm.json
+lib/fonts/*.ufm.json
 lib/fonts/log.htm

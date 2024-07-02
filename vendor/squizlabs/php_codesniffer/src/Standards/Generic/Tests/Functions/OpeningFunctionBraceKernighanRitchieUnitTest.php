@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Tests\Functions;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class OpeningFunctionBraceKernighanRitchieUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the OpeningFunctionBraceKernighanRitchie sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\Generic\Sniffs\Functions\OpeningFunctionBraceKernighanRitchieSniff
+ */
+final class OpeningFunctionBraceKernighanRitchieUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -48,6 +53,12 @@ class OpeningFunctionBraceKernighanRitchieUnitTest extends AbstractSniffUnitTest
             157 => 1,
             162 => 1,
             171 => 1,
+            181 => 1,
+            191 => 1,
+            197 => 1,
+            203 => 1,
+            213 => 1,
+            214 => 1,
         ];
 
     }//end getErrorList()

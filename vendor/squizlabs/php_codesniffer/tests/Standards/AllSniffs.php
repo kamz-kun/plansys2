@@ -4,16 +4,17 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Tests\Standards;
 
-use PHP_CodeSniffer\Util\Standards;
 use PHP_CodeSniffer\Autoload;
-use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-use PHPUnit\TextUI\TestRunner;
+use PHP_CodeSniffer\Util\Standards;
 use PHPUnit\Framework\TestSuite;
+use PHPUnit\TextUI\TestRunner;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class AllSniffs
 {
@@ -41,8 +42,9 @@ class AllSniffs
      */
     public static function suite()
     {
-        $GLOBALS['PHP_CODESNIFFER_SNIFF_CODES']   = [];
-        $GLOBALS['PHP_CODESNIFFER_FIXABLE_CODES'] = [];
+        $GLOBALS['PHP_CODESNIFFER_SNIFF_CODES']      = [];
+        $GLOBALS['PHP_CODESNIFFER_FIXABLE_CODES']    = [];
+        $GLOBALS['PHP_CODESNIFFER_SNIFF_CASE_FILES'] = [];
 
         $suite = new TestSuite('PHP CodeSniffer Standards');
 
@@ -56,31 +58,22 @@ class AllSniffs
             $ignoreTestsForStandards = explode(',', $ignoreTestsForStandards);
         }
 
-        $installedStandards = Standards::getInstalledStandardDetails(true);
+        $installedStandards = self::getInstalledStandardDetails();
 
         foreach ($installedStandards as $standard => $details) {
             Autoload::addSearchPath($details['path'], $details['namespace']);
 
-            // If the test is running PEAR installed, the built-in standards
-            // are split into different directories; one for the sniffs and
-            // a different file system location for tests.
-            if ($isInstalled === true && is_dir(dirname($details['path']).DIRECTORY_SEPARATOR.'Generic') === true) {
-                $testPath = realpath(__DIR__.'/../../src/Standards/'.$standard);
-            } else {
-                $testPath = $details['path'];
-            }
-
-            if (in_array($standard, $ignoreTestsForStandards) === true) {
+            if (in_array($standard, $ignoreTestsForStandards, true) === true) {
                 continue;
             }
 
-            $testsDir = $testPath.DIRECTORY_SEPARATOR.'Tests'.DIRECTORY_SEPARATOR;
+            $testsDir = $details['path'].DIRECTORY_SEPARATOR.'Tests'.DIRECTORY_SEPARATOR;
             if (is_dir($testsDir) === false) {
                 // No tests for this standard.
                 continue;
             }
 
-            $di = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($testsDir));
+            $di = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testsDir));
 
             foreach ($di as $file) {
                 // Skip hidden files.
@@ -105,6 +98,19 @@ class AllSniffs
         return $suite;
 
     }//end suite()
+
+
+    /**
+     * Get the details of all coding standards installed.
+     *
+     * @return array
+     * @see    Standards::getInstalledStandardDetails()
+     */
+    protected static function getInstalledStandardDetails()
+    {
+        return Standards::getInstalledStandardDetails(true);
+
+    }//end getInstalledStandardDetails()
 
 
 }//end class

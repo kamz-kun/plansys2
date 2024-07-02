@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\MySource\Tests\PHP;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class AjaxNullComparisonUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the AjaxNullComparison sniff.
+ *
+ * @covers PHP_CodeSniffer\Standards\MySource\Sniffs\PHP\AjaxNullComparisonSniff
+ */
+final class AjaxNullComparisonUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -41,12 +46,12 @@ class AjaxNullComparisonUnitTest extends AbstractSniffUnitTest
     public function getWarningList()
     {
         return [
-            37  => 1,
-            49  => 1,
-            60  => 1,
-            73  => 1,
-            88  => 1,
-            118 => 1,
+            41  => 1,
+            53  => 1,
+            64  => 1,
+            77  => 1,
+            92  => 1,
+            122 => 1,
         ];
 
     }//end getWarningList()

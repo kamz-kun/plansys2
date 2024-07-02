@@ -4,14 +4,19 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\PSR2\Tests\Namespaces;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
-class UseDeclarationUnitTest extends AbstractSniffUnitTest
+/**
+ * Unit test class for the UseDeclaration sniff.
+ *
+ * @covers \PHP_CodeSniffer\Standards\PSR2\Sniffs\Namespaces\UseDeclarationSniff
+ */
+final class UseDeclarationUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -32,7 +37,12 @@ class UseDeclarationUnitTest extends AbstractSniffUnitTest
             return [
                 4  => 1,
                 5  => 1,
-                10 => 2,
+                6  => 1,
+                7  => 1,
+                9  => 1,
+                10 => 1,
+                11 => 1,
+                16 => 1,
             ];
         case 'UseDeclarationUnitTest.3.inc':
             return [
@@ -48,13 +58,25 @@ class UseDeclarationUnitTest extends AbstractSniffUnitTest
                 17 => 1,
                 18 => 1,
                 19 => 1,
+                21 => 1,
+                28 => 1,
+                30 => 1,
+                35 => 1,
             ];
         case 'UseDeclarationUnitTest.10.inc':
         case 'UseDeclarationUnitTest.11.inc':
         case 'UseDeclarationUnitTest.12.inc':
         case 'UseDeclarationUnitTest.13.inc':
         case 'UseDeclarationUnitTest.14.inc':
+        case 'UseDeclarationUnitTest.16.inc':
+        case 'UseDeclarationUnitTest.17.inc':
             return [2 => 1];
+        case 'UseDeclarationUnitTest.15.inc':
+            return [
+                3 => 1,
+                4 => 1,
+                5 => 1,
+            ];
         default:
             return [];
         }//end switch

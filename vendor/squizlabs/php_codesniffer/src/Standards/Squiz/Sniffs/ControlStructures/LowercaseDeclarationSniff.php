@@ -4,13 +4,13 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\ControlStructures;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class LowercaseDeclarationSniff implements Sniff
 {
@@ -19,7 +19,7 @@ class LowercaseDeclarationSniff implements Sniff
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -34,6 +34,7 @@ class LowercaseDeclarationSniff implements Sniff
             T_WHILE,
             T_TRY,
             T_CATCH,
+            T_MATCH,
         ];
 
     }//end register()
@@ -52,18 +53,19 @@ class LowercaseDeclarationSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $content = $tokens[$stackPtr]['content'];
-        if ($content !== strtolower($content)) {
+        $content   = $tokens[$stackPtr]['content'];
+        $contentLc = strtolower($content);
+        if ($content !== $contentLc) {
             $error = '%s keyword must be lowercase; expected "%s" but found "%s"';
             $data  = [
                 strtoupper($content),
-                strtolower($content),
+                $contentLc,
                 $content,
             ];
 
             $fix = $phpcsFile->addFixableError($error, $stackPtr, 'FoundUppercase', $data);
             if ($fix === true) {
-                $phpcsFile->fixer->replaceToken($stackPtr, strtolower($content));
+                $phpcsFile->fixer->replaceToken($stackPtr, $contentLc);
             }
         }
 

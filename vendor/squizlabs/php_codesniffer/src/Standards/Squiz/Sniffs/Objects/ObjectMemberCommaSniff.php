@@ -4,13 +4,15 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ *
+ * @deprecated 3.9.0
  */
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Objects;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ObjectMemberCommaSniff implements Sniff
@@ -27,7 +29,7 @@ class ObjectMemberCommaSniff implements Sniff
     /**
      * Registers the token types that this sniff wishes to listen to.
      *
-     * @return array
+     * @return array<int|string>
      */
     public function register()
     {
@@ -52,7 +54,7 @@ class ObjectMemberCommaSniff implements Sniff
         $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($stackPtr - 1), null, true);
         if ($tokens[$prev]['code'] === T_COMMA) {
             $error = 'Last member of object must not be followed by a comma';
-            $fix   = $phpcsFile->addFixableError($error, $prev, 'Missing');
+            $fix   = $phpcsFile->addFixableError($error, $prev, 'Found');
             if ($fix === true) {
                 $phpcsFile->fixer->replaceToken($prev, '');
             }

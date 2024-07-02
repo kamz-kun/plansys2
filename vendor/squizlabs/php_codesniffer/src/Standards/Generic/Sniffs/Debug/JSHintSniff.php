@@ -5,14 +5,17 @@
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @author    Alexander Wei§ <aweisswa@gmx.de>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ *
+ * @deprecated 3.9.0
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\Debug;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
-use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Common;
 
 class JSHintSniff implements Sniff
 {
@@ -28,7 +31,7 @@ class JSHintSniff implements Sniff
     /**
      * Returns the token types that this sniff is interested in.
      *
-     * @return int[]
+     * @return array<int|string>
      */
     public function register()
     {
@@ -44,41 +47,49 @@ class JSHintSniff implements Sniff
      * @param int                         $stackPtr  The position in the stack where
      *                                               the token was found.
      *
-     * @return void
-     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If jshint.js could not be run
+     * @return int
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If jshint.js could not be run.
      */
     public function process(File $phpcsFile, $stackPtr)
     {
         $rhinoPath  = Config::getExecutablePath('rhino');
         $jshintPath = Config::getExecutablePath('jshint');
-        if ($rhinoPath === null || $jshintPath === null) {
-            return;
+        if ($jshintPath === null) {
+            return $phpcsFile->numTokens;
         }
 
-        $fileName = $phpcsFile->getFilename();
+        $fileName   = $phpcsFile->getFilename();
+        $jshintPath = Common::escapeshellcmd($jshintPath);
 
-        $rhinoPath  = escapeshellcmd($rhinoPath);
-        $jshintPath = escapeshellcmd($jshintPath);
+        if ($rhinoPath !== null) {
+            $rhinoPath = Common::escapeshellcmd($rhinoPath);
+            $cmd       = "$rhinoPath \"$jshintPath\" ".escapeshellarg($fileName);
+            exec($cmd, $output, $retval);
 
-        $cmd = "$rhinoPath \"$jshintPath\" ".escapeshellarg($fileName);
-        exec($cmd, $output, $retval);
+            $regex = '`^(?P<error>.+)\(.+:(?P<line>[0-9]+).*:[0-9]+\)$`';
+        } else {
+            $cmd = "$jshintPath ".escapeshellarg($fileName);
+            exec($cmd, $output, $retval);
+
+            $regex = '`^(.+?): line (?P<line>[0-9]+), col [0-9]+, (?P<error>.+)$`';
+        }
 
         if (is_array($output) === true) {
             foreach ($output as $finding) {
                 $matches    = [];
-                $numMatches = preg_match('/^(.+)\(.+:([0-9]+).*:[0-9]+\)$/', $finding, $matches);
+                $numMatches = preg_match($regex, $finding, $matches);
                 if ($numMatches === 0) {
                     continue;
                 }
 
-                $line    = (int) $matches[2];
-                $message = 'jshint says: '.trim($matches[1]);
+                $line    = (int) $matches['line'];
+                $message = 'jshint says: '.trim($matches['error']);
                 $phpcsFile->addWarningOnLine($message, $line, 'ExternalTool');
             }
         }
 
         // Ignore the rest of the file.
-        return ($phpcsFile->numTokens + 1);
+        return $phpcsFile->numTokens;
 
     }//end process()
 

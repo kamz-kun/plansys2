@@ -4,15 +4,15 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\NamingConventions;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Util\Common;
 use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Files\File;
 
 class CamelCapsFunctionNameSniff extends AbstractScopeSniff
 {
@@ -23,21 +23,23 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
      * @var array
      */
     protected $magicMethods = [
-        'construct'  => true,
-        'destruct'   => true,
-        'call'       => true,
-        'callstatic' => true,
-        'get'        => true,
-        'set'        => true,
-        'isset'      => true,
-        'unset'      => true,
-        'sleep'      => true,
-        'wakeup'     => true,
-        'tostring'   => true,
-        'set_state'  => true,
-        'clone'      => true,
-        'invoke'     => true,
-        'debuginfo'  => true,
+        'construct'   => true,
+        'destruct'    => true,
+        'call'        => true,
+        'callstatic'  => true,
+        'get'         => true,
+        'set'         => true,
+        'isset'       => true,
+        'unset'       => true,
+        'sleep'       => true,
+        'wakeup'      => true,
+        'serialize'   => true,
+        'unserialize' => true,
+        'tostring'    => true,
+        'invoke'      => true,
+        'set_state'   => true,
+        'clone'       => true,
+        'debuginfo'   => true,
     ];
 
     /**
@@ -48,17 +50,18 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
      * @var array
      */
     protected $methodsDoubleUnderscore = [
-        'soapcall'               => true,
-        'getlastrequest'         => true,
-        'getlastresponse'        => true,
-        'getlastrequestheaders'  => true,
-        'getlastresponseheaders' => true,
-        'getfunctions'           => true,
-        'gettypes'               => true,
         'dorequest'              => true,
+        'getcookies'             => true,
+        'getfunctions'           => true,
+        'getlastrequest'         => true,
+        'getlastrequestheaders'  => true,
+        'getlastresponse'        => true,
+        'getlastresponseheaders' => true,
+        'gettypes'               => true,
         'setcookie'              => true,
         'setlocation'            => true,
         'setsoapheaders'         => true,
+        'soapcall'               => true,
     ];
 
     /**
@@ -98,6 +101,16 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
      */
     protected function processTokenWithinScope(File $phpcsFile, $stackPtr, $currScope)
     {
+        $tokens = $phpcsFile->getTokens();
+
+        // Determine if this is a function which needs to be examined.
+        $conditions = $tokens[$stackPtr]['conditions'];
+        end($conditions);
+        $deepestScope = key($conditions);
+        if ($deepestScope !== $currScope) {
+            return;
+        }
+
         $methodName = $phpcsFile->getDeclarationName($stackPtr);
         if ($methodName === null) {
             // Ignore closures.
@@ -105,11 +118,18 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
         }
 
         $className = $phpcsFile->getDeclarationName($currScope);
+        if (isset($className) === false) {
+            $className = '[Anonymous Class]';
+        }
+
         $errorData = [$className.'::'.$methodName];
+
+        $methodNameLc = strtolower($methodName);
+        $classNameLc  = strtolower($className);
 
         // Is this a magic method. i.e., is prefixed with "__" ?
         if (preg_match('|^__[^_]|', $methodName) !== 0) {
-            $magicPart = strtolower(substr($methodName, 2));
+            $magicPart = substr($methodNameLc, 2);
             if (isset($this->magicMethods[$magicPart]) === true
                 || isset($this->methodsDoubleUnderscore[$magicPart]) === true
             ) {
@@ -121,12 +141,12 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
         }
 
         // PHP4 constructors are allowed to break our rules.
-        if ($methodName === $className) {
+        if ($methodNameLc === $classNameLc) {
             return;
         }
 
         // PHP4 destructors are allowed to break our rules.
-        if ($methodName === '_'.$className) {
+        if ($methodNameLc === '_'.$classNameLc) {
             return;
         }
 

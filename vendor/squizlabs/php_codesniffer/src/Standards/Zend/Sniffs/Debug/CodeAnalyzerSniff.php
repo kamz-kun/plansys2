@@ -5,7 +5,9 @@
  * @author    Holger Kral <holger.kral@zend.com>
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ *
+ * @deprecated 3.9.0
  */
 
 namespace PHP_CodeSniffer\Standards\Zend\Sniffs\Debug;
@@ -14,6 +16,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
 use PHP_CodeSniffer\Exceptions\RuntimeException;
+use PHP_CodeSniffer\Util\Common;
 
 class CodeAnalyzerSniff implements Sniff
 {
@@ -22,7 +25,7 @@ class CodeAnalyzerSniff implements Sniff
     /**
      * Returns the token types that this sniff is interested in.
      *
-     * @return int[]
+     * @return array<int|string>
      */
     public function register()
     {
@@ -39,12 +42,13 @@ class CodeAnalyzerSniff implements Sniff
      *                                               the token was found.
      *
      * @return int
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If ZendCodeAnalyzer could not be run.
      */
     public function process(File $phpcsFile, $stackPtr)
     {
         $analyzerPath = Config::getExecutablePath('zend_ca');
-        if (is_null($analyzerPath) === true) {
-            return;
+        if ($analyzerPath === null) {
+            return $phpcsFile->numTokens;
         }
 
         $fileName = $phpcsFile->getFilename();
@@ -52,20 +56,20 @@ class CodeAnalyzerSniff implements Sniff
         // In the command, 2>&1 is important because the code analyzer sends its
         // findings to stderr. $output normally contains only stdout, so using 2>&1
         // will pipe even stderr to stdout.
-        $cmd = escapeshellcmd($analyzerPath).' '.escapeshellarg($fileName).' 2>&1';
+        $cmd = Common::escapeshellcmd($analyzerPath).' '.escapeshellarg($fileName).' 2>&1';
 
         // There is the possibility to pass "--ide" as an option to the analyzer.
         // This would result in an output format which would be easier to parse.
-        // The problem here is that no cleartext error messages are returnwd; only
+        // The problem here is that no cleartext error messages are returned; only
         // error-code-labels. So for a start we go for cleartext output.
         $exitCode = exec($cmd, $output, $retval);
 
-        // Variable $exitCode is the last line of $output if no error occures, on
+        // Variable $exitCode is the last line of $output if no error occurs, on
         // error it is numeric. Try to handle various error conditions and
         // provide useful error reporting.
         if (is_numeric($exitCode) === true && $exitCode > 0) {
             if (is_array($output) === true) {
-                $msg = join('\n', $output);
+                $msg = implode('\n', $output);
             }
 
             throw new RuntimeException("Failed invoking ZendCodeAnalyzer, exitcode was [$exitCode], retval was [$retval], output was [$msg]");
@@ -88,7 +92,7 @@ class CodeAnalyzerSniff implements Sniff
         }
 
         // Ignore the rest of the file.
-        return ($phpcsFile->numTokens + 1);
+        return $phpcsFile->numTokens;
 
     }//end process()
 

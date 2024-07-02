@@ -4,7 +4,7 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
+ * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Reports;
@@ -49,6 +49,7 @@ class Svnblame extends VersionControl
      * @param string $filename File to blame.
      *
      * @return array
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     protected function getBlameContent($filename)
     {
@@ -60,7 +61,7 @@ class Svnblame extends VersionControl
         }
 
         $rawContent = stream_get_contents($handle);
-        fclose($handle);
+        pclose($handle);
 
         $blames = explode("\n", $rawContent);
 
