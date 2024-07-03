@@ -1,5 +1,5 @@
 
-# Plansys 2.0
+# Plansys2
 
 Fast, Compact, Mindblowing Web-app Builder
 
@@ -10,10 +10,18 @@ Fast, Compact, Mindblowing Web-app Builder
   > PHP mbstring
   > PHP xml
   > PHP zip
-  > PHP mcrypt
+  > PHP curl
+  > PHP gd
 - x64 Server OS
+- Nginx Webserver (Recommendation)
+- PostgreSQL 10
 
 ## Changelog
+
+### Build 1.14.00 ###
+- Fixing Minor Bugs
+- Fixing Security Issues
+- Update Dependencies
 
 ### Build 1.13.00 ###
 - Integration DatePicker in GridView

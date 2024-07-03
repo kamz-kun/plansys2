@@ -62,23 +62,9 @@ class DocsWelcome extends Form {
                 'type' => 'Text',
                 'value' => '<div class=\"welcome-page\">
     <img src=\"plansys/static/img/welcome.png\" width=\"450px\">
-    <h4 style=\"margin-top: -40px;\">Build 1.13.00</h4>
+    <h4 style=\"margin-top: -40px;\">Build 1.14.00</h4>
     <hr>
     <br>
-    <div class=\"row\" style=\"margin-top: 10px;\">
-        <h3><small>leader</small> <br>
-            <a href=\"mailto:kamil@andromedia.co.id\">Kamz</a>
-        </h3>
-        <h3><small>main dev.</small> <br>
-            <a href=\"mailto:jessica@andromedia.co.id\">Jesz</a>, <a href=\"mailto:arbi@andromedia.co.id\">Arbz</a>, <a href=\"mailto:hansel.sindu@andromedia.co.id\">Hanz</a>
-        </h3>
-        <h3><small>initiator</small> <br>
-            Riz
-        </h3>
-    </div>
-    
-    
-    
 </div>
 ',
             ),
