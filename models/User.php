@@ -35,10 +35,10 @@ class User extends ActiveRecord {
         }
 
         return array(
-            array('username' . $passwordReq, 'required'),
-            array('username', 'unique'),
-            array('email', 'email'),
-            array('last_login', 'safe')
+            array('username'. $passwordReq, 'required', 'message' => 'Username wajib diisi.'),
+            array('username', 'unique', 'message' => 'Username sudah digunakan.'),
+            array('username', 'length', 'min' => 4, 'max' => 20, 'message' => 'Username harus 4-20 karakter.'),
+            array('username', 'match', 'pattern' => '/^[a-zA-Z0-9_.]+$/', 'message' => 'Username hanya boleh berisi huruf, angka, titik, dan underscore.'),
         );
     }
 

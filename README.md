@@ -14,9 +14,13 @@ Fast, Compact, Mindblowing Web-app Builder
   > PHP gd
 - x64 Server OS
 - Nginx Webserver (Recommendation)
-- PostgreSQL 10
+- PostgreSQL 17
 
 ## Changelog
+
+### Build 2.00.00 ###
+- MAJOR CHANGES. NOW MINIMUM REQUIREMENT IS POSTGRESQL 17
+- New Username restriction when create and login (Only alphanumeric, dot and underscore allowed)
 
 ### Build 1.14.00 ###
 - Fixing Minor Bugs

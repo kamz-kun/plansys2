@@ -90,23 +90,21 @@ class DefaultController extends Controller {
 
         if (isset($_POST['InstallDbForm'])) {
             $model->attributes = $_POST['InstallDbForm'];
-
             if ($model->validate()) {
                 $error = false;
-                        
                 try {
                     switch ($model->driver) {
                         case "mysql":
-                            $dbh = new pdo("mysql:host={$model->host};dbname={$model->dbname}", 
-                                $model->username, $model->password, array(
-                                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                            ));
+                            $dbh = new PDO("mysql:host={$model->host};port={$model->port};dbname={$model->dbname}", 
+               				$model->username, 
+               				$model->password, 
+               				array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));                            
                         break;
-                        case "oci":
-                            $dbh = new pdo("oci:dbname={$model->host}/{$model->dbname}", 
-                                $model->username, $model->password, array(
-                                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                            ));
+                        case "pgsql":
+                            $dbh = new PDO("pgsql:host={$model->host};port={$model->port};dbname={$model->dbname}", 
+               				$model->username, 
+               				$model->password, 
+               				array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
                         break;
                     }
                 } catch (PDOException $ex) {
@@ -119,6 +117,7 @@ class DefaultController extends Controller {
                     Setting::set('db.username', $model->username, false);
                     Setting::set('db.password', $model->password, false);
                     Setting::set('db.dbname', $model->dbname, false);
+                    Setting::set('db.port', $model->port, false);
                     Setting::write();
 
                     if ($model->resetdb == "yes") {

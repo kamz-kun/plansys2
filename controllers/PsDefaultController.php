@@ -163,10 +163,8 @@ class PsDefaultController extends Controller {
         // collect user input data
         if (isset($_POST['LoginForm'])) {            
             $post = $_POST['LoginForm'];
-            $post['username'] = str_replace(';', '', $post['username']);
-            $post['username'] = str_replace('"', '', $post['username']);
-            $post['username'] = str_replace("'", '', $post['username']);
-            $post['username'] = str_replace("=", '', $post['username']);
+            $post['username'] = preg_replace('/[;\'"=]/', '', $post['username']);
+
             
             $model->attributes = $post;
 

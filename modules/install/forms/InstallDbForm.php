@@ -4,6 +4,7 @@ class InstallDbForm extends Form {
 
     public $driver;
     public $host;
+    public $port;
     public $username;
     public $password;
     public $dbname;
@@ -82,6 +83,20 @@ class InstallDbForm extends Form {
                         'fieldWidth' => '12',
                         'fieldOptions' => array (
                             'placeholder' => 'host',
+                        ),
+                        'type' => 'TextField',
+                    ),
+                    array (
+                        'type' => 'Text',
+                        'value' => '<br>',
+                    ),
+                    array (
+                        'name' => 'port',
+                        'layout' => 'Vertical',
+                        'labelWidth' => '0',
+                        'fieldWidth' => '12',
+                        'fieldOptions' => array (
+                            'placeholder' => 'port',
                         ),
                         'type' => 'TextField',
                     ),

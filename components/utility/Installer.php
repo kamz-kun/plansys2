@@ -340,7 +340,6 @@ class Installer {
         $runner = new CConsoleCommandRunner();
         $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
         $runner->addCommands($commandPath);
-        
 		ob_start();
         $args = array('yiic', 'installDb', '--interactive=0');
         $runner->run($args, true);

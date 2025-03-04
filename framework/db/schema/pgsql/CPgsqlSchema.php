@@ -166,12 +166,15 @@ class CPgsqlSchema extends CDbSchema
 	protected function findColumns($table)
 	{
 		$sql=<<<EOD
-SELECT a.attname, LOWER(format_type(a.atttypid, a.atttypmod)) AS type, d.adsrc, a.attnotnull, a.atthasdef,
-	pg_catalog.col_description(a.attrelid, a.attnum) AS comment
-FROM pg_attribute a LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+SELECT a.attname, LOWER(format_type(a.atttypid, a.atttypmod)) AS type, 
+    pg_get_expr(d.adbin, d.adrelid) AS adsrc, 
+    a.attnotnull, a.atthasdef,
+    pg_catalog.col_description(a.attrelid, a.attnum) AS comment
+FROM pg_attribute a 
+LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
 WHERE a.attnum > 0 AND NOT a.attisdropped
-	AND a.attrelid = (SELECT oid FROM pg_catalog.pg_class WHERE relname=:table
-		AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = :schema))
+    AND a.attrelid = (SELECT oid FROM pg_catalog.pg_class WHERE relname=:table
+    AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = :schema))
 ORDER BY a.attnum
 EOD;
 		$command=$this->getDbConnection()->createCommand($sql);
@@ -225,46 +228,46 @@ EOD;
 	protected function findConstraints($table)
 	{
 		$sql=<<<EOD
-SELECT conname, consrc, contype, indkey FROM (
-	SELECT
-		conname,
-		CASE WHEN contype='f' THEN
-			pg_catalog.pg_get_constraintdef(oid)
-		ELSE
-			'CHECK (' || consrc || ')'
-		END AS consrc,
-		contype,
-		conrelid AS relid,
-		NULL AS indkey
-	FROM
-		pg_catalog.pg_constraint
-	WHERE
-		contype IN ('f', 'c')
-	UNION ALL
-	SELECT
-		pc.relname,
-		NULL,
-		CASE WHEN indisprimary THEN
-				'p'
-		ELSE
-				'u'
-		END,
-		pi.indrelid,
-		indkey
-	FROM
-		pg_catalog.pg_class pc,
-		pg_catalog.pg_index pi
-	WHERE
-		pc.oid=pi.indexrelid
-		AND EXISTS (
-			SELECT 1 FROM pg_catalog.pg_depend d JOIN pg_catalog.pg_constraint c
-			ON (d.refclassid = c.tableoid AND d.refobjid = c.oid)
-			WHERE d.classid = pc.tableoid AND d.objid = pc.oid AND d.deptype = 'i' AND c.contype IN ('u', 'p')
-	)
-) AS sub
-WHERE relid = (SELECT oid FROM pg_catalog.pg_class WHERE relname=:table
-	AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace
-	WHERE nspname=:schema))
+			SELECT conname, consrc, contype, indkey FROM (
+			SELECT
+				conname,
+				CASE WHEN contype='f' THEN
+					pg_catalog.pg_get_constraintdef(oid)
+				ELSE
+					'CHECK (' || pg_get_expr(c.conbin, c.conrelid) || ')'
+				END AS consrc,
+				contype,
+				conrelid AS relid,
+				NULL AS indkey
+			FROM
+				pg_catalog.pg_constraint c
+			WHERE
+				contype IN ('f', 'c')
+			UNION ALL
+			SELECT
+				pc.relname,
+				NULL,
+				CASE WHEN indisprimary THEN
+					CAST('p' AS "char")
+				ELSE
+					CAST('u' AS "char")
+				END,
+				pi.indrelid,
+				indkey
+			FROM
+				pg_catalog.pg_class pc,
+				pg_catalog.pg_index pi
+			WHERE
+				pc.oid=pi.indexrelid
+				AND EXISTS (
+					SELECT 1 FROM pg_catalog.pg_depend d 
+					JOIN pg_catalog.pg_constraint c ON (d.refclassid = c.tableoid AND d.refobjid = c.oid)
+					WHERE d.classid = pc.tableoid AND d.objid = pc.oid AND d.deptype = 'i' 
+					AND c.contype IN ('u', 'p')
+				)
+			) AS sub
+			WHERE relid = (SELECT oid FROM pg_catalog.pg_class WHERE relname=:table
+			AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname=:schema))
 EOD;
 		$command=$this->getDbConnection()->createCommand($sql);
 		$command->bindValue(':table',$table->name);
